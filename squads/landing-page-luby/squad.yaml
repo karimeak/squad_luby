@@ -1,0 +1,41 @@
+squad:
+  code: landing-page-luby
+  name: Landing Page Luby
+  description: >
+    Produção de landing pages de alta conversão para a Luby Software:
+    estratégia de audiência, copy persuasivo, otimização SEO e implementação
+    Next.js + TypeScript pronta para deploy na Hostinger.
+  version: "2.0.0"
+  created: "2026-03-26"
+  performance_mode: alta-performance
+  language: pt-BR
+
+skills:
+  - web_search
+  - web_fetch
+  - seo-audit
+  - copywriting
+
+data:
+  - pipeline/data/conversion-principles.md
+  - pipeline/data/quality-criteria.md
+  - pipeline/data/tone-of-voice.md
+
+formats:
+  - copywriting
+
+pipeline:
+  entry: pipeline/pipeline.yaml
+  steps:
+    - step-01-briefing
+    - step-02-cleidson-strategy
+    - step-03-strategy-approval
+    - step-04-karime-structure
+    - step-05-structure-approval
+    - step-06-karime-copy
+    - step-07-copy-approval
+    - step-08-rodrigo-review
+    - step-09-beatriz-seo
+    - step-10-content-approval
+    - step-11-lucas-build
+    - step-12-final-approval

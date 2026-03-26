@@ -1,0 +1,6 @@
+path,displayName,icon,role,execution
+./agents/cleidson.agent.md,Cleidson Estrategista,🧠,Estrategista de conversão e audiência,subagent
+./agents/karime.agent.md,Karime Copy,✍️,Copywriter de landing pages de alta conversão,inline
+./agents/rodrigo.agent.md,Rodrigo Revisor,✅,Revisor de qualidade e conversão,inline
+./agents/beatriz.agent.md,Beatriz SEO,🔎,Especialista em SEO e visibilidade orgânica,inline
+./agents/lucas.agent.md,Lucas Dev,💻,Desenvolvedor front-end Next.js + TypeScript,subagent

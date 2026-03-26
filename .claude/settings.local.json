@@ -3,7 +3,11 @@
     "allow": [
       "Read(//c/Users/renat/.claude/plugins//**)",
       "Read(//c/Users/renat/.claude/plugins/**)",
-      "Read(//c/Users/renat/.claude/**)"
+      "Read(//c/Users/renat/.claude/**)",
+      "WebSearch",
+      "WebFetch(domain:skills.sh)",
+      "WebFetch(domain:landing.luby.co)",
+      "Bash(npx skills:*)"
     ]
   },
   "outputStyle": "default"

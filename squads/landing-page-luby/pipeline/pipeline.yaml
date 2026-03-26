@@ -1,0 +1,130 @@
+pipeline:
+  squad: landing-page-luby
+  version: "2.0.0"
+  description: >
+    Pipeline completo de landing page: briefing → estratégia → copy → revisão
+    → SEO → aprovação → build Next.js → deploy Hostinger.
+
+steps:
+
+  - id: step-01-briefing
+    name: Briefing da Landing Page
+    type: checkpoint
+    file: steps/step-01-briefing.md
+    outputFile: squads/landing-page-luby/output/briefing.md
+    next: step-02-cleidson-strategy
+
+  - id: step-02-cleidson-strategy
+    name: Estratégia de Conversão
+    type: agent
+    agent: cleidson
+    file: steps/step-02-cleidson-strategy.md
+    inputFile: squads/landing-page-luby/output/briefing.md
+    execution: subagent
+    model_tier: powerful
+    tasks:
+      - analyze-audience.md
+      - define-strategy.md
+    next: step-03-strategy-approval
+
+  - id: step-03-strategy-approval
+    name: Aprovação da Estratégia
+    type: checkpoint
+    file: steps/step-03-strategy-approval.md
+    outputFile: squads/landing-page-luby/output/strategy-approval.md
+    next: step-04-karime-structure
+
+  - id: step-04-karime-structure
+    name: Estrutura da Landing Page
+    type: agent
+    agent: karime
+    file: steps/step-04-karime-structure.md
+    inputFile: squads/landing-page-luby/output/strategy.md
+    execution: inline
+    model_tier: powerful
+    format: copywriting
+    tasks:
+      - create-structure.md
+    next: step-05-structure-approval
+
+  - id: step-05-structure-approval
+    name: Aprovação da Estrutura
+    type: checkpoint
+    file: steps/step-05-structure-approval.md
+    outputFile: squads/landing-page-luby/output/lp-structure.md
+    next: step-06-karime-copy
+
+  - id: step-06-karime-copy
+    name: Criação do Copy
+    type: agent
+    agent: karime
+    file: steps/step-06-karime-copy.md
+    inputFile: squads/landing-page-luby/output/lp-structure.md
+    execution: inline
+    model_tier: powerful
+    format: copywriting
+    tasks:
+      - write-copy.md
+      - optimize-copy.md
+    next: step-07-copy-approval
+
+  - id: step-07-copy-approval
+    name: Aprovação do Rascunho
+    type: checkpoint
+    file: steps/step-07-copy-approval.md
+    outputFile: squads/landing-page-luby/output/copy-approval.md
+    on_reject: step-06-karime-copy
+    next: step-08-rodrigo-review
+
+  - id: step-08-rodrigo-review
+    name: Revisão de Conversão
+    type: agent
+    agent: rodrigo
+    file: steps/step-08-rodrigo-review.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - score-conversion.md
+      - generate-feedback.md
+    on_reject: step-06-karime-copy
+    next: step-09-beatriz-seo
+
+  - id: step-09-beatriz-seo
+    name: Otimização SEO
+    type: agent
+    agent: beatriz
+    file: steps/step-09-beatriz-seo.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - seo-audit-copy.md
+      - seo-optimize.md
+    next: step-10-content-approval
+
+  - id: step-10-content-approval
+    name: Aprovação Final do Conteúdo
+    type: checkpoint
+    file: steps/step-10-content-approval.md
+    outputFile: squads/landing-page-luby/output/content-final-approval.md
+    next: step-11-lucas-build
+
+  - id: step-11-lucas-build
+    name: Build da Landing Page
+    type: agent
+    agent: lucas
+    file: steps/step-11-lucas-build.md
+    execution: subagent
+    model_tier: powerful
+    tasks:
+      - scaffold-project.md
+      - build-components.md
+      - integrate-copy-seo.md
+      - finalize-deploy.md
+    next: step-12-final-approval
+
+  - id: step-12-final-approval
+    name: Aprovação Final
+    type: checkpoint
+    file: steps/step-12-final-approval.md
+    outputFile: squads/landing-page-luby/output/final-delivery.md
+    terminal: true
