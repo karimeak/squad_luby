@@ -1,0 +1,99 @@
+pipeline:
+  squad: linkedin-luby
+  version: "1.0.0"
+  description: >
+    Pipeline de produção de conteúdo LinkedIn baseado em notícias tech B2B.
+    Fluxo: foco → pesquisa → seleção de notícia → ângulos → seleção de ângulo
+    → criação de conteúdo → aprovação → revisão → aprovação final.
+
+steps:
+
+  - id: step-01-research-focus
+    name: Foco da Pesquisa
+    type: checkpoint
+    file: steps/step-01-research-focus.md
+    outputFile: squads/linkedin-luby/output/research-focus.md
+    next: step-02-cleo-research
+
+  - id: step-02-cleo-research
+    name: Pesquisa de Tendências
+    type: agent
+    agent: cleo
+    file: steps/step-02-cleo-research.md
+    inputFile: squads/linkedin-luby/output/research-focus.md
+    execution: subagent
+    model_tier: powerful
+    tasks:
+      - find-news.md
+      - rank-stories.md
+    next: step-03-news-selection
+
+  - id: step-03-news-selection
+    name: Seleção de Notícia
+    type: checkpoint
+    file: steps/step-03-news-selection.md
+    outputFile: squads/linkedin-luby/output/selected-story.md
+    next: step-04-lucio-angles
+
+  - id: step-04-lucio-angles
+    name: Geração de Ângulos
+    type: agent
+    agent: lucio
+    file: steps/step-04-lucio-angles.md
+    inputFile: squads/linkedin-luby/output/selected-story.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - generate-angles.md
+    next: step-05-angle-selection
+
+  - id: step-05-angle-selection
+    name: Seleção de Ângulo
+    type: checkpoint
+    file: steps/step-05-angle-selection.md
+    outputFile: squads/linkedin-luby/output/selected-angle.md
+    next: step-06-lucio-create
+
+  - id: step-06-lucio-create
+    name: Criação de Conteúdo
+    type: agent
+    agent: lucio
+    file: steps/step-06-lucio-create.md
+    inputFile: squads/linkedin-luby/output/selected-angle.md
+    execution: inline
+    model_tier: powerful
+    format: linkedin-post
+    tasks:
+      - create-linkedin-post.md
+      - create-linkedin-carousel.md
+      - create-linkedin-article.md
+      - optimize-linkedin.md
+    next: step-07-content-approval
+
+  - id: step-07-content-approval
+    name: Aprovação de Conteúdo
+    type: checkpoint
+    file: steps/step-07-content-approval.md
+    outputFile: squads/linkedin-luby/output/content-approval.md
+    on_reject: step-06-lucio-create
+    next: step-08-renata-review
+
+  - id: step-08-renata-review
+    name: Revisão de Qualidade
+    type: agent
+    agent: renata
+    file: steps/step-08-renata-review.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - score-content.md
+      - generate-feedback.md
+    on_reject: step-06-lucio-create
+    next: step-09-final-approval
+
+  - id: step-09-final-approval
+    name: Aprovação Final
+    type: checkpoint
+    file: steps/step-09-final-approval.md
+    outputFile: squads/linkedin-luby/output/final-content.md
+    terminal: true

@@ -1,0 +1,4 @@
+path,displayName,icon,role,execution
+./agents/cleo.agent.md,Cleo Curadoria,🔍,Pesquisadora de tendências tech B2B,subagent
+./agents/lucio.agent.md,Lúcio LinkedIn,✍️,Criador de conteúdo LinkedIn,inline
+./agents/renata.agent.md,Renata Revisão,✅,Revisora de qualidade editorial,inline

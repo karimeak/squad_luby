@@ -1,0 +1,52 @@
+squad:
+  code: linkedin-luby
+  name: LinkedIn Luby
+  description: >
+    Produção de conteúdo LinkedIn para a Luby Software: pesquisa de tendências tech B2B,
+    geração de ângulos editoriais e criação de posts, carrosseis e artigos de alta qualidade.
+  version: "1.0.0"
+  created: "2026-03-26"
+  performance_mode: alta-performance
+  language: pt-BR
+
+skills:
+  - web_search
+  - web_fetch
+
+data:
+  - pipeline/data/research-brief.md
+  - pipeline/data/domain-framework.md
+  - pipeline/data/quality-criteria.md
+  - pipeline/data/output-examples.md
+  - pipeline/data/anti-patterns.md
+  - pipeline/data/tone-of-voice.md
+
+news_sources:
+  tier1:
+    - techcrunch.com
+    - venturebeat.com
+    - news.ycombinator.com
+    - producthunt.com
+  tier2:
+    - theverge.com
+    - arstechnica.com
+    - zdnet.com
+    - thenextweb.com
+
+formats:
+  - linkedin-post
+  - linkedin-carousel
+  - linkedin-article
+
+pipeline:
+  entry: pipeline/pipeline.yaml
+  steps:
+    - step-01-research-focus
+    - step-02-cleo-research
+    - step-03-news-selection
+    - step-04-lucio-angles
+    - step-05-angle-selection
+    - step-06-lucio-create
+    - step-07-content-approval
+    - step-08-renata-review
+    - step-09-final-approval
