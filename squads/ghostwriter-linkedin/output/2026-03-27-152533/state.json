@@ -1,0 +1,56 @@
+{
+  "squad": "ghostwriter-linkedin",
+  "status": "completed",
+  "step": { "current": 9, "total": 9, "label": "step-08-delivery" },
+  "agents": [
+    {
+      "id": "marco",
+      "name": "Marco Pesquisa",
+      "icon": "🔍",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 1, "row": 1 }
+    },
+    {
+      "id": "sofia",
+      "name": "Sofia Persona",
+      "icon": "🎭",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 2, "row": 1 }
+    },
+    {
+      "id": "bruno",
+      "name": "Bruno Ghostwriter",
+      "icon": "✍️",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 3, "row": 1 }
+    },
+    {
+      "id": "helena",
+      "name": "Helena Técnica",
+      "icon": "🔬",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 1, "row": 2 }
+    },
+    {
+      "id": "victor",
+      "name": "Victor Engajamento",
+      "icon": "📊",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 2, "row": 2 }
+    }
+  ],
+  "handoff": {
+    "from": "bruno",
+    "to": null,
+    "message": "Post final entregue: maise-ai-driven-dev-claude-code-EN-2026-03-27.md",
+    "completedAt": "2026-03-27T15:35:30.000Z"
+  },
+  "startedAt": "2026-03-27T15:25:33.000Z",
+  "updatedAt": "2026-03-27T15:35:30.000Z",
+  "completedAt": "2026-03-27T15:35:30.000Z"
+}

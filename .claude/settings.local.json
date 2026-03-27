@@ -8,7 +8,8 @@
       "WebFetch(domain:skills.sh)",
       "WebFetch(domain:landing.luby.co)",
       "Bash(npx skills:*)",
-      "Bash(npm --version)"
+      "Bash(npm --version)",
+      "WebFetch(domain:www.anthropic.com)"
     ]
   },
   "outputStyle": "default"
