@@ -1,0 +1,105 @@
+pipeline:
+  squad: ghostwriter-linkedin
+  version: "1.0.0"
+  description: >
+    Pipeline de ghostwriting para LinkedIn por colaborador da Luby.
+    Fluxo: flavor picker (Supabase) → pesquisa web → persona → escrita A/B
+    → seleção → revisão técnica → revisão de engajamento → aprovação → entrega.
+
+steps:
+
+  - id: step-00-flavor-picker
+    name: Seleção de Flavor
+    type: checkpoint
+    file: steps/step-00-flavor-picker.md
+    outputFile: squads/ghostwriter-linkedin/output/selected-flavor.md
+    supabase:
+      config: pipeline/data/supabase-config.json
+      table: related_searchs
+    next: step-01-research
+
+  - id: step-01-research
+    name: Pesquisa Web
+    type: agent
+    agent: marco
+    file: steps/step-01-research.md
+    inputFile: squads/ghostwriter-linkedin/output/selected-flavor.md
+    execution: subagent
+    model_tier: powerful
+    tasks:
+      - research-flavor.md
+    next: step-02-persona
+
+  - id: step-02-persona
+    name: Carga de Persona
+    type: agent
+    agent: sofia
+    file: steps/step-02-persona.md
+    inputFile: squads/ghostwriter-linkedin/pipeline/data/collaborators.json
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - load-persona.md
+    next: step-03-write
+
+  - id: step-03-write
+    name: Escrita de Variantes
+    type: agent
+    agent: bruno
+    file: steps/step-03-write.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - write-variants.md
+    next: step-04-variant-selection
+
+  - id: step-04-variant-selection
+    name: Seleção de Variante
+    type: checkpoint
+    file: steps/step-04-variant-selection.md
+    outputFile: squads/ghostwriter-linkedin/output/selected-variant.md
+    on_reject: step-03-write
+    next: step-05-tech-review
+
+  - id: step-05-tech-review
+    name: Revisão Técnica
+    type: agent
+    agent: helena
+    file: steps/step-05-tech-review.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - tech-review.md
+    on_reject: step-03-write
+    next: step-06-engagement-review
+
+  - id: step-06-engagement-review
+    name: Revisão de Engajamento
+    type: agent
+    agent: victor
+    file: steps/step-06-engagement-review.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - engagement-review.md
+    on_reject: step-03-write
+    next: step-07-final-approval
+
+  - id: step-07-final-approval
+    name: Aprovação Final
+    type: checkpoint
+    file: steps/step-07-final-approval.md
+    outputFile: squads/ghostwriter-linkedin/output/final-post.md
+    on_reject: step-03-write
+    next: step-08-delivery
+
+  - id: step-08-delivery
+    name: Entrega
+    type: agent
+    agent: bruno
+    file: steps/step-08-delivery.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - deliver-post.md
+    terminal: true
