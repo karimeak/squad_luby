@@ -14,7 +14,7 @@ Projeto completo scaffolado + componentes + integração dos tasks anteriores
 Verificar se o projeto compila sem erros TypeScript e sem warnings críticos:
 
 ```bash
-# Simular — Lucas deve verificar todos os arquivos criados:
+# Simular — Karime deve verificar todos os arquivos criados:
 # 1. Todos os imports corretos (sem paths quebrados)
 # 2. Todos os tipos TypeScript corretos (sem `any` implícito)
 # 3. Todas as props obrigatórias passadas nos componentes
@@ -122,7 +122,7 @@ NEXT_PUBLIC_BASE_URL=https://landing.luby.co
 ```markdown
 # Relatório de Build — [Nome da LP]
 **Data:** [data]
-**Desenvolvedor:** Lucas Dev
+**Desenvolvedora:** Karime Dev
 
 ## Estrutura de Arquivos Criada
 

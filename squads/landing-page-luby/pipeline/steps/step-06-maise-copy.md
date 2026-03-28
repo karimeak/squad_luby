@@ -1,6 +1,6 @@
 ---
 type: agent
-agent: karime
+agent: maise
 execution: inline
 model_tier: powerful
 format: copywriting
@@ -9,14 +9,14 @@ inputFile: squads/landing-page-luby/output/lp-structure.md
 
 # Criação do Copy
 
-A Karime Copy escreve o copy completo da landing page baseado na estrutura aprovada,
+A Maise Copy escreve o copy completo da landing page baseado na estrutura aprovada,
 em seguida aplica o Copy Stress Test e otimiza para conversão.
 
 **Input:** `squads/landing-page-luby/output/lp-structure.md` (wireframe + headline aprovada)
 **Tasks:** write-copy.md → optimize-copy.md
 **Output:** `squads/landing-page-luby/output/{run_id}/landing-page.md`
 
-**O que a Karime entrega:**
+**O que a Maise entrega:**
 - Copy completo de cada seção da landing page
 - Hero: headline aprovada + subtítulo + CTA + social proof strip
 - Problem statement com linguagem espelho

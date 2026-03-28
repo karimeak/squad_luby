@@ -9,7 +9,7 @@ on_reject: step-06-karime-copy
 # Revisão de Conversão
 
 O Rodrigo Revisor avalia o copy com scorecard estruturado contra critérios precisos
-de conversão. O veredicto determina se o copy vai para a Beatriz (SEO) ou volta para reescrita.
+de conversão. O veredicto determina se o copy vai para a Tomiko (SEO) ou volta para reescrita.
 
 **Input:** `squads/landing-page-luby/output/{run_id}/landing-page.md`
 **Tasks:** score-conversion.md → generate-feedback.md
@@ -41,4 +41,4 @@ Scorecard por critério (1-10):
 **On REJECT:** Retornar ao step-06-karime-copy com scorecard + feedback como contexto.
 Máximo 3 ciclos de revisão antes de escalação para o usuário.
 
-**On APPROVE / CONDITIONAL APPROVE:** Prosseguir para Beatriz SEO.
+**On APPROVE / CONDITIONAL APPROVE:** Prosseguir para Tomiko SEO.

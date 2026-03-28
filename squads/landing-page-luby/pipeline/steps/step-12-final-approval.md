@@ -6,7 +6,7 @@ terminal: true
 
 # Aprovação Final
 
-O Lucas concluiu o build da landing page. Revise o projeto entregue:
+A Karime concluiu o build da landing page. Revise o projeto entregue:
 - **Código:** `squads/landing-page-luby/output/{run_id}/lp-code/`
 - **README e instruções de deploy:** `squads/landing-page-luby/output/{run_id}/lp-code/README.md`
 - **Relatório de build:** incluso no README
@@ -34,6 +34,6 @@ Exemplos:
 - "O hero está com o texto errado na headline, usar: [texto correto]"
 - "Falta o link para [seção] na navbar"
 - "O componente de FAQ não está abrindo no mobile"
-- "O title tag não corresponde ao aprovado pela Beatriz"
+- "O title tag não corresponde ao aprovado pela Tomiko"
 
 Digite o problema (ou deixe em branco para aprovar e finalizar):

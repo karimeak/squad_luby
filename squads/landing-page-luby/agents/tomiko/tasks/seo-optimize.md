@@ -115,7 +115,7 @@ Relatório de auditoria do task anterior (seo-audit-copy.md)
    - `twitter:card`: summary_large_image
    - `twitter:title`, `twitter:description`, `twitter:image`
 
-7. **Escrever Brief de Performance para Lucas** (developer):
+7. **Escrever Brief de Performance para Karime** (developer):
    ```markdown
    ## Brief de Performance (Core Web Vitals)
 
@@ -204,7 +204,7 @@ Relatório de auditoria do task anterior (seo-audit-copy.md)
 
 ---
 
-## Brief de Performance para Lucas
+## Brief de Performance para Karime
 [brief completo conforme definido acima]
 ```
 
@@ -225,4 +225,4 @@ Relatório de auditoria do task anterior (seo-audit-copy.md)
 
 - Title tag fora da faixa de caracteres (< 45 ou > 65)
 - Schema JSON-LD ausente ou incompleto (faltando Organization)
-- Brief de performance para Lucas ausente
+- Brief de performance para Karime ausente

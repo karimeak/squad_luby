@@ -37,7 +37,7 @@ Comportamento:
 
 ### 2. HeroSection.tsx
 
-Elementos obrigatórios (integrar copy exato da Karime):
+Elementos obrigatórios (integrar copy exato da Maise):
 ```tsx
 type HeroProps = {
   headline: string;
@@ -242,7 +242,7 @@ Para cada componente, escrever o CSS como:
 
 ## Condições de Veto
 
-- Copy da Karime alterado (parafrasear, resumir, "melhorar")
+- Copy da Maise alterado (parafrasear, resumir, "melhorar")
 - Componente sem responsividade mobile
 - Formulário sem estados de loading/feedback
 - Instalação de package não-autorizado sem documentar motivo

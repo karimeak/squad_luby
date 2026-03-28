@@ -1,7 +1,7 @@
 # Task: Integração de Copy e SEO
 
 ## Descrição
-Integrar o copy aprovado e o pacote SEO da Beatriz nos componentes e no `<head>`.
+Integrar o copy aprovado e o pacote SEO da Tomiko nos componentes e no `<head>`.
 Verificar consistência e completude antes do build final.
 
 ## Input
@@ -114,13 +114,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-### 3. Atualizar lib/schema.ts com o schema exato da Beatriz
+### 3. Atualizar lib/schema.ts com o schema exato da Tomiko
 
 Converter o JSON-LD do `seo-package.md` para objeto TypeScript:
 
 ```typescript
 export const schemaOrg = [
-  // Service schema — exatamente como definido pela Beatriz
+  // Service schema — exatamente como definido pela Tomiko
   {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -197,7 +197,7 @@ SEO:
 - [ ] Open Graph description: EXATA
 - [ ] og:image spec (1200x630): placeholder criado
 - [ ] Twitter Card: todos os campos
-- [ ] Schema JSON-LD em lib/schema.ts: EXATO conforme Beatriz
+- [ ] Schema JSON-LD em lib/schema.ts: EXATO conforme Tomiko
 - [ ] Schema inserido como script estático no layout: SIM
 - [ ] GTM snippet: presente (com TODO para ID real)
 - [ ] Google Fonts preconnect: presente
@@ -209,7 +209,7 @@ SEO:
 - [ ] Checklist de integração completo (todos os itens verificados)
 - [ ] Nenhum texto do copy foi alterado durante integração
 - [ ] Schema JSON-LD em lib/schema.ts válido (JSON sintaticamente correto)
-- [ ] layout.tsx tem todos os elementos de SEO do pacote da Beatriz
+- [ ] layout.tsx tem todos os elementos de SEO do pacote da Tomiko
 - [ ] app/page.tsx monta todas as seções na ordem correta
 
 ## Condições de Veto

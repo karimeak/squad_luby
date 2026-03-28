@@ -20,6 +20,19 @@ data:
   - pipeline/data/conversion-principles.md
   - pipeline/data/quality-criteria.md
   - pipeline/data/tone-of-voice.md
+  - pipeline/data/language-config.md
+  - pipeline/data/footer-config.md
+  - pipeline/data/design-reference.md
+
+assets:
+  dir: assets/
+  files:
+    - favicon.ico
+    - logo-light.png
+    - logo-dark.png
+  clients:
+    br: br-clients/
+    us: us-clients/
 
 formats:
   - copywriting
@@ -30,12 +43,12 @@ pipeline:
     - step-01-briefing
     - step-02-cleidson-strategy
     - step-03-strategy-approval
-    - step-04-karime-structure
+    - step-04-maise-structure
     - step-05-structure-approval
-    - step-06-karime-copy
+    - step-06-maise-copy
     - step-07-copy-approval
     - step-08-rodrigo-review
-    - step-09-beatriz-seo
+    - step-09-tomiko-seo
     - step-10-content-approval
-    - step-11-lucas-build
+    - step-11-karime-build
     - step-12-final-approval
