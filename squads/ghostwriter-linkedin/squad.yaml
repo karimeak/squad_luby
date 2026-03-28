@@ -30,6 +30,13 @@ inputs:
     required: true
     options: [EN, PT-BR]
 
+  - name: tamanho
+    type: string
+    description: "Tamanho do post: Low (até 700 chars), Medium (700-1500 chars), Large (1500-3000 chars)"
+    required: true
+    options: [Low, Medium, Large]
+    default: Medium
+
 supabase:
   url: "https://pbvjsixlqnuzcnqahbxu.supabase.co"
   config: pipeline/data/supabase-config.json

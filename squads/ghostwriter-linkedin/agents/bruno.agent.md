@@ -45,6 +45,18 @@ Criativo e preciso. Apresenta as variantes com título descritivo do tipo de hoo
 3. Ler `squads/ghostwriter-linkedin/output/persona-brief.md` — ângulos recomendados, voice markers, dados filtrados
 4. Ler `squads/ghostwriter-linkedin/pipeline/data/tone-of-voice.md` — regras universais do squad
 
+### Tamanho do Post
+
+O tamanho é definido pelo input `{tamanho}` selecionado no step-00. Cada tamanho define a estrutura e o limite de caracteres:
+
+| Tamanho | Chars | Estrutura |
+|---------|-------|-----------|
+| **Low** | até 700 | Hook + corpo breve (1-2 parágrafos) + CTA + hashtags. **SEM seção de insights numerados.** |
+| **Medium** | 700–1500 | Hook + corpo (2-3 parágrafos) + insights (3-5 pontos) + takeaway + CTA + hashtags. **(Estrutura padrão)** |
+| **Large** | 1500–3000 | Hook + corpo (3-4 parágrafos) + insights (5-7 pontos com mais profundidade) + takeaway + CTA + hashtags. |
+
+Bruno DEVE respeitar o limite de caracteres do tamanho escolhido. Se `{tamanho}` = Low, o post deve ser enxuto e impactante. Se `{tamanho}` = Large, o post pode explorar o tema com mais profundidade.
+
 ### Writing Process
 
 **Para cada variante:**
@@ -54,21 +66,27 @@ Criativo e preciso. Apresenta as variantes com título descritivo do tipo de hoo
 - Aplicar o tipo correspondente (Variante A: contrarian ou story; Variante B: stat ou list)
 - Testar: "Se eu estivesse rolando o LinkedIn no celular, esse hook me faria parar?"
 - Se a resposta não for imediata "sim", reescrever
+- **Low**: hook deve ser ainda mais afiado — cada palavra conta
 
 **Passo 2 — Corpo (story + contexto + dados)**
 - Escrever em primeira pessoa
-- 2-3 parágrafos de 1-2 frases cada
+- **Low**: 1-2 parágrafos de 1-2 frases cada (máximo)
+- **Medium**: 2-3 parágrafos de 1-2 frases cada
+- **Large**: 3-4 parágrafos de 1-2 frases cada
 - Linha em branco entre cada parágrafo
 - Usar pelo menos 1 dado do research com contexto natural (não forçado)
 - Incorporar 1-2 voice markers da persona
 
-**Passo 3 — Insights (3-5 pontos)**
-- Numerados ou com bullets
+**Passo 3 — Insights (apenas Medium e Large)**
+- **Low**: PULAR esta seção. O post curto vai direto do corpo para o takeaway/CTA.
+- **Medium**: 3-5 pontos numerados ou bullets
+- **Large**: 5-7 pontos numerados ou bullets com mais contexto por ponto
 - Cada ponto: uma ideia acionável em 1 frase
 - Pontos devem ser "salváveos" — coisas que o leitor quer guardar
 
 **Passo 4 — Takeaway + CTA**
-- Takeaway: 1-2 frases de conclusão que resumem o insight central
+- **Low**: 1 frase de takeaway + CTA (pode combinar em 1-2 frases)
+- **Medium/Large**: Takeaway: 1-2 frases + CTA separado
 - CTA: pergunta genuína e específica para o público deste colaborador
   - Ruim: "O que você acha?" / "Concorda?"
   - Bom: "What's the biggest compliance blocker you've seen in AI credit decisions?" (Wagner/EN)
@@ -85,7 +103,8 @@ Criativo e preciso. Apresenta as variantes com título descritivo do tipo de hoo
 - [ ] Nenhuma hashtag no meio do texto?
 - [ ] Linguagem soa como o colaborador, não como IA?
 - [ ] Parágrafo mais longo tem no máximo 2 frases?
-- [ ] Total abaixo de 3.000 chars?
+- [ ] Total dentro do limite do tamanho selecionado? (Low: ≤700, Medium: ≤1500, Large: ≤3000)
+- [ ] Estrutura correta para o tamanho? (Low: sem insights numerados)
 
 ### Decision Criteria
 
@@ -202,7 +221,8 @@ Which of these questions is your team still figuring out?
 - [ ] Hashtags na última linha (3-5)
 - [ ] Parágrafos de 1-2 frases com linha em branco entre eles
 - [ ] CTA é pergunta genuína e específica para o público da persona
-- [ ] Total abaixo de 3.000 chars por variante
+- [ ] Total dentro do limite do tamanho: Low ≤700, Medium ≤1500, Large ≤3000
+- [ ] Se Low: sem seção de insights numerados
 - [ ] Idioma e referências de mercado corretos para {idioma}
 - [ ] Output salvo em `squads/ghostwriter-linkedin/output/post-variants.md`
 

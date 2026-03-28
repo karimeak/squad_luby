@@ -41,6 +41,7 @@ Analítico e construtivo. Entrega scoring table completa com justificativa linha
 2. Ler `squads/ghostwriter-linkedin/pipeline/data/quality-criteria.md` (seção Revisão de Engajamento)
 3. Ler `squads/ghostwriter-linkedin/pipeline/data/collaborators.json` — voice markers do colaborador `{perfil}`
 4. Ler `squads/ghostwriter-linkedin/pipeline/data/tone-of-voice.md`
+5. Ler `squads/ghostwriter-linkedin/output/selected-flavor.md` — verificar `{tamanho}` selecionado para calibrar a avaliação
 
 ### Review Process
 
@@ -79,7 +80,14 @@ Analítico e construtivo. Entrega scoring table completa com justificativa linha
    - Há algo "salvável" — que o leitor quer guardar?
    - Passa no anti-commodity check: esse post poderia ser escrito por qualquer concorrente?
 
-8. **Calcular média e determinar veredicto** (regras em quality-criteria.md)
+8. **Avaliar Adequação ao Tamanho (1-10)**:
+   - O post respeita o limite de caracteres do `{tamanho}` selecionado? (Low ≤700, Medium ≤1500, Large ≤3000)
+   - Se Low: a seção de insights numerados foi omitida? O post é enxuto e impactante?
+   - Se Large: a profundidade adicional justifica o tamanho? Ou há padding desnecessário?
+   - Se Medium: a estrutura padrão está completa?
+   - Contar chars e reportar: "Total: X chars / Limite {tamanho}: Y chars"
+
+9. **Calcular média e determinar veredicto** (regras em quality-criteria.md)
 
 9. **Se CONDITIONAL APPROVE**: Aplicar os ajustes diretamente e entregar post melhorado
 
