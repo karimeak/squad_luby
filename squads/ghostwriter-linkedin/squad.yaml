@@ -54,6 +54,7 @@ data:
   - pipeline/data/collaborators.json
   - pipeline/data/tone-of-voice.md
   - pipeline/data/quality-criteria.md
+  - pipeline/data/sources.json
 
 formats:
   - linkedin-post

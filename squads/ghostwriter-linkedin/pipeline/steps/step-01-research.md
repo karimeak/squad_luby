@@ -14,42 +14,20 @@ O Marco Pesquisa vai varrer a web em busca de conteúdo recente e relevante sobr
 
 ## Fontes prioritárias de pesquisa
 
-Varrer PRIMEIRO as fontes abaixo antes de buscas genéricas. Priorizar as da lista correspondente ao idioma solicitado.
+Varrer PRIMEIRO as fontes do arquivo **`pipeline/data/sources.json`** antes de buscas genéricas.
 
-**PT-BR (mercado brasileiro):**
-- tecnoblog.net
-- canaltech.com.br
-- tecmundo.com.br
-- startupi.com.br
-- macmagazine.com.br
-
-**EN (mercado US/global):**
-- news.ycombinator.com
-- techcrunch.com
-- theverge.com
-- arstechnica.com
-- wired.com
-- engadget.com
-- gizmodo.com
-- cnet.com
-- tomshardware.com
-- thenextweb.com
-- venturebeat.com
-- zdnet.com
-- 9to5mac.com
-- techradar.com
-
-**Comunidades e plataformas (ambos idiomas):**
-- lobste.rs
-- producthunt.com
-- reddit.com
-- slashdot.org
+1. Ler `squads/ghostwriter-linkedin/pipeline/data/sources.json`
+2. Selecionar a lista de sites correspondente ao `{idioma}`:
+   - Se `{idioma}` = PT-BR → usar `sources.pt-br.sites`
+   - Se `{idioma}` = EN → usar `sources.en.sites`
+3. Sempre incluir também `sources.communities.sites` (aplicável a ambos os idiomas)
+4. Para cada site da lista, buscar `"{flavor}" site:{site}`
 
 ## Sequência de tarefas
 
 **research-flavor.md:**
 
-1. Para cada fonte prioritária do idioma `{idioma}`, buscar `"{flavor}" site:{fonte}`
+1. Ler `squads/ghostwriter-linkedin/pipeline/data/sources.json` e varrer as fontes do idioma `{idioma}` + communities
 2. Complementar com buscas genéricas:
    - `"{flavor}" latest 2025 2026 enterprise`
    - `"{flavor}" statistics data research report`

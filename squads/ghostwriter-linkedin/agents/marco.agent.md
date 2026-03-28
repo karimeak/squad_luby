@@ -41,7 +41,8 @@ Estruturado e objetivo. Entrega o research-brief em formato consistente com seç
 
 1. **Identificar mercado**: Se idioma = EN, varrer fontes US/global. Se PT-BR, varrer fontes brasileiras.
 
-2. **Varrer fontes prioritárias** (por idioma — lista completa no step-01-research.md):
+2. **Varrer fontes prioritárias** (ler `squads/ghostwriter-linkedin/pipeline/data/sources.json`):
+   - Selecionar a lista do idioma (`sources.pt-br.sites` ou `sources.en.sites`) + `sources.communities.sites`
    - Para cada fonte prioritária: buscar `"{flavor}" site:{fonte}`
    - Registrar quantas fontes prioritárias produziram resultado
 

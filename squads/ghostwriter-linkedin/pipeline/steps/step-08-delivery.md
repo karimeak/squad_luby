@@ -19,7 +19,23 @@ O Bruno Ghostwriter faz a entrega final do post em markdown pronto para publica�
 3. Gerar o nome do arquivo: `{perfil}-{flavor-slug}-{idioma}-{YYYY-MM-DD}.md`
    - flavor-slug: flavor em kebab-case, máx 5 palavras
 4. Salvar o post final no arquivo nomeado acima em `squads/ghostwriter-linkedin/output/`
-5. Apresentar o post ao usuário com:
+5. **Atualizar o índice de histórico** `squads/ghostwriter-linkedin/output/post-history.json`:
+   - Ler o arquivo existente
+   - Adicionar nova entrada ao array `posts` com os campos:
+     ```json
+     {
+       "id": "{run-id}",
+       "date": "{YYYY-MM-DD}",
+       "perfil": "{perfil}",
+       "flavor": "{flavor}",
+       "idioma": "{idioma}",
+       "tamanho": "{tamanho}",
+       "file": "{caminho relativo do arquivo final}",
+       "status": "completed"
+     }
+     ```
+   - Salvar o arquivo atualizado
+6. Apresentar o post ao usuário com:
    - O texto completo pronto para copiar e colar no LinkedIn
    - Contagem de caracteres
    - Lembrete: "Publique entre 7-9h ou 12-13h no horário do seu público. Engaje nos comentários nos primeiros 30-60 min após publicar."
