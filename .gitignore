@@ -1,7 +1,9 @@
 node_modules/
+.next/
 .env
 *.log
 squads/*/output/
+!squads/landing-page-luby/output/
 _opensquad/_browser_profile/
 .claude/settings.local.json
 docs/
