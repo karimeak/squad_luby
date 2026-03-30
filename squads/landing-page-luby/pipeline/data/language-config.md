@@ -55,6 +55,17 @@ Todos os campos são obrigatórios (`required`) e exibem **asterisco (*)** no la
 
 **Design:** cada label deve exibir `*` em cor de destaque (ex: `var(--color-primary)` ou vermelho) indicando campo obrigatório. Validação client-side com `required` em todos os inputs.
 
+### Campo Telefone — Prefixo com Bandeira
+
+O campo de telefone deve exibir um **seletor de prefixo internacional** com a bandeira do país (emoji Unicode) à esquerda do input numérico.
+
+- **Default PT-BR:** prefixo `+55` com bandeira 🇧🇷 (Brasil)
+- **Default EN-US:** prefixo `+1` com bandeira 🇺🇸 (Estados Unidos)
+- O seletor deve incluir os prefixos mais comuns (BR, US, UK, DE, FR, PT, AR, MX, etc.)
+- Cada opção do dropdown exibe: `{bandeira} {prefixo}` (ex: `🇧🇷 +55`)
+- O payload final concatena prefixo + número sem espaços (ex: `"+5511999999999"`)
+- Layout: dropdown de prefixo (largura fixa ~90px) + input tel (flex: 1) lado a lado
+
 ### Campos ocultos (preenchidos automaticamente)
 
 | Campo | Valor | Descrição |

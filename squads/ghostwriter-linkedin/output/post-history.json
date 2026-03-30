@@ -10,6 +10,16 @@
       "tamanho": "Medium",
       "file": "2026-03-27-152533/maise-ai-driven-dev-claude-code-EN-2026-03-27.md",
       "status": "completed"
+    },
+    {
+      "id": "2026-03-30-095549",
+      "date": "2026-03-30",
+      "perfil": "Gardin",
+      "flavor": "Claude Code",
+      "idioma": "EN",
+      "tamanho": "Medium",
+      "file": "2026-03-30-095549/v1/gardin-claude-code-5-layer-stack-EN-2026-03-30.md",
+      "status": "completed"
     }
   ]
 }

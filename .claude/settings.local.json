@@ -9,7 +9,22 @@
       "WebFetch(domain:landing.luby.co)",
       "Bash(npx skills:*)",
       "Bash(npm --version)",
-      "WebFetch(domain:www.anthropic.com)"
+      "WebFetch(domain:www.anthropic.com)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(mv karime.agent.md maise.agent.md)",
+      "Bash(mv karime/ maise/)",
+      "Bash(mv beatriz.agent.md tomiko.agent.md)",
+      "Bash(mv beatriz/ tomiko/)",
+      "Bash(mv lucas.agent.md karime.agent.md)",
+      "Bash(sed -i 's/^agent: karime$/agent: maise/' step-04-karime-structure.md step-06-karime-copy.md)",
+      "Bash(sed -i 's/^agent: beatriz$/agent: tomiko/' step-09-beatriz-seo.md)",
+      "Bash(mv step-04-karime-structure.md step-04-maise-structure.md)",
+      "Bash(mv step-06-karime-copy.md step-06-maise-copy.md)",
+      "Bash(mv step-09-beatriz-seo.md step-09-tomiko-seo.md)",
+      "Bash(mv step-11-lucas-build.md step-11-karime-build.md)",
+      "Bash(ls *.md)",
+      "Bash(grep -E '^v[0-9]+$')"
     ]
   },
   "outputStyle": "default"
