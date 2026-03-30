@@ -4,3 +4,4 @@ path,displayName,icon,role,execution
 ./agents/bruno.agent.md,Bruno Ghostwriter,✍️,Ghostwriter LinkedIn especializado em B2B tech,inline
 ./agents/helena.agent.md,Helena Técnica,🔬,Revisora de precisão técnica e factual,inline
 ./agents/victor.agent.md,Victor Engajamento,📊,Revisor de qualidade e engajamento LinkedIn,inline
+./agents/diana.agent.md,Diana Arte,🎨,Diretora de arte e geradora de prompts visuais via Gemini,inline

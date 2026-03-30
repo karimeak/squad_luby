@@ -4,7 +4,8 @@ pipeline:
   description: >
     Pipeline de ghostwriting para LinkedIn por colaborador da Luby.
     Fluxo: flavor picker (Supabase) → pesquisa web → persona → escrita A/B
-    → seleção → revisão técnica → revisão de engajamento → aprovação → entrega.
+    → seleção → revisão técnica → revisão de engajamento → aprovação
+    → oferta de imagem (opcional, via Gemini) → entrega.
 
 steps:
 
@@ -91,13 +92,32 @@ steps:
     file: steps/step-07-final-approval.md
     outputFile: squads/ghostwriter-linkedin/output/final-post.md
     on_reject: step-03-write
-    next: step-08-delivery
+    next: step-08-image-offer
 
-  - id: step-08-delivery
+  - id: step-08-image-offer
+    name: Oferta de Imagem
+    type: checkpoint
+    file: steps/step-08-image-offer.md
+    outputFile: squads/ghostwriter-linkedin/output/image-decision.md
+    on_reject: step-10-delivery
+    next: step-09-image-generation
+
+  - id: step-09-image-generation
+    name: Geração de Imagem
+    type: agent
+    agent: diana
+    file: steps/step-09-image-generation.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - generate-image.md
+    next: step-10-delivery
+
+  - id: step-10-delivery
     name: Entrega
     type: agent
     agent: bruno
-    file: steps/step-08-delivery.md
+    file: steps/step-10-delivery.md
     execution: inline
     model_tier: powerful
     tasks:

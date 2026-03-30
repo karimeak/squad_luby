@@ -5,7 +5,7 @@ squad:
     Gera posts de texto para LinkedIn prontos para publicação, personalizados
     por colaborador da Luby. Input: flavor (tema) + perfil (colaborador) + idioma (EN ou PT-BR).
     Fluxo: pesquisa web → carga de persona → escrita de variantes A/B → seleção →
-    revisão técnica → revisão de engajamento → aprovação → entrega em markdown.
+    revisão técnica → revisão de engajamento → aprovação → geração de imagem (opcional, via Gemini) → entrega em markdown.
   version: "1.0.0"
   created: "2026-03-27"
   performance_mode: alta-performance
@@ -30,10 +30,17 @@ inputs:
     required: true
     options: [EN, PT-BR]
 
+  - name: formato
+    type: string
+    description: "Formato do conteúdo LinkedIn: Text Post, Carousel, Poll ou Article"
+    required: true
+    options: [Text, Carousel, Poll, Article]
+    default: Text
+
   - name: tamanho
     type: string
-    description: "Tamanho do post: Low (até 700 chars), Medium (700-1500 chars), Large (1500-3000 chars)"
-    required: true
+    description: "Tamanho do post: Low (até 700 chars), Medium (700-1500 chars), Large (1500-3000 chars). Aplicável a Text e Poll."
+    required: false
     options: [Low, Medium, Large]
     default: Medium
 
@@ -48,6 +55,7 @@ skills:
   - web_search
   - web_fetch
   - linkedin-content        # .agents/skills/linkedin-content/SKILL.md
+  - playwright              # browser automation for Gemini image generation
 
 data:
   - pipeline/data/supabase-config.json
@@ -70,4 +78,6 @@ pipeline:
     - step-05-tech-review
     - step-06-engagement-review
     - step-07-final-approval
-    - step-08-delivery
+    - step-08-image-offer
+    - step-09-image-generation
+    - step-10-delivery
