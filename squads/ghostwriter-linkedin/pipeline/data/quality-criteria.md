@@ -14,6 +14,7 @@ version: "1.0.0"
 | Ausência de alucinações | Nenhuma empresa inventada, nenhum dado fabricado, nenhum nome de pessoa fictício | Crítico |
 | Coerência de expertise | O conteúdo está dentro do domínio de conhecimento real do colaborador | Alto |
 | Claims verificáveis | Afirmações significativas podem ser rastreadas a fontes ou experiência pessoal declarada | Médio |
+| Atribuição de fonte | Toda estatística ou dado retirado de pesquisa tem a fonte citada no texto entre parênteses — ex: "23% de aumento (Gartner, 2024)" | Alto |
 | Ausência de promessas falsas | Nenhuma garantia de resultado que a Luby não pode comprovar | Crítico |
 
 **Hard reject triggers (revisão técnica):**

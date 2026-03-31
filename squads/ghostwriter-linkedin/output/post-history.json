@@ -20,6 +20,16 @@
       "tamanho": "Medium",
       "file": "2026-03-30-095549/v1/gardin-claude-code-5-layer-stack-EN-2026-03-30.md",
       "status": "completed"
+    },
+    {
+      "id": "2026-03-30-194519",
+      "date": "2026-03-30",
+      "perfil": "Marine",
+      "flavor": "Desenvolvimento orientado por IA",
+      "idioma": "EN",
+      "tamanho": "Medium",
+      "file": "2026-03-30-194519/v1/marine-ai-driven-dev-mirror-EN-2026-03-30.md",
+      "status": "completed"
     }
   ]
 }

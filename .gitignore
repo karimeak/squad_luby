@@ -1,6 +1,5 @@
 node_modules/
 .next/
-.env
 *.log
 squads/*/output/
 !squads/landing-page-luby/output/
@@ -9,3 +8,4 @@ _opensquad/_browser_profile/
 docs/
 .superpowers/
 temp/
+config.bat

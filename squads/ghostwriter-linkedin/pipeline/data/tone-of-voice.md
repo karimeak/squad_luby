@@ -14,6 +14,7 @@ version: "1.0.0"
 - Experiências específicas: "Fiz isso em 2023 quando a empresa tinha 50 pessoas" > "As empresas frequentemente enfrentam"
 - Sem jargão corporativo: proibido "alavancar", "sinergia", "ecossistema", "paradigma", "disruptivo"
 - Sem afirmações sem dados: toda claim significativa precisa de fonte ou contexto real
+- Atribuição de fonte obrigatória: quando um dado ou statistic de pesquisa é usado, a fonte deve aparecer no texto imediatamente após, entre parênteses — ex: "67% das empresas ainda não adotaram IA (McKinsey, 2025)"
 - Sem superlativo vazio: "incrível", "revolucionário", "game-changer" sem prova
 
 ### Estrutura de post LinkedIn (obrigatória)
