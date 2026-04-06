@@ -1,0 +1,41 @@
+squad:
+  code: blog-luby
+  name: Blog Writer — Luby
+  description: >
+    Gera posts em HTML para os blogs da Luby a partir de artigos pendentes no Supabase.
+    Input: artigo pendente (selecionado pelo usuário via tabela 'articles') + publisher associado
+    (idioma, flavor, channel, nome da persona).
+    Fluxo: seleção de artigo → pesquisa web → escrita HTML → revisão técnica + SEO
+    → aprovação → publicação no Supabase (UPDATE articles SET content, sources, generated).
+  version: "1.2.0"
+  created: "2026-04-06"
+  performance_mode: alta-performance
+  language: multilingual
+
+supabase:
+  url: "https://pbvjsixlqnuzcnqahbxu.supabase.co"
+  config: pipeline/data/supabase-config.json
+  tables:
+    - articles      # artigos pendentes (content IS NULL)
+    - publishers    # perfil do publisher (channel, name, language, flavor, url)
+
+skills:
+  - web_search
+  - web_fetch
+  - playwright       # browser automation para busca de imagens no Unsplash
+
+data:
+  - pipeline/data/supabase-config.json
+  - pipeline/data/sources.json
+
+pipeline:
+  entry: pipeline/pipeline.yaml
+  steps:
+    - step-00-topic-scout
+    - step-01-article-picker
+    - step-02-research
+    - step-03-write
+    - step-04-tech-review
+    - step-05-image-search
+    - step-06-final-approval
+    - step-07-publish

@@ -1,0 +1,55 @@
+{
+  "squad": "landing-page-luby",
+  "status": "running",
+  "step": { "current": 12, "total": 12, "label": "step-12-final-approval" },
+  "agents": [
+    {
+      "id": "cleidson",
+      "name": "Cleidson Estrategista",
+      "icon": "🧠",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 1, "row": 1 }
+    },
+    {
+      "id": "karime",
+      "name": "Karime Copy",
+      "icon": "✍️",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 2, "row": 1 }
+    },
+    {
+      "id": "rodrigo",
+      "name": "Rodrigo Revisor",
+      "icon": "✅",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 3, "row": 1 }
+    },
+    {
+      "id": "beatriz",
+      "name": "Beatriz SEO",
+      "icon": "🔎",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 1, "row": 2 }
+    },
+    {
+      "id": "lucas",
+      "name": "Lucas Dev",
+      "icon": "💻",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 2, "row": 2 }
+    }
+  ],
+  "handoff": {
+    "from": "lucas",
+    "to": "checkpoint",
+    "message": "Build concluído. 24 arquivos Next.js 15 + TypeScript criados em lp-code/v1/. Aguardando aprovação final.",
+    "completedAt": "2026-03-26T20:30:00.000Z"
+  },
+  "startedAt": "2026-03-26T19:35:20.000Z",
+  "updatedAt": "2026-03-26T20:06:00.000Z"
+}

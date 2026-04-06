@@ -1,0 +1,39 @@
+squad:
+  code: blog-luby-auto
+  name: Blog Writer Auto — Luby
+  description: >
+    Pipeline totalmente automático de geração de blog posts.
+    Sem checkpoints — roda do início ao fim e envia email de aprovação via Mailgun.
+    O clique no email (Aprovar / Nova Versão) dispara a Supabase Edge Function.
+    Ideal para execução agendada (cron diário/semanal).
+  version: "1.0.0"
+  created: "2026-04-06"
+  performance_mode: alta-performance
+  language: multilingual
+
+supabase:
+  url: "https://pbvjsixlqnuzcnqahbxu.supabase.co"
+  config: pipeline/data/supabase-config.json
+  tables:
+    - articles
+    - publishers
+
+skills:
+  - web_search
+  - web_fetch
+  - playwright
+
+data:
+  - pipeline/data/supabase-config.json
+  - pipeline/data/smtp-config.json
+  - pipeline/data/sources.json
+
+pipeline:
+  entry: pipeline/pipeline.yaml
+  steps:
+    - step-00-scout-and-pick
+    - step-01-research
+    - step-02-write
+    - step-03-tech-review
+    - step-04-image-search
+    - step-05-send-email

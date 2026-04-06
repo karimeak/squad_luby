@@ -1,0 +1,7 @@
+path,displayName,icon,role,execution
+./agents/tobias.agent.md,Tobias Scout,🔎,Scout de temas em alta e tendências tech,inline
+./agents/mateus.agent.md,Mateus Pesquisa,🔍,Pesquisador web de conteúdo tech,subagent
+./agents/lara.agent.md,Lara Redatora,✍️,Redatora de blog tech em HTML,inline
+./agents/pedro.agent.md,Pedro Revisor,🔬,Revisor técnico e SEO,inline
+./agents/iris.agent.md,Iris Imagens,📸,Curadora de imagens via Unsplash,inline
+./agents/bia.agent.md,Bia Publicadora,📤,Publicadora Supabase,inline

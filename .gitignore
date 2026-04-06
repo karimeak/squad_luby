@@ -1,5 +1,6 @@
 node_modules/
 .next/
+.env
 *.log
 squads/*/output/
 !squads/landing-page-luby/output/
@@ -9,3 +10,6 @@ docs/
 .superpowers/
 temp/
 config.bat
+
+# Local SMTP secrets (copy from smtp-config.example.json)
+squads/blog-luby-auto/pipeline/data/smtp-config.json

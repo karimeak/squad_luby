@@ -1,0 +1,96 @@
+pipeline:
+  squad: blog-luby
+  version: "1.2.0"
+  description: >
+    Pipeline de geração de blog posts em HTML para a Luby.
+    Fluxo: scout de temas em alta → seleção de artigo (Supabase) → pesquisa web
+    → redação HTML → revisão técnica + SEO → busca de imagem (Unsplash)
+    → aprovação do pacote completo (post + imagem) → publicação no Supabase.
+
+steps:
+
+  - id: step-00-topic-scout
+    name: Scout de Temas em Alta
+    type: agent
+    agent: tobias
+    file: steps/step-00-topic-scout.md
+    outputFile: squads/blog-luby/output/scout-brief.md
+    execution: inline
+    model_tier: powerful
+    next: step-01-article-picker
+
+  - id: step-01-article-picker
+    name: Seleção de Artigo
+    type: checkpoint
+    file: steps/step-01-article-picker.md
+    outputFile: squads/blog-luby/output/article-brief.md
+    supabase:
+      config: pipeline/data/supabase-config.json
+      tables:
+        - articles
+        - publishers
+    next: step-02-research
+
+  - id: step-02-research
+    name: Pesquisa Web
+    type: agent
+    agent: mateus
+    file: steps/step-02-research.md
+    inputFile: squads/blog-luby/output/article-brief.md
+    outputFile: squads/blog-luby/output/research-brief.md
+    execution: subagent
+    model_tier: powerful
+    next: step-03-write
+
+  - id: step-03-write
+    name: Redação HTML
+    type: agent
+    agent: lara
+    file: steps/step-03-write.md
+    inputFile: squads/blog-luby/output/research-brief.md
+    outputFile: squads/blog-luby/output/post-draft.md
+    execution: inline
+    model_tier: powerful
+    next: step-04-tech-review
+
+  - id: step-04-tech-review
+    name: Revisão Técnica e SEO
+    type: agent
+    agent: pedro
+    file: steps/step-04-tech-review.md
+    inputFile: squads/blog-luby/output/post-draft.md
+    outputFile: squads/blog-luby/output/tech-review.md
+    execution: inline
+    model_tier: powerful
+    on_reject: step-03-write
+    next: step-05-image-search
+
+  - id: step-05-image-search
+    name: Busca de Imagem — Unsplash
+    type: agent
+    agent: iris
+    file: steps/step-05-image-search.md
+    inputFile: squads/blog-luby/output/post-draft.md
+    outputFile: squads/blog-luby/output/post-with-image.md
+    execution: inline
+    model_tier: powerful
+    on_reject: step-05-image-search
+    next: step-06-final-approval
+
+  - id: step-06-final-approval
+    name: Aprovação Final
+    type: checkpoint
+    file: steps/step-06-final-approval.md
+    outputFile: squads/blog-luby/output/final-post.md
+    on_reject: step-03-write
+    next: step-07-publish
+
+  - id: step-07-publish
+    name: Publicação Supabase
+    type: agent
+    agent: bia
+    file: steps/step-07-publish.md
+    inputFile: squads/blog-luby/output/final-post.md
+    execution: inline
+    model_tier: powerful
+    terminal: true
