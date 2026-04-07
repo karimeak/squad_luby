@@ -30,12 +30,11 @@ Ada é precisa e direta. O email de aprovação é o único contato humano de to
 6. Ler `squads/blog-luby-auto/pipeline/data/supabase-config.json` — carregar `supabase_url` e `supabase_anon_key`
 7. Verificar se `squads/blog-luby-auto/output/post-draft.md` contém `REVIEW_WARNING` — guardar como `has_review_warning: true/false`
 
-### Fase 2 — Extrair preview do post (texto limpo)
+### Fase 2 — Preparar conteúdo do email
 
 A partir do HTML de `post-with-image.md`:
-- Remover todas as tags HTML (regex: `/<[^>]+>/g`)
-- Pegar os primeiros 400 caracteres do resultado
-- Usar como `post_preview` no payload do email
+- Guardar o HTML completo como `post_html` — será renderizado inteiro no email de aprovação
+- Extrair preview: remover tags HTML (regex: `/<[^>]+>/g`), pegar os primeiros 400 chars → `post_preview` (fallback caso `post_html` falhe)
 
 ### Fase 3 — Salvar draft no Supabase
 
@@ -89,6 +88,7 @@ curl -s -X POST "${EDGE_FUNCTION_URL}" \
     "photographer_name": "{photographer_name}",
     "photographer_profile_url": "{photographer_profile_url}",
     "post_preview": "{primeiros 400 chars sem HTML}",
+    "post_html": "{HTML completo de post-with-image.md}",
     "approval_token": "{approval_token}",
     "has_review_warning": {true|false}
   }'

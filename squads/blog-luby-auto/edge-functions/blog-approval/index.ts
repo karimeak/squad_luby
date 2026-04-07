@@ -15,6 +15,7 @@ import nodemailer from 'npm:nodemailer'
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!
 const SERVICE_KEY  = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
 
+
 // ─── Router ───────────────────────────────────────────────────────────────
 
 Deno.serve(async (req: Request) => {
@@ -45,6 +46,7 @@ interface EmailPayload {
   photographer_name:        string
   photographer_profile_url: string
   post_preview:             string
+  post_html:                string  // full HTML of the post for inline review
   approval_token:           string
   has_review_warning:       boolean
 }
@@ -180,8 +182,8 @@ function buildEmailHtml(p: EmailPayload, approveUrl: string, rejectUrl: string):
   </div>
 
   <div style="padding:28px 32px;border-bottom:1px solid #e2e8f0;">
-    <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#94a3b8;margin-bottom:12px;">Preview do conteúdo</div>
-    <div style="font-size:15px;line-height:1.7;color:#374151;">${p.post_preview}…</div>
+    <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#94a3b8;margin-bottom:12px;">Conteúdo completo</div>
+    <div style="font-size:15px;line-height:1.7;color:#374151;">${p.post_html || p.post_preview}</div>
   </div>
 
   <div style="padding:32px;text-align:center;">
