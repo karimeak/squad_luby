@@ -1,0 +1,56 @@
+{
+  "squad": "ghostwriter-linkedin",
+  "status": "completed",
+  "step": { "current": 9, "total": 9, "label": "step-08-delivery" },
+  "agents": [
+    {
+      "id": "marco",
+      "name": "Marco Pesquisa",
+      "icon": "🔍",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 1, "row": 1 }
+    },
+    {
+      "id": "sofia",
+      "name": "Sofia Persona",
+      "icon": "🎭",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 2, "row": 1 }
+    },
+    {
+      "id": "bruno",
+      "name": "Bruno Ghostwriter",
+      "icon": "✍️",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 3, "row": 1 }
+    },
+    {
+      "id": "helena",
+      "name": "Helena Técnica",
+      "icon": "🔬",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 1, "row": 2 }
+    },
+    {
+      "id": "victor",
+      "name": "Victor Engajamento",
+      "icon": "📊",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 2, "row": 2 }
+    }
+  ],
+  "handoff": {
+    "from": "bruno",
+    "to": "delivery",
+    "message": "Post final entregue: gardin-claude-code-5-layer-stack-EN-2026-03-30.md",
+    "completedAt": "2026-03-30T10:14:00-03:00"
+  },
+  "startedAt": "2026-03-30T09:55:49-03:00",
+  "updatedAt": "2026-03-30T10:14:00-03:00",
+  "completedAt": "2026-03-30T10:14:00-03:00"
+}

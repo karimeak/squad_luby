@@ -1,0 +1,7 @@
+# Image Prompt — Diana Arte
+
+**Para gerar manualmente:** Cole este prompt no Google Gemini (https://gemini.google.com/app) precedido de "Generate an image:"
+
+---
+
+Generate an image: A clean, modern editorial photograph in 4:5 vertical format. Close-up of a large glass surface or monitor screen in a contemporary tech office environment. The screen displays clean AI code generation interface elements with soft glowing lines of code. The glass reflection reveals a complex web of organizational pipeline flows, review queues, and bottleneck indicators layered behind the clean surface. Dual visual layer showing the polished promise of AI coding tools on one side and the hidden organizational reality reflected back. Soft ambient lighting from the screen casting a cool blue glow. Warm amber accent tones creating subtle contrast between the two visual layers. Institutional, premium, editorial feel. Shallow depth of field with sharp focus on the glass surface and reflection. Clean modern workspace barely visible in the background. Professional photography style, high resolution, natural lighting blend, realistic textures, sophisticated color grading. No text-heavy layout, no long paragraphs, no fake readable typography, no watermark, no extra logos, no distorted anatomy, no deformed hands, no visual clutter, no childish style, no cartoon, no illustration look, no CGI look, no cheap futuristic effects, no random elements unrelated to the topic, no generic AI aesthetics.

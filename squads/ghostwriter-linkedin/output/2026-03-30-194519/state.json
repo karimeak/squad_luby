@@ -1,0 +1,64 @@
+{
+  "squad": "ghostwriter-linkedin",
+  "status": "completed",
+  "step": { "current": 11, "total": 11, "label": "step-10-delivery" },
+  "agents": [
+    {
+      "id": "marco",
+      "name": "Marco Pesquisa",
+      "icon": "🔍",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 1, "row": 1 }
+    },
+    {
+      "id": "sofia",
+      "name": "Sofia Persona",
+      "icon": "🎭",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 2, "row": 1 }
+    },
+    {
+      "id": "bruno",
+      "name": "Bruno Ghostwriter",
+      "icon": "✍️",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 3, "row": 1 }
+    },
+    {
+      "id": "helena",
+      "name": "Helena Técnica",
+      "icon": "🔬",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 1, "row": 2 }
+    },
+    {
+      "id": "victor",
+      "name": "Victor Engajamento",
+      "icon": "📊",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 2, "row": 2 }
+    },
+    {
+      "id": "diana",
+      "name": "Diana Arte",
+      "icon": "🎨",
+      "status": "done",
+      "deliverTo": null,
+      "desk": { "col": 3, "row": 2 }
+    }
+  ],
+  "handoff": {
+    "from": "diana",
+    "to": "bruno",
+    "message": "Prompt de imagem salvo para geracao manual. Bruno faz a entrega final.",
+    "completedAt": "2026-03-30T23:00:00Z"
+  },
+  "startedAt": "2026-03-30T22:45:19Z",
+  "updatedAt": "2026-03-30T23:31:27Z",
+  "completedAt": "2026-03-30T23:31:27Z"
+}

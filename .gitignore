@@ -1,18 +1,15 @@
 node_modules/
+**/node_modules/
 .next/
+**/.next/
 .env
 *.log
-squads/*/output/
-!squads/landing-page-luby/output/
 _opensquad/_browser_profile/
 .claude/settings.local.json
 docs/
 .superpowers/
 temp/
 config.bat
-
-# Local SMTP secrets (copy from smtp-config.example.json)
-squads/blog-luby-auto/pipeline/data/smtp-config.json
 
 # Local IDE / agent tool state (do not commit)
 .claude/worktrees/
