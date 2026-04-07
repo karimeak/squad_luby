@@ -13,3 +13,9 @@ config.bat
 
 # Local SMTP secrets (copy from smtp-config.example.json)
 squads/blog-luby-auto/pipeline/data/smtp-config.json
+
+# Local IDE / agent tool state (do not commit)
+.claude/worktrees/
+.codebuddy/
+.continue/
+gemini-state.png
