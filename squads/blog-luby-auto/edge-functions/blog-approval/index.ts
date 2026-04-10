@@ -83,7 +83,7 @@ async function handleSendEmail(req: Request): Promise<Response> {
     const info = await transporter.sendMail({
       from:    `"${p.from_name || 'Blog Luby'}" <${p.zoho_user}>`,
       to:      p.approval_email,
-      subject: `[Blog Luby] Novo post para aprovação: ${p.title}`,
+      subject: `[Blog Luby] Novo post para aprovacao: ${p.title}`,
       html:    buildEmailHtml(p, approveUrl, rejectUrl),
     })
 
@@ -101,7 +101,7 @@ async function handleApproval(url: URL): Promise<Response> {
   const action = url.searchParams.get('action')
 
   if (!token || !['approve', 'reject'].includes(action ?? '')) {
-    return page(400, '❌', 'Link inválido ou expirado.', '')
+    return page(400, '&#x274C;', 'Link inv&#xe1;lido ou expirado.', '')
   }
 
   const supabase = createClient(SUPABASE_URL, SERVICE_KEY)
@@ -113,20 +113,20 @@ async function handleApproval(url: URL): Promise<Response> {
     .single()
 
   if (error || !article) {
-    return page(404, '❌', 'Artigo não encontrado.', 'O token pode ter expirado ou o artigo foi removido.')
+    return page(404, '&#x274C;', 'Artigo n&#xe3;o encontrado.', 'O token pode ter expirado ou o artigo foi removido.')
   }
 
   if (action === 'approve') {
-    if (article.approved) {
-      return page(200, '✅', 'Já aprovado!', `"${article.title}" já foi publicado anteriormente.`)
+    if (!article.approved) {
+      await supabase
+        .from('articles')
+        .update({ approved: true, generated: new Date().toISOString().split('T')[0] })
+        .eq('approval_token', token)
     }
-    await supabase
-      .from('articles')
-      .update({ approved: true, generated: new Date().toISOString().split('T')[0] })
-      .eq('approval_token', token)
-
-    return page(200, '✅', 'Artigo aprovado!',
-      `<strong>"${article.title}"</strong> foi publicado com sucesso.`)
+    return new Response('O post sera publicado, aguarde!', {
+      status: 200,
+      headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+    })
   }
 
   // action === 'reject'
@@ -135,9 +135,10 @@ async function handleApproval(url: URL): Promise<Response> {
     .update({ content: null, approved: false })
     .eq('approval_token', token)
 
-  return page(200, '🔄', 'Nova versão solicitada',
-    `<strong>"${article.title}"</strong> voltou para a fila de geração.<br>
-     <span style="color:#888;font-size:13px">O pipeline irá regenerar no próximo ciclo.</span>`)
+  return new Response('Nova versao solicitada. O pipeline ira regenerar no proximo ciclo.', {
+    status: 200,
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  })
 }
 
 // ─── Email HTML ───────────────────────────────────────────────────────────
@@ -145,7 +146,7 @@ async function handleApproval(url: URL): Promise<Response> {
 function buildEmailHtml(p: EmailPayload, approveUrl: string, rejectUrl: string): string {
   const warning = p.has_review_warning
     ? `<div style="background:#fff8e1;border-left:4px solid #f59e0b;padding:12px 20px;font-size:13px;color:#92400e;">
-         ⚠️ <strong>Atenção:</strong> a revisão técnica identificou problemas. Verifique antes de aprovar.
+         &#x26A0;&#xFE0F; <strong>Aten&#xe7;&#xe3;o:</strong> a revis&#xe3;o t&#xe9;cnica identificou problemas. Verifique antes de aprovar.
        </div>`
     : ''
 
@@ -163,15 +164,15 @@ function buildEmailHtml(p: EmailPayload, approveUrl: string, rejectUrl: string):
 <div style="max-width:640px;margin:0 auto;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);">
 
   <div style="background:#0f172a;padding:24px 32px;">
-    <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;">Blog Luby — Novo post para aprovação</div>
+    <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;">Blog Luby &#x2014; Novo post para aprova&#xe7;&#xe3;o</div>
     <div style="font-size:22px;font-weight:700;color:#f8fafc;line-height:1.3;">${p.title}</div>
   </div>
 
   <div style="padding:12px 32px;background:#f8fafc;border-bottom:1px solid #e2e8f0;font-size:12px;color:#64748b;">
-    📡 <strong style="color:#334155">${p.publisher_channel}</strong> &nbsp;·&nbsp;
-    👤 <strong style="color:#334155">${p.publisher_name}</strong> &nbsp;·&nbsp;
+    <strong style="color:#334155">${p.publisher_channel}</strong> &nbsp;·&nbsp;
+    <strong style="color:#334155">${p.publisher_name}</strong> &nbsp;·&nbsp;
     ${langBadge} &nbsp;·&nbsp;
-    📝 ~${p.word_count} palavras
+    ~${p.word_count} palavras
   </div>
 
   ${warning}
@@ -182,14 +183,14 @@ function buildEmailHtml(p: EmailPayload, approveUrl: string, rejectUrl: string):
   </div>
 
   <div style="padding:28px 32px;border-bottom:1px solid #e2e8f0;">
-    <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#94a3b8;margin-bottom:12px;">Conteúdo completo</div>
+    <div style="font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#94a3b8;margin-bottom:12px;">Conte&#xfa;do completo</div>
     <div style="font-size:15px;line-height:1.7;color:#374151;">${p.post_html || p.post_preview}</div>
   </div>
 
   <div style="padding:32px;text-align:center;">
-    <div style="font-size:14px;color:#64748b;margin-bottom:24px;">O conteúdo foi gerado automaticamente. Escolha uma ação:</div>
-    <a href="${approveUrl}" style="display:inline-block;padding:14px 32px;background:#16a34a;color:#fff;border-radius:7px;font-size:15px;font-weight:600;text-decoration:none;margin:0 8px;">✅ Aprovar e Publicar</a>
-    <a href="${rejectUrl}" style="display:inline-block;padding:14px 32px;background:#f1f5f9;color:#334155;border:1px solid #cbd5e1;border-radius:7px;font-size:15px;font-weight:600;text-decoration:none;margin:0 8px;">🔄 Gerar Nova Versão</a>
+    <div style="font-size:14px;color:#64748b;margin-bottom:24px;">O conte&#xfa;do foi gerado automaticamente. Escolha uma a&#xe7;&#xe3;o:</div>
+    <a href="${approveUrl}" style="display:inline-block;padding:14px 32px;background:#16a34a;color:#fff;border-radius:7px;font-size:15px;font-weight:600;text-decoration:none;margin:0 8px;">Aprovar e Publicar</a>
+    <a href="${rejectUrl}" style="display:inline-block;padding:14px 32px;background:#f1f5f9;color:#334155;border:1px solid #cbd5e1;border-radius:7px;font-size:15px;font-weight:600;text-decoration:none;margin:0 8px;">Gerar Nova Vers&#xe3;o</a>
   </div>
 
   <div style="padding:16px 32px;background:#f8fafc;border-top:1px solid #e2e8f0;text-align:center;font-size:11px;color:#94a3b8;">
@@ -211,7 +212,7 @@ function json(status: number, body: object): Response {
 }
 
 function page(status: number, icon: string, title: string, body: string): Response {
-  return new Response(`<!DOCTYPE html>
+  const html = `<!DOCTYPE html>
 <html lang="pt-BR">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Blog Luby</title>
 <style>
@@ -230,5 +231,9 @@ function page(status: number, icon: string, title: string, body: string): Respon
     <p>${body}</p>
   </div>
 </body>
-</html>`, { status, headers: { 'Content-Type': 'text/html; charset=utf-8' } })
+</html>`
+  return new Response(html, {
+    status,
+    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+  })
 }
