@@ -1,0 +1,7 @@
+path,displayName,icon,role,execution
+./agents/tobias.agent.md,Tobias Scout,🔎,Scout automático — 2 temas em alta + seleção de artigo,inline
+./agents/mateus.agent.md,Mateus Pesquisa,🔍,Pesquisador web de conteúdo tech,subagent
+./agents/lara.agent.md,Lara Redatora,✍️,Redatora de blog tech em HTML,inline
+./agents/pedro.agent.md,Pedro Revisor,🔬,Revisor técnico e SEO (auto-retry 2x),inline
+./agents/iris.agent.md,Iris Imagens,📸,Curadora de imagens via Unsplash,inline
+./agents/ada.agent.md,Ada Email,📧,Envia email de aprovação via Mailgun,inline

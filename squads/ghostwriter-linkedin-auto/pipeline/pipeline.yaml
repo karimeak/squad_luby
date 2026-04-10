@@ -1,0 +1,121 @@
+pipeline:
+  squad: ghostwriter-linkedin-auto
+  version: "1.0.0"
+  description: >
+    Pipeline automatizado de ghostwriting LinkedIn para todos os colaboradores da Luby.
+    Sem checkpoints — totalmente autonomo. Gera posts EN + PT-BR, review com auto-fix,
+    analisa perfil LinkedIn, salva no Supabase. Email enviado via n8n separado.
+
+steps:
+
+  - id: step-00-load-collaborators
+    name: Carga de Colaboradores
+    type: agent
+    agent: lucas
+    file: steps/step-00-load-collaborators.md
+    execution: inline
+    model_tier: powerful
+    supabase:
+      config: pipeline/data/supabase-config.json
+      tables: [collaborators, related_searchs]
+    tasks:
+      - load-collaborators.md
+    next: step-01-research
+
+  # --- LOOP: para cada collaborator na queue ---
+
+  - id: step-01-research
+    name: Pesquisa Web
+    type: agent
+    agent: marco
+    file: steps/step-01-research.md
+    execution: subagent
+    model_tier: powerful
+    tasks:
+      - research-flavor.md
+    next: step-02-persona
+
+  - id: step-02-persona
+    name: Carga de Persona
+    type: agent
+    agent: sofia
+    file: steps/step-02-persona.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - load-persona.md
+    next: step-03-write
+
+  - id: step-03-write
+    name: Escrita do Post EN
+    type: agent
+    agent: bruno
+    file: steps/step-03-write.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - write-post.md
+    next: step-04-translate
+
+  - id: step-04-translate
+    name: Traducao EN > PT-BR
+    type: agent
+    agent: bruno
+    file: steps/step-04-translate.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - translate-post.md
+    next: step-05-review
+
+  - id: step-05-review
+    name: Revisao Combinada (Tech + Engajamento)
+    type: agent
+    agent: helena
+    file: steps/step-05-review.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - combined-review.md
+    max_retries: 2
+    next: step-06-linkedin-optimizer
+
+  - id: step-06-linkedin-optimizer
+    name: LinkedIn Profile Optimizer
+    type: agent
+    agent: lucas
+    file: steps/step-06-linkedin-optimizer.md
+    execution: inline
+    model_tier: powerful
+    skills:
+      - linkedin-profile-optimizer
+    tasks:
+      - optimize-linkedin.md
+    next: step-07-save-to-supabase
+
+  - id: step-07-save-to-supabase
+    name: Salvar no Supabase
+    type: agent
+    agent: lucas
+    file: steps/step-07-save-to-supabase.md
+    execution: inline
+    model_tier: powerful
+    supabase:
+      config: pipeline/data/supabase-config.json
+      tables: [bloggers, collaborators]
+    tasks:
+      - save-to-supabase.md
+    next: step-08-delivery
+
+  # --- FIM DO LOOP ---
+
+  - id: step-08-delivery
+    name: Entrega Final
+    type: agent
+    agent: bruno
+    file: steps/step-08-delivery.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - deliver-all.md
+    terminal: true

@@ -1,0 +1,74 @@
+pipeline:
+  squad: blog-luby-auto
+  version: "1.0.0"
+  description: >
+    Pipeline totalmente automático. Sem checkpoints.
+    Scout + auto-pick → pesquisa → redação → revisão (auto-retry 2x)
+    → imagem Unsplash → email Mailgun com links de aprovação.
+    Aprovação via Supabase Edge Function (approve-article).
+
+steps:
+
+  - id: step-00-scout-and-pick
+    name: Scout + Seleção Automática
+    type: agent
+    agent: tobias
+    file: steps/step-00-scout-and-pick.md
+    outputFile: squads/blog-luby-auto/output/article-brief.md
+    execution: inline
+    model_tier: powerful
+    next: step-01-research
+
+  - id: step-01-research
+    name: Pesquisa Web
+    type: agent
+    agent: mateus
+    file: steps/step-01-research.md
+    inputFile: squads/blog-luby-auto/output/article-brief.md
+    outputFile: squads/blog-luby-auto/output/research-brief.md
+    execution: subagent
+    model_tier: powerful
+    next: step-02-write
+
+  - id: step-02-write
+    name: Redação HTML
+    type: agent
+    agent: lara
+    file: steps/step-02-write.md
+    inputFile: squads/blog-luby-auto/output/research-brief.md
+    outputFile: squads/blog-luby-auto/output/post-draft.md
+    execution: inline
+    model_tier: powerful
+    next: step-03-tech-review
+
+  - id: step-03-tech-review
+    name: Revisão Técnica e SEO (auto-retry 2x)
+    type: agent
+    agent: pedro
+    file: steps/step-03-tech-review.md
+    inputFile: squads/blog-luby-auto/output/post-draft.md
+    outputFile: squads/blog-luby-auto/output/tech-review.md
+    execution: inline
+    model_tier: powerful
+    next: step-04-image-search
+
+  - id: step-04-image-search
+    name: Busca de Imagem — Unsplash
+    type: agent
+    agent: iris
+    file: steps/step-04-image-search.md
+    inputFile: squads/blog-luby-auto/output/post-draft.md
+    outputFile: squads/blog-luby-auto/output/post-with-image.md
+    execution: inline
+    model_tier: powerful
+    next: step-05-send-email
+
+  - id: step-05-send-email
+    name: Email de Aprovação — Mailgun
+    type: agent
+    agent: ada
+    file: steps/step-05-send-email.md
+    inputFile: squads/blog-luby-auto/output/post-with-image.md
+    execution: inline
+    model_tier: powerful
+    terminal: true

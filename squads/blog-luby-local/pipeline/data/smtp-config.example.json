@@ -1,0 +1,7 @@
+{
+  "zoho_user": "noreply@example.com",
+  "zoho_pass": "YOUR_SMTP_APP_PASSWORD",
+  "from_name": "Blog Luby",
+  "approval_email": "reviewer1@example.com, reviewer2@example.com",
+  "edge_function_url": "https://YOUR_PROJECT_REF.supabase.co/functions/v1/blog-approval"
+}

@@ -1,0 +1,31 @@
+{
+  "tech": {
+    "pt-br": [
+      "tecnoblog.net",
+      "canaltech.com.br",
+      "tecmundo.com.br",
+      "startupi.com.br",
+      "macmagazine.com.br"
+    ],
+    "en": [
+      "news.ycombinator.com",
+      "techcrunch.com",
+      "theverge.com",
+      "arstechnica.com",
+      "wired.com",
+      "engadget.com",
+      "gizmodo.com",
+      "cnet.com",
+      "tomshardware.com",
+      "thenextweb.com",
+      "slashdot.org",
+      "venturebeat.com",
+      "zdnet.com",
+      "9to5mac.com",
+      "techradar.com",
+      "lobste.rs",
+      "producthunt.com",
+      "reddit.com"
+    ]
+  }
+}

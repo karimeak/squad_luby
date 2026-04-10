@@ -1,0 +1,141 @@
+{
+  "name": "Blog Luby — Send Approval Emails",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "articles",
+        "returnAll": true,
+        "filters": {
+          "conditions": [
+            { "keyName": "approved", "condition": "eq", "keyValue": "false" },
+            { "keyName": "generated", "condition": "is", "keyValue": "null" },
+            { "keyName": "content", "condition": "neq", "keyValue": "null" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "query-drafts",
+      "name": "Query Drafts",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [240, 0],
+      "credentials": {
+        "supabaseApi": {
+          "id": "REPLACE",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "publishers",
+        "returnAll": true,
+        "options": {}
+      },
+      "id": "query-publishers",
+      "name": "Query Publishers",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [240, 200],
+      "credentials": {
+        "supabaseApi": {
+          "id": "REPLACE",
+          "name": "Supabase"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const articles = $('Query Drafts').all();\nconst publishers = $('Query Publishers').all();\nconst pubMap = {};\nfor (const p of publishers) pubMap[p.json.id] = p.json;\n\nconst edgeFnUrl = 'https://pbvjsixlqnuzcnqahbxu.supabase.co/functions/v1/blog-approval';\nconst results = [];\n\nfor (const item of articles) {\n  const a = item.json;\n  const pub = pubMap[a.publisher] || {};\n  const content = a.content || '';\n  const sources = a.sources || '';\n  const imageMatch = sources.match(/Imagem: (.+?) \\| Foto por (.+?) \\((.+?)\\) via Unsplash/);\n  const plainText = content.replace(/<[^>]+>/g, '');\n  const wordCount = (plainText.match(/\\S+/g) || []).length;\n  const hasWarning = content.includes('REVIEW_WARNING');\n  const langBadge = pub.language === 'english'\n    ? '<span style=\"background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;\">EN</span>'\n    : '<span style=\"background:#dcfce7;color:#166534;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;\">PT-BR</span>';\n  const warning = hasWarning\n    ? '<div style=\"background:#fff8e1;border-left:4px solid #f59e0b;padding:12px 20px;font-size:13px;color:#92400e;\">⚠️ <strong>Atenção:</strong> a revisão técnica identificou problemas. Verifique antes de aprovar.</div>'\n    : '';\n  const approveUrl = `${edgeFnUrl}?token=${a.approval_token}&action=approve`;\n  const rejectUrl = `${edgeFnUrl}?token=${a.approval_token}&action=reject`;\n  const imageUrl = imageMatch ? imageMatch[1] : '';\n  const photographer = imageMatch ? imageMatch[2] : '';\n  const photographerUrl = imageMatch ? imageMatch[3] : '';\n  const imageBlock = imageUrl\n    ? `<img src=\"${imageUrl}\" alt=\"${a.title}\" style=\"width:100%;max-height:300px;object-fit:cover;display:block;\" /><div style=\"padding:6px 32px;background:#f8fafc;border-bottom:1px solid #e2e8f0;font-size:11px;color:#94a3b8;\">Foto por <a href=\"${photographerUrl}\" style=\"color:#94a3b8;\">${photographer}</a> via Unsplash</div>`\n    : '';\n\n  const emailHtml = `<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"></head><body style=\"margin:0;padding:20px;background:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;\"><div style=\"max-width:640px;margin:0 auto;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.08);\"><div style=\"background:#0f172a;padding:24px 32px;\"><div style=\"font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#94a3b8;margin-bottom:6px;\">Blog Luby — Novo post para aprovação</div><div style=\"font-size:22px;font-weight:700;color:#f8fafc;line-height:1.3;\">${a.title}</div></div><div style=\"padding:12px 32px;background:#f8fafc;border-bottom:1px solid #e2e8f0;font-size:12px;color:#64748b;\">📡 <strong style=\"color:#334155\">${pub.channel || ''}</strong> · 👤 <strong style=\"color:#334155\">${pub.name || ''}</strong> · ${langBadge} · 📝 ~${wordCount} palavras</div>${warning}${imageBlock}<div style=\"padding:28px 32px;border-bottom:1px solid #e2e8f0;\"><div style=\"font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#94a3b8;margin-bottom:12px;\">Conteúdo completo</div><div style=\"font-size:15px;line-height:1.7;color:#374151;\">${content}</div></div><div style=\"padding:32px;text-align:center;\"><div style=\"font-size:14px;color:#64748b;margin-bottom:24px;\">O conteúdo foi gerado automaticamente. Escolha uma ação:</div><a href=\"${approveUrl}\" style=\"display:inline-block;padding:14px 32px;background:#16a34a;color:#fff;border-radius:7px;font-size:15px;font-weight:600;text-decoration:none;margin:0 8px;\">✅ Aprovar e Publicar</a> <a href=\"${rejectUrl}\" style=\"display:inline-block;padding:14px 32px;background:#f1f5f9;color:#334155;border:1px solid #cbd5e1;border-radius:7px;font-size:15px;font-weight:600;text-decoration:none;margin:0 8px;\">🔄 Gerar Nova Versão</a></div><div style=\"padding:16px 32px;background:#f8fafc;border-top:1px solid #e2e8f0;text-align:center;font-size:11px;color:#94a3b8;\">Blog Luby Auto · ${new Date().toISOString().split('T')[0]} · Artigo #${a.id}</div></div></body></html>`;\n\n  results.push({\n    json: {\n      article_id: a.id,\n      title: a.title,\n      channel: pub.channel || 'unknown',\n      emailSubject: `[Blog Luby] Novo post para aprovação: ${a.title}`,\n      emailHtml: emailHtml\n    }\n  });\n}\nreturn results;"
+      },
+      "id": "build-email",
+      "name": "Build Email",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [520, 0]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@nearsmarter.com",
+        "toEmail": "karime.kumagai@luby.com.br, rodrigo@luby.com.br, estela.teodoro@luby.com.br",
+        "subject": "={{ $json.emailSubject }}",
+        "emailFormat": "html",
+        "html": "={{ $json.emailHtml }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "send-email",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [780, 0],
+      "credentials": {
+        "smtp": {
+          "id": "REPLACE",
+          "name": "Zoho SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "articles",
+        "matchingColumns": ["id"],
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('Build Email').item.json.article_id }}",
+            "generated": "={{ new Date().toISOString().split('T')[0] }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "mark-sent",
+      "name": "Mark as Sent",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1020, 0],
+      "credentials": {
+        "supabaseApi": {
+          "id": "REPLACE",
+          "name": "Supabase"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [[
+        { "node": "Query Drafts", "type": "main", "index": 0 },
+        { "node": "Query Publishers", "type": "main", "index": 0 }
+      ]]
+    },
+    "Query Drafts": {
+      "main": [[{ "node": "Build Email", "type": "main", "index": 0 }]]
+    },
+    "Query Publishers": {
+      "main": [[{ "node": "Build Email", "type": "main", "index": 0 }]]
+    },
+    "Build Email": {
+      "main": [[{ "node": "Send Email", "type": "main", "index": 0 }]]
+    },
+    "Send Email": {
+      "main": [[{ "node": "Mark as Sent", "type": "main", "index": 0 }]]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

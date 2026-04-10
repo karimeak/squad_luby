@@ -1,0 +1,6 @@
+path,displayName,icon,role,execution
+./agents/marco.agent.md,Marco Pesquisa,🔍,Pesquisador web de conteudo B2B tech,subagent
+./agents/sofia.agent.md,Sofia Persona,🎭,Carregadora de persona e POV do colaborador,inline
+./agents/bruno.agent.md,Bruno Ghostwriter,✍️,Ghostwriter LinkedIn + tradutor EN>PT-BR,inline
+./agents/helena.agent.md,Helena Revisora,🔬,Revisora combinada tech + engajamento com auto-fix,inline
+./agents/lucas.agent.md,Lucas Integrador,🔗,LinkedIn optimizer + integracao Supabase,inline

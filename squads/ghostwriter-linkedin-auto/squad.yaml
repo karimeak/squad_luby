@@ -1,0 +1,63 @@
+squad:
+  code: ghostwriter-linkedin-auto
+  name: Ghostwriter LinkedIn Auto — Luby
+  description: >
+    Versao automatizada do ghostwriter LinkedIn. Gera posts de texto Medium
+    para todos os colaboradores sem interacao humana. Fluxo: fetch collaborators
+    do Supabase > match flavor por topicos > pesquisa web > persona > escrita EN
+    > traducao PT-BR > review combinada (tech+engajamento) com auto-fix
+    > LinkedIn profile optimizer > salva em bloggers (Supabase) > entrega.
+    Email enviado via n8n (workflow separado).
+  version: "1.0.0"
+  created: "2026-04-07"
+  performance_mode: alta-performance
+  language: multilingual
+
+inputs:
+  - name: collaborators
+    type: array
+    description: "Lista de colaboradores carregados do Supabase (tabela collaborators)"
+    required: true
+    source: supabase
+
+  - name: flavors
+    type: array
+    description: "Flavors selecionados automaticamente por match de topics com related_searchs"
+    required: true
+    source: supabase
+
+supabase:
+  url: "https://pbvjsixlqnuzcnqahbxu.supabase.co"
+  config: pipeline/data/supabase-config.json
+  tables:
+    - collaborators
+    - bloggers
+    - related_searchs
+
+skills:
+  - web_search
+  - web_fetch
+  - linkedin-content
+  - linkedin-profile-optimizer
+
+data:
+  - pipeline/data/supabase-config.json
+  - pipeline/data/tone-of-voice.md
+  - pipeline/data/quality-criteria.md
+  - pipeline/data/sources.json
+
+formats:
+  - linkedin-post
+
+pipeline:
+  entry: pipeline/pipeline.yaml
+  steps:
+    - step-00-load-collaborators
+    - step-01-research
+    - step-02-persona
+    - step-03-write
+    - step-04-translate
+    - step-05-review
+    - step-06-linkedin-optimizer
+    - step-07-save-to-supabase
+    - step-08-delivery
