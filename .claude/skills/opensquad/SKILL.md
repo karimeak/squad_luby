@@ -65,6 +65,8 @@ Parse user input and route to the appropriate action:
 | `/opensquad install <name>` | Install a skill from the catalog |
 | `/opensquad uninstall <name>` | Remove an installed skill |
 | `/opensquad delete <name>` | Confirm and delete squad directory |
+| `/opensquad dashboard` | Launch the Virtual Office dashboard |
+| `/opensquad dashboard <name>` | Launch dashboard pre-selecting a specific squad |
 | `/opensquad edit-company` | Re-run company profile setup |
 | `/opensquad show-company` | Display company.md contents |
 | `/opensquad settings` | Show/edit preferences.md |
@@ -100,6 +102,10 @@ COMPANY
   /opensquad edit-company     Edit your company profile
   /opensquad show-company     Show current company profile
 
+DASHBOARD
+  /opensquad dashboard        Open the Virtual Office (2D agent monitor)
+  /opensquad dashboard <name> Open dashboard pre-selecting a squad
+
 SETTINGS
   /opensquad settings         Change language, preferences
   /opensquad reset            Reset Opensquad configuration
@@ -113,6 +119,90 @@ EXAMPLES
 
 💡 Tip: You can also just describe what you need in plain language!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+## Dashboard (Escritório Virtual)
+
+When the user types `/opensquad dashboard` or `/opensquad dashboard <name>`:
+
+The dashboard is a single React + PixiJS app located at `dashboard/` in the project root.
+It monitors **all squads** automatically — no per-squad copy is needed.
+The Vite dev server exposes a WebSocket that watches `squads/*/state.json` in real time.
+
+### Step 1 — Check dependencies
+
+Check if `dashboard/node_modules` exists:
+
+```bash
+ls dashboard/node_modules 2>/dev/null | head -1
+```
+
+- If **missing**: inform the user that dependencies need to be installed first:
+  ```
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  📦 Instalando dependências do dashboard...
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ```
+  Then run: `cd dashboard && npm install`
+  Wait for completion before proceeding.
+
+- If **present**: skip this step.
+
+### Step 2 — Generate idle state.json (optional)
+
+If the user specified a squad name (`/opensquad dashboard <name>`):
+- Check if `squads/{name}/state.json` exists
+- If **missing**, generate an idle state.json so the squad appears active in the UI:
+  1. Read `squads/{name}/squad-party.csv` — for each agent row (skip header), extract `id`, `name` (displayName), `icon`
+  2. Assign desk positions: `col = (index % 3) + 1`, `row = floor(index / 3) + 1`
+  3. Read `squads/{name}/squad.yaml` — count `pipeline.steps` for `total`
+  4. Write `squads/{name}/state.json`:
+     ```json
+     {
+       "squad": "{squad code}",
+       "status": "idle",
+       "step": { "current": 0, "total": {total steps}, "label": "" },
+       "agents": [
+         { "id": "...", "name": "...", "icon": "...", "status": "idle", "deliverTo": null, "desk": { "col": 1, "row": 1 } }
+       ],
+       "handoff": null,
+       "startedAt": null,
+       "updatedAt": "{ISO timestamp now}"
+     }
+     ```
+
+If no squad name was given, skip this step — the dashboard discovers all squads via `squad.yaml` scanning.
+
+### Step 3 — Instruct the user to start the dev server
+
+Display the following instructions:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🖥️  Escritório Virtual — Opensquad
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Abra um terminal e rode:
+
+   cd dashboard
+   npm run dev
+
+2. Acesse no browser:
+
+   http://localhost:5173
+
+3. Selecione o squad no painel esquerdo.
+   Os agentes aparecem em tempo real conforme
+   o pipeline executa. ✨
+
+💡 Dica: rode /opensquad run <nome> em outra
+   aba do IDE enquanto o dashboard está aberto!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+If the user specified a squad name, add:
+```
+Squad pré-selecionado: {name}
 ```
 
 ## Loading Agents
