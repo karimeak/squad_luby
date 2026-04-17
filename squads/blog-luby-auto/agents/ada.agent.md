@@ -54,20 +54,18 @@ Extrair: `wp_url` (campo `url`), `email`, `password`, `wp_user_id`, `name`, `lan
 
 Se publisher não encontrado → logar erro e encerrar.
 
-### Fase 3 — Buscar category_id no WordPress
+### Fase 3 — Selecionar category_id
 
-Buscar o ID da categoria no blog destino. Tentar inferir a categoria a partir do `article.instructions` ou do `publisher.channel`. Buscar via WP API:
+Ler `squads/blog-luby-auto/pipeline/data/wp-categories.json` e selecionar o bloco correspondente ao `publisher.channel`.
 
-```bash
-ENCODED_AUTH=$(echo -n "${WP_EMAIL}:${WP_PASSWORD}" | base64)
+A partir do tema do artigo (`title` + `instructions`), escolher a categoria mais relevante da lista. Regras de seleção por channel:
 
-curl -s "${WP_URL}/wp-json/wp/v2/categories?search=${CATEGORY_NAME}&per_page=5" \
-  -H "Authorization: Basic ${ENCODED_AUTH}"
-```
+- **blog_luby** (PT-BR): preferir nessa ordem → "Inteligência Artificial" (4), "Desenvolvimento" (5), "Tech News" (3), "Insight" (1), "Cloud" (8), "Estratégia & Negócio" (9)
+- **blog_nearsmarter** (EN): preferir nessa ordem → "Software Development" (19), "ai tools" (24), "autonomous ai" (30), "Technology" (9), "Business Solutions" (17), "Development" (20)
+- **blog_luby_us** (EN): preferir nessa ordem → "Artificial Intelligence" (6), "Development" (7), "Tech News" (13), "Cloud" (8), "Strategy & Business" (9)
 
-- Se encontrar: usar o `id` da primeira categoria retornada
-- Se não encontrar ou sem categoria definida: usar `[]` (WordPress vai usar "Uncategorized")
-- **Importante**: Os espaços no Application Password devem ser mantidos ao calcular o base64.
+Se nenhuma categoria for claramente aplicável: usar `[]` (WordPress usa "Uncategorized").
+Não chamar a WP API para buscar categorias — o arquivo já tem tudo mapeado.
 
 ### Fase 4 — Upload da imagem para a WP Media Library
 

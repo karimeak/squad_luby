@@ -27,6 +27,7 @@ data:
   - pipeline/data/supabase-config.json
   - pipeline/data/smtp-config.json
   - pipeline/data/sources.json
+  - pipeline/data/wp-categories.json
 
 pipeline:
   entry: pipeline/pipeline.yaml
