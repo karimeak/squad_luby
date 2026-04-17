@@ -21,8 +21,8 @@ A Iris Imagens vai buscar a imagem ideal no Unsplash e embutir no HTML. Sem inte
 3. Buscar via Unsplash API (`GET /search/photos?query=...&orientation=landscape`) com header `Authorization: Client-ID F5Y0BxjDgXs_o5pV_91sW6H-8I0AjQpYx0EWpANZqcw`
 4. Selecionar a melhor foto (sem clichês) do JSON de resultados
 5. Chamar `GET /photos/{id}/download` para registrar uso (obrigatório pela API)
-6. Montar `<figure>` com atribuição obrigatória ao fotógrafo
-7. Inserir no HTML após o `<h1>`
+6. Preparar `caption_html` com atribuição Unsplash (links UTM incluídos)
+7. Copiar `post-draft.md` para `post-with-image.md` sem alterações no HTML — a imagem vai como `featured_media` via Ada, não no conteúdo
 8. Salvar `image-selection.md` e `post-with-image.md`
 
 ## Fallback automático (sem interação)

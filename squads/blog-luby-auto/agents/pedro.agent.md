@@ -51,22 +51,23 @@ Entrega relatório estruturado com score numérico, pontos aprovados, pontos a c
 - O link leva ao conteúdo que suporta o dado citado?
 - As fontes são de domínios confiáveis da lista sources.json?
 
-**Bloco 3 — HTML e Estrutura**
-- H1 único e com keyword principal?
-- H2s descritivos e hierárquicos?
-- Parágrafos < 5 frases?
-- Tags bem fechadas?
-- Uso correto de `<ul>`, `<ol>`, `<strong>`, `<em>`?
+**Bloco 3 — HTML e Estrutura (Gutenberg blocks)**
+- Todo parágrafo envolvido em `<!-- wp:paragraph -->` / `<!-- /wp:paragraph -->`?
+- Todo H2/H3 envolvido em `<!-- wp:heading {"level":N} -->` / `<!-- /wp:heading -->`?
+- Listas envolvidas em `<!-- wp:list -->` com `<!-- wp:list-item -->` por item?
+- HTML de conteúdo NÃO contém `<!-- wp:image -->` (imagem vai como featured_media, não no conteúdo)?
+- NÃO contém `<h1>` no conteúdo?
+- Sem `<article>`, `<html>`, `<head>`, `<body>`, `<!DOCTYPE>`?
 - Sem inline styles ou divs desnecessários?
 - Links externos com `target="_blank" rel="noopener"`?
 
 **Bloco 4 — SEO On-Page**
-- Keyword principal no H1?
-- Keyword no primeiro parágrafo (natural, não forçada)?
+- `post_title` extraído e presente no output (keyword principal)?
+- Keyword no primeiro `<p>` de introdução (natural, não forçada)?
 - Keyword nos H2s (pelo menos 1-2)?
 - Densidade de keyword: 1-3% (sem keyword stuffing)?
 - Comprimento adequado ao max_words?
-- Título H1 entre 50-70 chars?
+- `post_title` entre 50-70 chars?
 
 **Bloco 5 — Idioma e Tom**
 - Idioma 100% consistente (EN ou PT-BR conforme publisher)?
@@ -151,7 +152,10 @@ TOTAL:             X/100
 ## Veto Conditions
 
 - Qualquer dado técnico sem fonte verificável no research-brief → VETO
-- H1 ausente ou duplicado → VETO
+- `post_title` ausente no output (título não extraído) → VETO
+- `<h1>` presente no HTML de conteúdo → VETO (quebra SEO no WordPress)
+- `<article>`, `<html>`, `<body>` presentes no HTML de conteúdo → VETO
+- Parágrafos ou headings sem blocos Gutenberg (`<!-- wp:paragraph -->` / `<!-- wp:heading -->`) → VETO (post vira Classic Block ineditável)
 - Idioma diferente do publisher.language → VETO
 - Post excede max_words em > 20% → AVISO obrigatório
 

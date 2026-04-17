@@ -2,10 +2,10 @@ squad:
   code: blog-luby-auto
   name: Blog Writer Auto — Luby
   description: >
-    Pipeline totalmente automático de geração de blog posts.
-    Sem checkpoints — roda do início ao fim e envia email de aprovação via Mailgun.
-    O clique no email (Aprovar / Nova Versão) dispara a Supabase Edge Function.
-    Ideal para execução agendada (cron diário/semanal).
+    Pipeline totalmente automático de geração e publicação de blog posts.
+    Sem checkpoints — roda do início ao fim, publica diretamente no WordPress via REST API
+    e envia email de notificação ao time (sem aprovação prévia).
+    Ideal para execução agendada (cron 2x por semana).
   version: "1.0.0"
   created: "2026-04-06"
   performance_mode: alta-performance

@@ -3,9 +3,9 @@ pipeline:
   version: "1.0.0"
   description: >
     Pipeline totalmente automático. Sem checkpoints.
-    Scout + auto-pick → pesquisa → redação → revisão (auto-retry 2x)
-    → imagem Unsplash → email Mailgun com links de aprovação.
-    Aprovação via Supabase Edge Function (approve-article).
+    Scout + auto-pick → pesquisa → redação HTML (WP-compatible) → revisão (auto-retry 2x)
+    → imagem Unsplash → publicação direta no WordPress REST API
+    → notificação email ao time (estela, karime, rodrigo).
 
 steps:
 

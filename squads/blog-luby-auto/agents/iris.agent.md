@@ -102,45 +102,27 @@ URL otimizada para blog (1200px de largura, formato auto):
 {results[].urls.raw}&w=1200&q=80&auto=format&fit=crop
 ```
 
-**Passo 5 — Montar bloco HTML com atribuição**
+**Passo 5 — Preparar dados para upload (Ada faz o upload)**
 
-```html
-<figure class="featured-image">
-  <img
-    src="{image_url_1200}"
-    alt="{alt text descritivo e relevante — não o título genérico}"
-    loading="lazy"
-    width="1200"
-  />
-  <figcaption>
-    Foto por <a href="{photographer-profile-url}?utm_source=blog_luby&utm_medium=referral" target="_blank" rel="noopener">{photographer-name}</a>
-    via <a href="https://unsplash.com/?utm_source=blog_luby&utm_medium=referral" target="_blank" rel="noopener">Unsplash</a>
-  </figcaption>
-</figure>
-```
+Iris NÃO insere a imagem no HTML. Ela salva os dados necessários em `image-selection.md` para Ada fazer o upload para a WP Media Library e definir como `featured_media`.
+
+A atribuição ao fotógrafo será definida como `caption` na mídia enviada para o WP.
 
 **Regra de alt text**: Usar `alt_description` da API como base, mas melhorar se for genérico. Descrever o que está na imagem de forma útil para acessibilidade. Ex: "Desenvolvedor analisando código em múltiplos monitores" ao invés de "Inteligência Artificial".
 
-### Inserção no HTML
+### Saída — sem inserção no HTML
 
-Abrir o HTML de `squads/blog-luby-auto/output/post-draft.md`.
+A imagem **não é inserida no HTML de conteúdo**. Ela vai para o campo `featured_media` da WP REST API (Ada faz o upload e obtém o ID). O tema WordPress renderiza na ordem: imagem featured → título → conteúdo.
 
-Inserir o bloco `<figure>` **dentro da tag `<article>`, logo após o `<h1>`**:
+Copiar o conteúdo de `post-draft.md` integralmente para `post-with-image.md` sem modificações no HTML. O arquivo `post-with-image.md` mantém o mesmo formato:
 
-```html
-<article>
-  <h1>{título}</h1>
-
-  <figure class="featured-image">
-    ...
-  </figure>
-
-  <p class="intro">...</p>
-  ...
-</article>
+```
+post_title: {título}
+---
+{HTML Gutenberg sem nenhum bloco de imagem}
 ```
 
-Salvar o HTML atualizado em `squads/blog-luby-auto/output/post-with-image.md`.
+Toda a informação da imagem fica em `image-selection.md` para Ada usar no upload.
 
 ### Output: `squads/blog-luby-auto/output/image-selection.md`
 
@@ -167,14 +149,11 @@ Salvar o HTML atualizado em `squads/blog-luby-auto/output/post-with-image.md`.
 2. `{query-2}` — {resultado}
 3. `{query-3}` — {resultado}
 
-## Bloco HTML
+## Para upload via Ada
 
-\`\`\`html
-<figure class="featured-image">
-  <img src="..." alt="..." loading="lazy" width="1200" />
-  <figcaption>Foto por <a href="...">...</a> via <a href="...">Unsplash</a></figcaption>
-</figure>
-\`\`\`
+- **image_url**: URL da imagem (para Ada baixar e enviar ao WP)
+- **image_alt**: alt text descritivo
+- **caption_html**: `Foto por <a href="{profile}?utm_source=blog_luby&utm_medium=referral">{nome}</a> via <a href="https://unsplash.com/?utm_source=blog_luby&utm_medium=referral">Unsplash</a>`
 ```
 
 ## Voice Guidance
