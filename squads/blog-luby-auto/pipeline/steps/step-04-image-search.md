@@ -23,6 +23,7 @@ A Iris Imagens vai buscar a imagem ideal no Unsplash e embutir no HTML. Sem inte
 5. Chamar `GET /photos/{id}/download` para registrar uso (obrigatório pela API)
 6. Preparar `caption_html` com atribuição Unsplash (links UTM incluídos)
 7. Copiar `post-draft.md` para `post-with-image.md` sem alterações no HTML — a imagem vai como `featured_media` via Ada, não no conteúdo
+   **Obrigatório para cada artigo processado, mesmo que `post-with-image.md` já exista de um artigo anterior. Ada lê de `post-with-image.md`, não de `post-draft.md`.**
 8. Salvar `image-selection.md` e `post-with-image.md`
 
 ## Fallback automático (sem interação)

@@ -127,15 +127,15 @@ curl -s -X POST "{EDGE_FUNCTION_URL}" \
   -H "Authorization: Bearer {SUPABASE_ANON_KEY}" \
   -d '{
     "mode": "notification",
-    "zoho_user": "...",
-    "zoho_pass": "...",
-    "from_name": "...",
-    "notification_emails": [...],
+    "zoho_user": "{smtp-config.zoho_user}",
+    "zoho_pass": "{smtp-config.zoho_pass}",
+    "from_name": "{smtp-config.from_name}",
+    "notification_emails": {smtp-config.notification_emails},
     "publisher_email": "{publisher.email}",
     "article_id": {id},
     "title": "{post_title}",
-    "publisher_name": "{name}",
-    "publisher_channel": "{channel}",
+    "publisher_name": "{publisher.name}",
+    "publisher_channel": "{publisher.channel}",
     "wp_url": "{link}",
     "has_review_warning": {true|false}
   }'

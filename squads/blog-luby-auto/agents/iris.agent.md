@@ -122,6 +122,8 @@ post_title: {título}
 {HTML Gutenberg sem nenhum bloco de imagem}
 ```
 
+**Este passo é obrigatório para cada artigo processado no pipeline**, mesmo que `post-with-image.md` já exista de uma iteração anterior. Ada lê exclusivamente de `post-with-image.md` — se o arquivo não for atualizado, Ada publicará o conteúdo do artigo anterior.
+
 Toda a informação da imagem fica em `image-selection.md` para Ada usar no upload.
 
 ### Output: `squads/blog-luby-auto/output/image-selection.md`
