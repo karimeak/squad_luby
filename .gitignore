@@ -1,18 +1,8 @@
 node_modules/
-**/node_modules/
-.next/
-**/.next/
 .env
 *.log
+squads/*/output/
+_opensquad/_memory/company.md
+_opensquad/_memory/preferences.md
 _opensquad/_browser_profile/
-.claude/settings.local.json
-docs/
-.superpowers/
-temp/
-config.bat
-
-# Local IDE / agent tool state (do not commit)
-.claude/worktrees/
-.codebuddy/
-.continue/
-gemini-state.png
+_opensquad/logs/
