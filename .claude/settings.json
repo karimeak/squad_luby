@@ -1,0 +1,21 @@
+{
+  "sandbox": {
+    "network": {
+      "allowedDomains": [
+        "pbvjsixlqnuzcnqahbxu.supabase.co",
+        "blog.luby.com.br",
+        "blog.luby.co",
+        "blog.nearsmarter.com",
+        "api.unsplash.com",
+        "techcrunch.com",
+        "venturebeat.com",
+        "wired.com",
+        "theverge.com",
+        "arstechnica.com",
+        "news.ycombinator.com",
+        "zdnet.com",
+        "thenextweb.com"
+      ]
+    }
+  }
+}
