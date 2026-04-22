@@ -86,5 +86,12 @@
       {"id": 13, "name": "Tech News"},
       {"id": 29, "name": "Insights"}
     ]
+  },
+  "blog_finfy": {
+    "url": "https://darkturquoise-bat-182699.hostingersite.com",
+    "content_focus": "fintech — technology applied to financial services (open finance, digital banking, AI in finance, payments, regtech, insurtech)",
+    "categories": [
+      {"id": 1,  "name": "Uncategorized"}
+    ]
   }
 }

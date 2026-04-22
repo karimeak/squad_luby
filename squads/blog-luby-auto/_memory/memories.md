@@ -63,9 +63,37 @@
 | 2026-04-17 | `post-with-image.md` não criado para #24 e #25 | Iris deve copiar post-draft.md para post-with-image.md a cada artigo; Ada deve ler de post-with-image.md |
 | 2026-04-17 | Mateus de #25 rodou inline em vez de subagent | Resultado correto, mas viola a arquitetura; rodar sempre como subagent para liberar contexto |
 
+### Run 2026-04-20-142852 — COMPLETO ✅
+- **Artigos publicados:** 3/3
+- **Duração:** ~1h02 (14:28 → 15:30 BRT)
+- **Artigo #16** — "Building Scalable MLOps Pipelines with MLflow and Kubeflow" → [blog.nearsmarter.com](https://blog.nearsmarter.com/building-scalable-mlops-pipelines-with-mlflow-and-kubeflow/) — publisher Rodrigo Gardin (EN, technical, ~3100 words)
+- **Artigo #26** — "Maturidade de IA em 2026: por que 90% das empresas não geram resultado" → [blog.luby.com.br](https://blog.luby.com.br/maturidade-de-ia-em-2026-por-que-90-das-empresas-nao-geram-resultado/) — publisher Alon Lubieniecki (PT-BR, business, ~1100 words)
+- **Artigo #27** — "The AI Productivity Gap: What Enterprise Teams Actually Get in 2026" → [blog.luby.co](https://blog.luby.co/the-ai-productivity-gap-what-enterprise-teams-actually-get-in-2026/) — publisher Karime Kumagai (EN, insights, ~1150 words)
+
+### Lições do Run 2026-04-20
+
+#### Publishers
+- **blog_luby (publisher 12 = Alon Lubieniecki)**: email `alon.lubieniecki@luby.com.br`, url: `https://blog.luby.com.br/`, WP user_id: 2 (mesmo usuário que Rodrigo)
+- **blog_luby_us (publisher 12 = Karime Kumagai)**: email `karime.kumagai@luby.com.br`, url: `https://blog.luby.co/`, WP user_id: 4
+- **blog_nearsmarter**: publisher 4, Rodrigo Gardin, WP user_id: 1
+
+#### Infraestrutura
+- **blog_finfy detectado** por Tobias — canais com publishers 18/19 (PT-BR) mas sem configuração em `wp-categories.json`; foi ignorado neste run
+- **Pesquisa paralela confirmada**: 3 Mateus subagents simultaneamente funciona bem; arquivo de saída separado por artigo (`research-brief.md`, `research-brief-26.md`, `research-brief-27.md`) evita colisões
+
+#### WordPress
+- **post_title limite 70 chars**: artigos com título > 70 chars precisam de correção antes do review; verificar antes de criar tech-review.md
+- **Gutenberg blocks**: todos os artigos desta run passaram no review técnico sem falhas de bloco; padrão `<!-- wp:paragraph -->` / `<!-- wp:heading {"level":2} -->` consolidado
+- **Imagem alt_text + caption**: definidos imediatamente após upload via `POST /wp-json/wp/v2/media/{id}` — sem erros de acessibilidade neste run
+
 ## Temas Scouts Inseridos
 
 ### Run 2026-04-17
 - **#15** — The Intersection of AI and Agile Methodologies (EN, blog_nearsmarter, Karime Kumagai)
 - **#24** — Produtos AI-Native: Como Construir Software com IA no Centro da Arquitetura (PT-BR, blog_luby, Rodrigo Gardin)
 - **#25** — Agentic Coding in 2026: How AI Tools Are Reshaping the Software Engineering Workflow (EN, blog_luby_us, Rodrigo Gardin)
+
+### Run 2026-04-20
+- **#16** — Building Scalable MLOps Pipelines with MLflow and Kubeflow (EN, blog_nearsmarter, Rodrigo Gardin)
+- **#26** — Maturidade de IA em 2026: por que 90% das empresas não geram resultado (PT-BR, blog_luby, Alon Lubieniecki)
+- **#27** — The AI Productivity Gap: What Enterprise Teams Actually Get in 2026 (EN, blog_luby_us, Karime Kumagai)

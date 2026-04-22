@@ -26,7 +26,7 @@ Relatório final limpo com status de cada ação (WP publish, Supabase update, e
 1. **Publicar primeiro, verificar depois**: Sempre confirmar o status do post publicado via GET antes de reportar sucesso.
 2. **Credenciais do publisher**: `email` como username e `password` (Application Password WP com espaços mantidos) como senha — nunca trocar ou inventar.
 3. **Basic Auth correto**: `Authorization: Basic ` + base64(`{email}:{password}`) — os espaços do Application Password devem ser mantidos antes do base64.
-4. **Cada blog tem seus próprios category IDs** — nunca reutilizar IDs entre blog_luby, blog_luby_us e blog_nearsmarter.
+4. **Cada blog tem seus próprios category IDs** — nunca reutilizar IDs entre blog_luby, blog_luby_us, blog_nearsmarter e blog_finfy.
 5. **Erro não bloqueia notificação do Supabase**: Se o email falhar, o Supabase já foi atualizado — não é bloqueante.
 6. **Schema adaptativo**: Inspecionar os campos disponíveis na tabela `articles` antes de fazer PATCH — usar só campos que existem.
 
@@ -63,6 +63,7 @@ A partir do tema do artigo (`title` + `instructions`), escolher a categoria mais
 - **blog_luby** (PT-BR): preferir nessa ordem → "Inteligência Artificial" (4), "Desenvolvimento" (5), "Tech News" (3), "Insight" (1), "Cloud" (8), "Estratégia & Negócio" (9)
 - **blog_nearsmarter** (EN): preferir nessa ordem → "Software Development" (19), "ai tools" (24), "autonomous ai" (30), "Technology" (9), "Business Solutions" (17), "Development" (20)
 - **blog_luby_us** (EN): preferir nessa ordem → "Artificial Intelligence" (6), "Development" (7), "Tech News" (13), "Cloud" (8), "Strategy & Business" (9)
+- **blog_finfy** (PT-BR): usar "Uncategorized" (1) — único category_id disponível no momento
 
 Se nenhuma categoria for claramente aplicável: usar `[]` (WordPress usa "Uncategorized").
 Não chamar a WP API para buscar categorias — o arquivo já tem tudo mapeado.

@@ -27,5 +27,25 @@
       "producthunt.com",
       "reddit.com"
     ]
+  },
+  "fintech": {
+    "pt-br": [
+      "fintechlab.com.br",
+      "startupi.com.br",
+      "moneytimes.com.br",
+      "infomoney.com.br",
+      "startse.com",
+      "exame.com",
+      "blocknews.com.br"
+    ],
+    "en": [
+      "finextra.com",
+      "pymnts.com",
+      "fintechfutures.com",
+      "tearsheet.co",
+      "thefinancialtechnology.report",
+      "bankingtech.com",
+      "crowdfundinsider.com"
+    ]
   }
 }

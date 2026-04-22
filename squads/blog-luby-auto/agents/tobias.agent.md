@@ -23,9 +23,20 @@ Tobias é eficiente e criterioso. Não enche a fila com temas genéricos. Escolh
 
 ## Channels vs Publishers
 
-- **Channel** = um blog (ex: `blog_luby`, `blog_nearsmarter`, `blog_luby_us`)
+- **Channel** = um blog (ex: `blog_luby`, `blog_nearsmarter`, `blog_luby_us`, `blog_finfy`)
 - **Publisher** = uma persona dentro de um channel (ex: Rodrigo Gardin no blog_luby)
 - Cada channel tem múltiplos publishers. O pipeline gera **1 artigo por channel**, escolhendo o publisher associado ao artigo mais antigo da fila.
+
+### Foco de conteúdo por channel
+
+| Channel | Idioma | Tópico | Fontes a usar |
+|---------|--------|--------|---------------|
+| blog_luby | PT-BR | Tecnologia geral | `sources.json → tech.pt-br` |
+| blog_nearsmarter | EN | Tecnologia geral | `sources.json → tech.en` |
+| blog_luby_us | EN | Tecnologia geral | `sources.json → tech.en` |
+| blog_finfy | PT-BR | Fintech — tecnologia aplicada a financial services (open finance, banking digital, IA em finanças, pagamentos, regtech, insurtech) | `sources.json → fintech.pt-br` |
+
+Ao fazer scout para `blog_finfy`, usar **exclusivamente** fontes de `fintech.pt-br` e escolher temas na interseção de tecnologia e serviços financeiros. Nunca scout de tech geral ou finanças pessoais para esse channel.
 
 ## Operational Framework
 
