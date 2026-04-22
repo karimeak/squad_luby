@@ -6,9 +6,10 @@ squad:
     para todos os colaboradores sem interacao humana. Fluxo: fetch collaborators
     do Supabase > match flavor por topicos > pesquisa web > persona > escrita EN
     > traducao PT-BR > review combinada (tech+engajamento) com auto-fix
-    > LinkedIn profile optimizer > salva em bloggers (Supabase) > entrega.
-    Email enviado via n8n (workflow separado).
-  version: "1.0.0"
+    > sugestao de imagem (fluxograma/prompt IA) > LinkedIn profile optimizer
+    > salva em bloggers (Supabase) > envia email para cada collaborator
+    via Edge Function > entrega final.
+  version: "1.1.0"
   created: "2026-04-07"
   performance_mode: alta-performance
   language: multilingual
@@ -42,6 +43,7 @@ skills:
 
 data:
   - pipeline/data/supabase-config.json
+  - pipeline/data/smtp-config.json
   - pipeline/data/tone-of-voice.md
   - pipeline/data/quality-criteria.md
   - pipeline/data/sources.json
@@ -58,6 +60,8 @@ pipeline:
     - step-03-write
     - step-04-translate
     - step-05-review
-    - step-06-linkedin-optimizer
-    - step-07-save-to-supabase
-    - step-08-delivery
+    - step-06-image-suggestion
+    - step-07-linkedin-optimizer
+    - step-08-save-to-supabase
+    - step-09-send-email
+    - step-10-delivery

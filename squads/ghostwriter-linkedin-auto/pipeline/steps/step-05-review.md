@@ -67,4 +67,4 @@ Helena revisa ambos os posts (EN e PT-BR) em um unico passo, combinando fact-che
 - `{name}/review-report.md` — scoring tables + auto-fixes aplicados
 
 ## Next
-step-06-linkedin-optimizer (Lucas analisa perfil LinkedIn)
+step-06-image-suggestion (Bruno gera sugestão de imagem para o post)

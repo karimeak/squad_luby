@@ -1,0 +1,11 @@
+{
+  "zoho_user": "noreply@nearsmarter.com",
+  "zoho_pass": "3Bq6PXrsN6Tw",
+  "from_name": "Ghostwriter Luby",
+  "notification_emails": [
+    "estela.teodoro@luby.com.br",
+    "karime.kumagai@luby.com.br",
+    "rodrigo@luby.com.br"
+  ],
+  "edge_function_url": "https://pbvjsixlqnuzcnqahbxu.supabase.co/functions/v1/blog-approval"
+}

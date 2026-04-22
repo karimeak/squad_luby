@@ -1,5 +1,5 @@
 ---
-step: step-08-delivery
+step: step-10-delivery
 name: Entrega Final
 type: agent
 agent: bruno
@@ -7,7 +7,7 @@ execution: inline
 terminal: true
 ---
 
-# Step 08 — Entrega Final
+# Step 10 — Entrega Final
 
 ## Objetivo
 Bruno consolida todos os posts gerados, salva os arquivos finais no diretorio output/, atualiza o post-history.json e produz um log de resumo da execucao completa.
@@ -18,6 +18,8 @@ Bruno consolida todos os posts gerados, salva os arquivos finais no diretorio ou
 - Todos os posts revisados: `{name}/reviewed-post-en.md` e `{name}/reviewed-post-pt.md` para cada collaborator
 - `{name}/review-report.md` para scores
 - `{name}/save-confirmation.md` para IDs Supabase
+- `{name}/email-confirmation.md` para status de envio de email
+- `{name}/image-suggestion.md` para tipo de imagem sugerida
 - `collaborator-queue.json` para lista completa
 
 ### Processo
@@ -62,10 +64,12 @@ Bruno consolida todos os posts gerados, salva os arquivos finais no diretorio ou
 
    Posts salvos no Supabase (tabela bloggers): {N * 2} registros
    LinkedIn improvements atualizados: {N} collaborators
+   Emails enviados: {N enviados} / {N total} collaborators
+   Imagens sugeridas: {N com fluxograma} fluxogramas, {N com prompt IA} prompts IA
 
    Proximos passos:
-   - Executar workflow n8n para enviar emails
-   - Posts ficam em bloggers com submitted_content=false ate envio
+   - Verificar posts recebidos pelos collaborators
+   - Conferir submitted_content = true na tabela bloggers
    ==============================
    ```
 

@@ -1,5 +1,5 @@
 ---
-step: step-06-linkedin-optimizer
+step: step-07-linkedin-optimizer
 name: LinkedIn Profile Optimizer
 type: agent
 agent: lucas
@@ -72,4 +72,4 @@ Lucas analisa o perfil publico LinkedIn de cada collaborator e gera sugestoes de
 - UPDATE na tabela collaborators.linkedin_improvement
 
 ## Next
-step-07-save-to-supabase (Lucas salva os posts em bloggers)
+step-08-save-to-supabase (Lucas salva os posts em bloggers)

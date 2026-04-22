@@ -1,5 +1,5 @@
 ---
-step: step-07-save-to-supabase
+step: step-08-save-to-supabase
 name: Salvar no Supabase
 type: agent
 agent: lucas
@@ -74,4 +74,4 @@ Para cada collaborator processado:
 - `{name}/save-confirmation.md` no diretorio de output do run
 
 ## Next
-step-08-delivery (Bruno faz a entrega final com log de resumo)
+step-09-send-email (Lucas envia email com o post para cada collaborator)
