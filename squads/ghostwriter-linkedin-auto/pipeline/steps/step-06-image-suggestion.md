@@ -1,16 +1,16 @@
 ---
 step: step-06-image-suggestion
-name: Sugestão de Imagem para o Post
+name: Geração de Imagem para o Post
 type: agent
 agent: bruno
 execution: inline
 model_tier: powerful
 ---
 
-# Step 06 — Sugestão de Imagem para o Post
+# Step 06 — Geração de Imagem para o Post
 
 ## Objetivo
-Bruno analisa o post revisado (EN) e gera uma sugestão visual adequada ao conteúdo: pode ser um fluxograma em Mermaid, uma descrição de infográfico ou um prompt para geração de imagem com IA. A sugestão é apenas uma referência — o collaborator decide se usa.
+Bruno analisa o post revisado (EN), classifica o tipo visual ideal, gera o conteúdo visual (código Mermaid ou prompt de IA) e produz uma URL de imagem pronta para ser incorporada no email — sem necessidade de ferramentas externas manuais.
 
 ## Instruções para Bruno
 
@@ -22,36 +22,53 @@ Bruno analisa o post revisado (EN) e gera uma sugestão visual adequada ao conte
 
 #### 1. Identificar o tipo visual ideal
 
-Analisar o post e classificar em uma das categorias:
+Analisar o post e classificar:
 
-| Tipo de conteúdo | Visual recomendado |
+| Tipo de conteúdo | Visual |
 |---|---|
-| Processo com etapas sequenciais | Fluxograma (Mermaid) |
-| Dados, percentuais, comparações | Infográfico / gráfico descritivo |
-| Conceito abstrato, liderança, carreira | Imagem conceitual (prompt IA) |
-| Framework, modelo ou metodologia | Diagrama de blocos (Mermaid) |
-| História pessoal / reflexão | Quote card (prompt Canva/IA) |
+| Processo com etapas sequenciais | Flowchart (Mermaid → mermaid.ink) |
+| Framework, modelo ou metodologia | Diagrama de blocos (Mermaid → mermaid.ink) |
+| Conceito abstrato, liderança, carreira | AI Image (prompt → pollinations.ai) |
+| Dado/stat central + narrativa | AI Image (prompt → pollinations.ai) |
+| História pessoal / reflexão | AI Image (prompt → pollinations.ai) |
 
-#### 2. Gerar a sugestão visual
+#### 2. Gerar o conteúdo visual
 
-**Para fluxogramas e diagramas:**
-- Produzir código Mermaid pronto para copiar
-- Usar `flowchart TD` (top-down) ou `flowchart LR` (left-right) conforme o conteúdo
-- Manter textos curtos nos nós (máx 5 palavras por nó)
+**Para Flowchart / Diagrama (Mermaid):**
+- Escrever o código Mermaid completo
+- Usar `flowchart TD` (top-down) ou `flowchart LR` (left-right)
+- Textos curtos nos nós (máx 5 palavras)
+- Gerar a URL via Node.js:
 
-**Para infográficos:**
-- Descrever o layout: colunas, ícones sugeridos, dados-chave a destacar
-- Indicar ferramenta recomendada: Canva, Figma ou similar
+```bash
+node -e "
+const code = \`COLE_O_CÓDIGO_MERMAID_AQUI\`;
+const encoded = Buffer.from(code).toString('base64');
+console.log('https://mermaid.ink/img/' + encoded);
+"
+```
 
-**Para imagens IA (DALL-E / Midjourney / Ideogram):**
-- Escrever um prompt em inglês, detalhado, estilo profissional
-- Indicar: estilo visual, paleta de cores, elementos obrigatórios
+Copiar a URL retornada como `image_url`.
+
+**Para AI Image (Pollinations.ai):**
+- Escrever um prompt em inglês, visual, profissional, sem referências a pessoas reais
+- Estilo: `flat design, professional, dark blue and white, minimalist, LinkedIn post`
+- Gerar a URL:
+
+```bash
+node -e "
+const prompt = 'SEU_PROMPT_AQUI';
+const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1200&height=630&nologo=true';
+console.log(url);
+"
+```
+
+Copiar a URL retornada como `image_url`.
 
 #### 3. Regras
-- A sugestão deve reforçar o argumento principal do post, não ser decorativa
-- Se o post for muito narrativo (história pessoal), preferir quote card
-- Fluxogramas só se o processo tiver 3-8 etapas claras
-- Nunca inventar dados que não estejam no post/research
+- Fluxogramas apenas quando o post tem 3-8 etapas sequenciais claras
+- Prompts de IA: sempre em inglês, nunca mencionar pessoas reais pelo nome
+- Nunca deixar `image_url` vazio — se houver erro na geração, usar pollinations.ai com prompt genérico do tema
 
 ### Output
 
@@ -61,23 +78,14 @@ Salvar `{name}/image-suggestion.md` no diretório de output do run:
 # Image Suggestion — {name}
 
 **Post flavor:** {flavor}
-**Visual type:** {Flowchart | Infographic | AI Image | Quote Card | Diagram}
-**Rationale:** {1-2 linhas explicando por que este formato}
+**Visual type:** {Flowchart | AI Image}
+**Image URL:** {URL completa gerada — mermaid.ink ou pollinations.ai}
 
 ---
 
-## Suggestion
+## Source
 
-{código Mermaid OU descrição do infográfico OU prompt de IA OU template Canva}
-
----
-
-## Recommended Tools
-- {ferramenta 1 com link ou instrução}
-- {ferramenta 2}
-
-## Usage Note
-Esta é uma sugestão. O collaborator pode adaptar ou substituir pela imagem que preferir antes de publicar no LinkedIn.
+{código Mermaid completo OU prompt de IA usado}
 ```
 
 ## Next

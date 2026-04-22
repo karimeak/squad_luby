@@ -30,7 +30,7 @@ Deno.serve(async (req) => {
       flavor,
       post_en,
       post_pt,
-      image_suggestion,
+      image_url,
       linkedin_overview,
       blogger_id_en,
       blogger_id_pt,
@@ -53,11 +53,11 @@ Deno.serve(async (req) => {
 
     // ─── MODE: linkedin-post ──────────────────────────────────────────────────
     if (mode === "linkedin-post") {
-      const to = [...new Set([collaborator_email, ...notification_emails].filter(Boolean))] as string[];
+      const to = [collaborator_email].filter(Boolean) as string[];
 
       if (to.length === 0) {
         return new Response(
-          JSON.stringify({ ok: false, error: "Nenhum destinatário definido" }),
+          JSON.stringify({ ok: false, error: "collaborator_email não definido" }),
           { status: 400, headers: { "Content-Type": "application/json" } }
         );
       }
@@ -68,6 +68,11 @@ Deno.serve(async (req) => {
           .replace(/</g, "&lt;")
           .replace(/>/g, "&gt;")
           .replace(/\n/g, "<br>");
+
+      const imageHtml = image_url
+        ? `<img src="${image_url}" alt="Visual sugerido para o post"
+               style="width:100%;border-radius:8px;margin-top:8px;display:block;">`
+        : `<p style="color:#94a3b8;font-size:13px;">Imagem não disponível.</p>`;
 
       const html = `
 <!DOCTYPE html>
@@ -93,10 +98,9 @@ ${mdToHtml(post_en)}
 ${mdToHtml(post_pt)}
   </div>
 
-  <h3 style="margin-bottom:8px;margin-top:24px;">🖼️ Sugestão de imagem</h3>
-  <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;
-              font-size:13px;line-height:1.6;">
-${mdToHtml(image_suggestion)}
+  <h3 style="margin-bottom:8px;margin-top:24px;">🖼️ Imagem sugerida</h3>
+  <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;">
+    ${imageHtml}
   </div>
 
   <h3 style="margin-bottom:8px;margin-top:24px;">💼 Dicas para o seu perfil LinkedIn</h3>
@@ -107,7 +111,6 @@ ${mdToHtml(linkedin_overview)}
 
   <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0;">
   <p style="color:#94a3b8;font-size:12px;margin:0;">
-    IDs Supabase — EN: ${blogger_id_en ?? "—"} | PT: ${blogger_id_pt ?? "—"}<br>
     Gerado automaticamente pelo Ghostwriter LinkedIn · Luby Software
   </p>
 
