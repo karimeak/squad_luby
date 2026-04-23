@@ -1,20 +1,20 @@
 ---
 step: step-04-translate
-name: Traducao EN > PT-BR
+name: Traducao EN-US > PT-BR
 type: agent
 agent: bruno
 execution: inline
 ---
 
-# Step 04 — Traducao EN > PT-BR
+# Step 04 — Traducao EN-US > PT-BR
 
 ## Objetivo
-Bruno traduz o post EN para PT-BR, adaptando culturalmente — nao traduzindo literalmente. Voice markers, referencias de mercado e CTA sao adaptados para o contexto brasileiro.
+Bruno traduz o post EN-US para PT-BR, adaptando culturalmente — nao traduzindo literalmente. Voice markers, referencias de mercado e CTA sao adaptados para o contexto brasileiro.
 
 ## Instrucoes para Bruno
 
 ### Input
-- Ler `{name}/post-en.md` — post EN aprovado
+- Ler `{name}/post-en.md` — post EN-US aprovado
 - Ler dados do collaborator em collaborator-queue.json: voice_markers_pt, tone_pt, audience_pt
 
 ### Processo
@@ -46,7 +46,7 @@ Bruno traduz o post EN para PT-BR, adaptando culturalmente — nao traduzindo li
 - Fonte entre parenteses mantida em cada dado
 
 ### Verificacao
-- [ ] Voice markers trocados para versao PT
+- [ ] Voice markers EN-US trocados para versao PT-BR
 - [ ] Referencias culturais brasileiras
 - [ ] Tom preservado mas natural em PT-BR
 - [ ] Nao e traducao literal

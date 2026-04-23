@@ -46,7 +46,7 @@ CTA (pergunta genuina ao publico)
 
 ### Idioma e mercado
 
-**EN (ingles — mercado US):**
+**EN-US (American English — mercado US):**
 - Referencias americanas: SEC, FDIC, FED, GAAP, SOC2, HIPAA
 - Exemplos de empresas US-based
 - Metricas em USD

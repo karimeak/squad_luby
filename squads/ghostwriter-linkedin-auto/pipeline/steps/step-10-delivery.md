@@ -25,7 +25,7 @@ Bruno consolida todos os posts gerados, salva os arquivos finais no diretorio ou
 ### Processo
 
 1. **Para cada collaborator processado**:
-   - Salvar post EN final: `squads/ghostwriter-linkedin-auto/output/{name}-{flavor-slug}-EN-{YYYY-MM-DD}.md`
+   - Salvar post EN-US final: `squads/ghostwriter-linkedin-auto/output/{name}-{flavor-slug}-EN-US-{YYYY-MM-DD}.md`
    - Salvar post PT-BR final: `squads/ghostwriter-linkedin-auto/output/{name}-{flavor-slug}-PT-BR-{YYYY-MM-DD}.md`
 
 2. **Atualizar post-history.json**:
@@ -37,7 +37,7 @@ Bruno consolida todos os posts gerados, salva os arquivos finais no diretorio ou
      "date": "{YYYY-MM-DD}",
      "collaborator": "{name}",
      "flavor": "{flavor}",
-     "language": "EN",
+     "language": "EN-US",
      "size": "Medium",
      "file": "{filename}",
      "blogger_id": "{uuid do Supabase}",

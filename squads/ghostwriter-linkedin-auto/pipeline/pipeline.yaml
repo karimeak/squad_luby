@@ -3,7 +3,7 @@ pipeline:
   version: "1.1.0"
   description: >
     Pipeline automatizado de ghostwriting LinkedIn para todos os colaboradores da Luby.
-    Sem checkpoints — totalmente autonomo. Gera posts EN + PT-BR, sugestao de imagem,
+    Sem checkpoints — totalmente autonomo. Gera posts EN-US + PT-BR, sugestao de imagem,
     review com auto-fix, analisa perfil LinkedIn, salva no Supabase e envia email
     diretamente para cada collaborator via Edge Function.
 

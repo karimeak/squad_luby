@@ -4,7 +4,7 @@ squad:
   description: >
     Versao automatizada do ghostwriter LinkedIn. Gera posts de texto Medium
     para todos os colaboradores sem interacao humana. Fluxo: fetch collaborators
-    do Supabase > match flavor por topicos > pesquisa web > persona > escrita EN
+    do Supabase > match flavor por topicos > pesquisa web > persona > escrita EN-US
     > traducao PT-BR > review combinada (tech+engajamento) com auto-fix
     > sugestao de imagem (fluxograma/prompt IA) > LinkedIn profile optimizer
     > salva em bloggers (Supabase) > envia email para cada collaborator

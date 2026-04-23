@@ -28,7 +28,7 @@ Bruno escreve 1 post LinkedIn Text Medium (700-1500 chars) em ingles para o coll
 
 ### Regras
 - Formato: Text Post Medium (700-1500 chars)
-- Idioma: EN (referencias US/global)
+- Idioma: EN-US (American English — referências US/global)
 - 1 variante apenas (sem A/B)
 - Cada dado/statistic deve ter fonte entre parenteses: "(McKinsey, 2025)"
 - Sem links no corpo, sem hashtags no meio, sem jargao corporativo
