@@ -6,10 +6,11 @@ squad:
     para todos os colaboradores sem interacao humana. Fluxo: fetch collaborators
     do Supabase > match flavor por topicos > pesquisa web > persona > escrita EN-US
     > traducao PT-BR > review combinada (tech+engajamento) com auto-fix
-    > sugestao de imagem (fluxograma/prompt IA) > LinkedIn profile optimizer
+    > imagem branded HTML/CSS via Playwright (1200x627) + URL preview Pollinations.ai
+    > LinkedIn profile optimizer
     > salva em bloggers (Supabase) > envia email para cada collaborator
     via Edge Function > entrega final.
-  version: "1.1.0"
+  version: "1.2.0"
   created: "2026-04-07"
   performance_mode: alta-performance
   language: multilingual
@@ -40,6 +41,8 @@ skills:
   - web_fetch
   - linkedin-content
   - linkedin-profile-optimizer
+  - image-design
+  - playwright
 
 data:
   - pipeline/data/supabase-config.json

@@ -5,88 +5,182 @@ type: agent
 agent: bruno
 execution: inline
 model_tier: powerful
+skills:
+  - playwright
 ---
 
-# Step 06 — Geração de Imagem para o Post
+# Step 06 — Geração de Imagem para o Post (HTML/CSS + Playwright)
 
 ## Objetivo
-Bruno analisa o post revisado (EN), classifica o tipo visual ideal, gera o conteúdo visual (código Mermaid ou prompt de IA) e produz uma URL de imagem pronta para ser incorporada no email — sem necessidade de ferramentas externas manuais.
+
+Bruno gera duas saídas complementares:
+
+1. **Imagem branded (principal)** — HTML/CSS self-contained (1200×627px), renderizado via Playwright → `.png` para o collaborator usar no LinkedIn
+2. **URL de preview para email** — Pollinations.ai com prompt rico e contextualizado, compatível com o step-09
 
 ## Instruções para Bruno
 
 ### Input
-- Ler `{name}/reviewed-post-en.md` — post final EN
-- Ler `{name}/research-brief.md` — contexto e dados usados
 
-### Processo
+- `{run_output}/{name}/reviewed-post-en.md` — post final EN
+- `{run_output}/{name}/research-brief.md` — contexto, dados e flavor
 
-#### 1. Identificar o tipo visual ideal
+---
 
-Analisar o post e classificar:
+## PARTE 1 — Imagem Branded (HTML/CSS + Playwright)
 
-| Tipo de conteúdo | Visual |
+### 1. Analisar o post e definir o layout
+
+| Tipo de conteúdo | Layout |
 |---|---|
-| Processo com etapas sequenciais | Flowchart (Mermaid → mermaid.ink) |
-| Framework, modelo ou metodologia | Diagrama de blocos (Mermaid → mermaid.ink) |
-| Conceito abstrato, liderança, carreira | AI Image (prompt → pollinations.ai) |
-| Dado/stat central + narrativa | AI Image (prompt → pollinations.ai) |
-| História pessoal / reflexão | AI Image (prompt → pollinations.ai) |
+| Processo / etapas sequenciais (3–5 etapas claras) | Cards numerados em linha |
+| Framework / modelo / metodologia | Grid de blocos com labels |
+| Dado/stat central + narrativa | Métrica grande em destaque + texto de suporte |
+| Conceito abstrato / liderança / carreira | Quote visual com frase impactante |
+| História pessoal / reflexão | Quote visual com fundo de destaque |
+| Lista de insights | Lista vertical com marcadores e hierarquia |
 
-#### 2. Gerar o conteúdo visual
+### 2. Documentar o Design System
 
-**Para Flowchart / Diagrama (Mermaid):**
-- Escrever o código Mermaid completo
-- Usar `flowchart TD` (top-down) ou `flowchart LR` (left-right)
-- Textos curtos nos nós (máx 5 palavras)
-- Gerar a URL via Node.js:
+Antes de qualquer HTML:
 
-```bash
-node -e "
-const code = \`COLE_O_CÓDIGO_MERMAID_AQUI\`;
-const encoded = Buffer.from(code).toString('base64');
-console.log('https://mermaid.ink/img/' + encoded);
-"
+```
+DESIGN SYSTEM — {name}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Platform: LinkedIn Post
+Viewport: 1200 x 627
+Layout: [escolhido acima]
+
+Colors:
+  Background: #0D1B2A  (navy escuro — Luby)
+  Primary text: #FFFFFF
+  Accent: #1A56DB      (azul — destaques, números)
+  Secondary text: #94A3B8
+  Surface/card: #1E2D40
+
+Typography:
+  Family: 'Inter', sans-serif (Google Fonts @import)
+  Hero/Metric: [≥44]px / 700 weight
+  Heading: [≥40]px / 700 weight
+  Body: [≥24]px / 500 weight
+  Caption: [≥20]px / 500 weight
+
+Rationale: [justificativa concisa]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-Copiar a URL retornada como `image_url`.
+> Paleta alternativa (fundo claro): Background `#F8FAFC`, text `#111827`, accent `#1A56DB`, surface `#EFF6FF`.
 
-**Para AI Image (Pollinations.ai):**
-- Escrever um prompt em inglês, visual, profissional, sem referências a pessoas reais
-- Estilo: `flat design, professional, dark blue and white, minimalist, LinkedIn post`
-- Gerar a URL:
+### 3. Gerar o HTML/CSS
 
+**Regras absolutas:**
+- `body { width: 1200px; height: 627px; overflow: hidden; margin: 0; padding: 0; }`
+- Apenas CSS inline — sem JS, sem CDN exceto Google Fonts `@import`
+- Layout com Flexbox ou Grid — nunca `absolute` para conteúdo principal
+- Todas as fontes ≥ 20px. Heading ≥ 40px. Body ≥ 24px
+- Contraste WCAG AA (4.5:1 mínimo)
+- Conteúdo real do post — nenhum placeholder, nenhum Lorem ipsum
+- Não mencionar o collaborator pelo nome completo na imagem — usar o tema
+
+**Salvar:**
+```
+{run_output}/{name}/linkedin-image.html
+```
+
+### 4. Renderizar via Playwright
+
+```
+1. mcp__playwright__browser_navigate → file:///caminho/absoluto/linkedin-image.html
+2. mcp__playwright__browser_resize → width=1200, height=627
+3. Aguardar ~500ms para fonts carregarem
+4. mcp__playwright__browser_take_screenshot → salvar como {run_output}/{name}/linkedin-image.png
+5. mcp__playwright__browser_close
+```
+
+### 5. Verificar o screenshot
+
+Ler a imagem gerada. Checar:
+- [ ] Texto legível, não cortado
+- [ ] Viewport 1200×627 exatos
+- [ ] Cores corretas, sem artefatos
+- [ ] Conteúdo preenche o espaço sem vazar
+
+Se houver problema: corrigir HTML e re-renderizar (máximo 2 tentativas).
+
+---
+
+## PARTE 2 — URL de Preview para Email (Pollinations.ai)
+
+Gerar uma URL de imagem IA com prompt contextualizado para o campo `image_url` do step-09.
+
+### Construir o prompt
+
+O prompt deve ser específico e visual — extrair do post:
+- O tema central (ex: "AI in healthcare", "legacy software modernization")
+- A indústria do collaborator (ex: "fintech", "healthcare", "SaaS")
+- Um dado ou conceito chave do post (ex: "67% adoption rate", "3-step framework")
+
+**Template do prompt:**
+```
+{tema do post}, {indústria}, professional technology visual, modern flat design,
+dark navy blue background, electric blue accent, clean typography, data visualization,
+LinkedIn post style, 1200x627, minimalist, corporate tech aesthetic, no people, no text
+```
+
+**Gerar a URL:**
 ```bash
 node -e "
 const prompt = 'SEU_PROMPT_AQUI';
-const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1200&height=630&nologo=true';
+const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1200&height=627&nologo=true&model=flux';
 console.log(url);
 "
 ```
 
-Copiar a URL retornada como `image_url`.
+Salvar a URL resultante como `image_url`.
 
-#### 3. Regras
-- Fluxogramas apenas quando o post tem 3-8 etapas sequenciais claras
-- Prompts de IA: sempre em inglês, nunca mencionar pessoas reais pelo nome
-- Nunca deixar `image_url` vazio — se houver erro na geração, usar pollinations.ai com prompt genérico do tema
+---
 
-### Output
+## Output
 
-Salvar `{name}/image-suggestion.md` no diretório de output do run:
+**Arquivos gerados:**
+
+| Arquivo | Uso |
+|---|---|
+| `{run_output}/{name}/linkedin-image.html` | Fonte HTML/CSS (editável) |
+| `{run_output}/{name}/linkedin-image.png` | Imagem branded para publicação no LinkedIn |
+
+**Resumo `{run_output}/{name}/image-suggestion.md`:**
 
 ```markdown
 # Image Suggestion — {name}
 
 **Post flavor:** {flavor}
-**Visual type:** {Flowchart | AI Image}
-**Image URL:** {URL completa gerada — mermaid.ink ou pollinations.ai}
+**Layout type:** {layout escolhido}
+**Image URL:** {URL do Pollinations.ai — para o email no step-09}
+**Image file:** output/{run_id}/{name}/linkedin-image.png
 
 ---
 
-## Source
+## Design System
 
-{código Mermaid completo OU prompt de IA usado}
+{colar o design system do passo 2}
+
+---
+
+## Design Rationale
+
+{justificativa das escolhas visuais}
+
+---
+
+## Email Preview Prompt
+
+{prompt usado no Pollinations.ai}
 ```
 
+> O campo `**Image URL:**` é lido pelo step-09 para o email.
+> O campo `**Image file:**` é o entregável principal — imagem branded de alta qualidade para LinkedIn.
+
 ## Next
+
 step-07-linkedin-optimizer (Lucas analisa o perfil LinkedIn do collaborator)

@@ -7,9 +7,12 @@ squad: "ghostwriter-linkedin-auto"
 execution: inline
 skills:
   - linkedin-content
+  - image-design
+  - playwright
 tasks:
   - tasks/write-post.md
   - tasks/translate-post.md
+  - tasks/image-suggestion.md
   - tasks/deliver-all.md
 ---
 
@@ -109,7 +112,25 @@ Criativo e preciso. Entrega o post completo, pronto para copiar e colar.
 - [ ] Dentro de 700-1500 chars?
 - [ ] Fonte entre parenteses mantida em cada dado?
 
-### Delivery Process (step-08)
+### Image Generation Process (step-06)
+
+Bruno gera uma imagem branded (HTML/CSS + Playwright) e uma URL de preview (Pollinations.ai).
+Seguir integralmente as instrucoes do step-06-image-suggestion.md.
+
+**Principios:**
+- Ler `_opensquad/core/best-practices/image-design.md` como guia de qualidade visual
+- Usar Playwright MCP tools: `mcp__playwright__browser_navigate`, `mcp__playwright__browser_resize`, `mcp__playwright__browser_take_screenshot`
+- Paleta padrao Luby: fundo `#0D1B2A`, accent `#1A56DB`, texto `#FFFFFF`
+- Conteudo real do post — zero placeholder
+- Tamanho exato: 1200×627px
+- Verificar o screenshot antes de avancar
+
+**Verificacao:**
+- [ ] HTML self-contained (sem JS, sem CDN externo exceto Google Fonts)
+- [ ] Screenshot gerado e verificado
+- [ ] `image-suggestion.md` contem `**Image URL:**` (Pollinations.ai) E `**Image file:**` (PNG local)
+
+### Delivery Process (step-10)
 
 1. Para cada collaborator processado:
    - Salvar post final EN em output/ com nome: `{name}-{flavor-slug}-EN-{YYYY-MM-DD}.md`
