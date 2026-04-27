@@ -82,12 +82,14 @@ steps:
     next: step-06-image-suggestion
 
   - id: step-06-image-suggestion
-    name: Sugestao de Imagem
+    name: Geracao de Imagem (Gemini via Playwright)
     type: agent
-    agent: bruno
+    agent: diana
     file: steps/step-06-image-suggestion.md
     execution: inline
     model_tier: powerful
+    skills:
+      - playwright
     tasks:
       - image-suggestion.md
     next: step-07-linkedin-optimizer

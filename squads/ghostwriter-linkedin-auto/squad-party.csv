@@ -4,3 +4,4 @@ path,displayName,icon,role,execution
 ./agents/bruno.agent.md,Bruno Ghostwriter,✍️,Ghostwriter LinkedIn + tradutor EN>PT-BR,inline
 ./agents/helena.agent.md,Helena Revisora,🔬,Revisora combinada tech + engajamento com auto-fix,inline
 ./agents/lucas.agent.md,Lucas Integrador,🔗,LinkedIn optimizer + integracao Supabase,inline
+./agents/diana.agent.md,Diana Arte,🎨,Diretora de arte e geradora de image prompt guides,inline
