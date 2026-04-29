@@ -63,7 +63,7 @@ tasks:
 **Step 02 — Montagem do Manifest (task: prepare-dispatch)**
 
 6. Flatten tiers em lista ordenada (tier1 → tier2 → ... → tier5).
-7. Adicionar `job_titles` filter list com todos os títulos do squad config.
+7. Buscar `job_titles` da tabela `scrapy_queries` no Supabase (`SELECT name FROM scrapy_queries ORDER BY created_at ASC`). Abort se retornar 0 rows.
 8. Adicionar `cutoff_date = now() - 7 dias` (ISO-8601 UTC).
 9. Escrever manifest em `squads/hunter-squad/output/sites-config.json`.
 10. Montar tabela markdown com breakdown de sites por tier para exibição no checkpoint.
@@ -233,6 +233,7 @@ run-log.json escrito em squads/hunter-squad/output/run-log.json.
 ## Integration
 
 - **Reads from**: Supabase `hunter_sites` table (projeto `pbvjsixlqnuzcnqahbxu`)
+- **Reads from**: Supabase `scrapy_queries` table — job titles filter list (SELECT name FROM scrapy_queries)
 - **Writes to**: `squads/hunter-squad/output/sites-config.json` (Step 01)
 - **Writes to**: `squads/hunter-squad/output/run-log.json` (Step 10)
 - **Triggers**: Step 01 (início do pipeline) e Step 10 (logging pós-pipeline)

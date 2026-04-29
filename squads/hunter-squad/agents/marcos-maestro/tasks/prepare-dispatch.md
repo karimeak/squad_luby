@@ -18,7 +18,14 @@ Assembles the final `sites-config.json` manifest that the Scout agent will consu
 
 1. **Flatten tier dict into ordered list**: Iterate through `sites_by_tier` in tier order (tier_1 → tier_2 → tier_3 → tier_4 → tier_5), appending each site's config object to a flat `sites` array. Priority ordering within each tier is preserved from `read-sites` output.
 
-2. **Append job_titles filter**: Add the full `job_titles` list from the squad config. This list must contain at minimum 20 titles. Scout uses these titles to filter collected jobs before inserting into bronze. If the config is unavailable, abort with error — do not dispatch with an empty job_titles list.
+2. **Query job_titles from Supabase**: Execute the following query against the Supabase project `pbvjsixlqnuzcnqahbxu`:
+   ```sql
+   SELECT name FROM scrapy_queries ORDER BY created_at ASC
+   ```
+   Extract the `name` field from every row into a flat string array. This is the `job_titles` filter list Scout uses to discard irrelevant job postings (case-insensitive substring match on the job title field).
+   - If the query returns 0 rows: **abort** with error `"scrapy_queries table is empty — cannot dispatch without job_titles filter"`
+   - If the query fails (connection error): **abort** with error `"Failed to fetch job_titles from scrapy_queries: {error}"`
+   - Log the count: `"Loaded {N} job titles from scrapy_queries"`
 
 3. **Compute cutoff_date**: `cutoff_date = run_at - 7 days` in ISO-8601 UTC format. Example: if `run_at = "2026-04-28T09:00:00Z"`, then `cutoff_date = "2026-04-21T09:00:00Z"`. Scout skips any job posting older than this date.
 
@@ -138,7 +145,7 @@ sites_config:
 
 - [ ] Sites in the `sites` array are ordered by priority DESC (tier_1 first, tier_5 last)
 - [ ] `cutoff_date` is exactly 7 days before `run_at` (same time, same timezone offset)
-- [ ] `job_titles` list contains at least 20 entries — never empty or null
+- [ ] `job_titles` loaded from `scrapy_queries` table — never empty or null (abort if 0 rows returned)
 - [ ] `sites-config.json` file written successfully to `squads/hunter-squad/output/sites-config.json`
 - [ ] `auth_skip_count` matches `len(skipped)` array — no discrepancy between header count and array contents
 
