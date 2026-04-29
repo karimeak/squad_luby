@@ -1,10 +1,10 @@
-# Squad Memory: Hunter Squad
+# Squad Memory: Ghostwriter LinkedIn Article
 
 ## Estilo de Escrita
 
-## Design Visual
+## Estrutura de Artigo
 
-## Estrutura de Conteúdo
+## Tom de Voz
 
 ## Proibições Explícitas
 

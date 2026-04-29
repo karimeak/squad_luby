@@ -1,0 +1,56 @@
+{
+  "description": "Fontes prioritarias de pesquisa para o squad ghostwriter-linkedin-article. Marco consulta estas fontes ANTES de buscas genericas. Artigos exigem fontes mais profundas: papers, reports, case studies.",
+  "updated": "2026-04-29",
+  "sources": {
+    "pt-br": {
+      "label": "Mercado brasileiro",
+      "sites": [
+        "tecnoblog.net",
+        "canaltech.com.br",
+        "tecmundo.com.br",
+        "startupi.com.br",
+        "macmagazine.com.br"
+      ]
+    },
+    "en": {
+      "label": "Mercado US/global",
+      "sites": [
+        "news.ycombinator.com",
+        "techcrunch.com",
+        "theverge.com",
+        "arstechnica.com",
+        "wired.com",
+        "venturebeat.com",
+        "zdnet.com",
+        "thenextweb.com",
+        "hbr.org",
+        "mckinsey.com",
+        "gartner.com",
+        "forrester.com",
+        "infoq.com",
+        "martinfowler.com"
+      ]
+    },
+    "communities": {
+      "label": "Comunidades e plataformas (ambos idiomas)",
+      "sites": [
+        "lobste.rs",
+        "producthunt.com",
+        "reddit.com",
+        "dev.to",
+        "medium.com"
+      ]
+    },
+    "research": {
+      "label": "Fontes academicas e reports (prioridade para artigos)",
+      "sites": [
+        "arxiv.org",
+        "papers.ssrn.com",
+        "statista.com",
+        "pwc.com",
+        "deloitte.com",
+        "accenture.com"
+      ]
+    }
+  }
+}

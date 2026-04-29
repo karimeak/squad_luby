@@ -1,0 +1,134 @@
+pipeline:
+  squad: ghostwriter-linkedin-article
+  version: "1.0.0"
+  description: >
+    Pipeline de ghostwriting de artigos LinkedIn para colaboradores da Luby.
+    Sem checkpoints — totalmente autônomo. Gera artigos EN-US + PT-BR (1.500-2.000 words),
+    image prompt guide para capa, review com auto-fix, salva no Supabase e envia email
+    diretamente para cada collaborator. Publicação manual pelo collaborator.
+
+steps:
+
+  - id: step-00-load-collaborators
+    name: Carga de Colaboradores
+    type: agent
+    agent: lucas
+    file: steps/step-00-load-collaborators.md
+    execution: inline
+    model_tier: powerful
+    supabase:
+      config: pipeline/data/supabase-config.json
+      tables: [collaborators, related_searchs]
+    tasks:
+      - load-collaborators.md
+    next: step-01-research
+
+  # --- LOOP: para cada collaborator na queue ---
+
+  - id: step-01-research
+    name: Pesquisa Web Profunda
+    type: agent
+    agent: marco
+    file: steps/step-01-research.md
+    execution: subagent
+    model_tier: powerful
+    tasks:
+      - research-flavor.md
+    next: step-02-persona
+
+  - id: step-02-persona
+    name: Carga de Persona
+    type: agent
+    agent: sofia
+    file: steps/step-02-persona.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - load-persona.md
+    next: step-03-write
+
+  - id: step-03-write
+    name: Escrita do Artigo EN-US
+    type: agent
+    agent: bruno
+    file: steps/step-03-write.md
+    execution: inline
+    model_tier: powerful
+    format: linkedin-article
+    tasks:
+      - write-article.md
+    next: step-04-translate
+
+  - id: step-04-translate
+    name: Tradução EN > PT-BR
+    type: agent
+    agent: bruno
+    file: steps/step-04-translate.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - translate-article.md
+    next: step-05-review
+
+  - id: step-05-review
+    name: Revisão Combinada (Tech + Estrutura)
+    type: agent
+    agent: helena
+    file: steps/step-05-review.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - combined-review.md
+    max_retries: 2
+    next: step-06-image-prompt
+
+  - id: step-06-image-prompt
+    name: Image Prompt Guide para Capa
+    type: agent
+    agent: diana
+    file: steps/step-06-image-prompt.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - image-prompt.md
+    next: step-07-save-to-supabase
+
+  - id: step-07-save-to-supabase
+    name: Salvar no Supabase
+    type: agent
+    agent: lucas
+    file: steps/step-07-save-to-supabase.md
+    execution: inline
+    model_tier: powerful
+    supabase:
+      config: pipeline/data/supabase-config.json
+      tables: [bloggers]
+    tasks:
+      - save-to-supabase.md
+    next: step-08-send-email
+
+  - id: step-08-send-email
+    name: Envio de Email para o Collaborator
+    type: agent
+    agent: lucas
+    file: steps/step-08-send-email.md
+    execution: inline
+    model_tier: powerful
+    data:
+      - pipeline/data/smtp-config.json
+    tasks:
+      - send-email.md
+    next: step-09-delivery
+
+  # --- FIM DO LOOP ---
+
+  - id: step-09-delivery
+    name: Entrega Final
+    type: agent
+    agent: bruno
+    file: steps/step-09-delivery.md
+    execution: inline
+    model_tier: powerful
+    tasks:
+      - deliver-all.md
+    terminal: true
