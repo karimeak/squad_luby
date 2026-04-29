@@ -1,0 +1,26 @@
+{
+  "squad": "blog-luby-auto",
+  "status": "completed",
+  "step": { "current": 6, "total": 6, "label": "done" },
+  "agents": [
+    { "id": "tobias", "name": "Tobias Scout", "icon": "🔎", "status": "done", "desk": { "col": 1, "row": 1 } },
+    { "id": "mateus", "name": "Mateus Pesquisa", "icon": "🔍", "status": "done", "desk": { "col": 2, "row": 1 } },
+    { "id": "lara", "name": "Lara Redatora", "icon": "✍️", "status": "done", "desk": { "col": 3, "row": 1 } },
+    { "id": "pedro", "name": "Pedro Revisor", "icon": "🔬", "status": "done", "desk": { "col": 1, "row": 2 } },
+    { "id": "iris", "name": "Iris Imagens", "icon": "📸", "status": "done", "desk": { "col": 2, "row": 2 } },
+    { "id": "ada", "name": "Ada Publisher", "icon": "🚀", "status": "done", "desk": { "col": 3, "row": 2 } }
+  ],
+  "handoff": {
+    "from": "ada",
+    "to": null,
+    "message": "4 posts publicados com sucesso. Supabase atualizado. Notificações enviadas.",
+    "completedAt": "2026-04-27T17:30:00Z"
+  },
+  "lastRun": {
+    "id": "2026-04-27-154522",
+    "articlesPublished": 4,
+    "channels": ["blog_nearsmarter", "blog_luby", "blog_luby_us", "blog_finfy"]
+  },
+  "startedAt": "2026-04-27T15:45:22Z",
+  "updatedAt": "2026-04-27T17:30:00Z"
+}

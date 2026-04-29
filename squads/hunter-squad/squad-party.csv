@@ -1,0 +1,6 @@
+id,name,icon,title,execution,path
+marcos-maestro,Marcos Maestro,🎯,Orchestrador do Pipeline,inline,./agents/marcos-maestro.agent.md
+sandro-scout,Sandro Scout,🔍,Web Scraper Playwright,subagent,./agents/sandro-scout.agent.md
+natalia-norm,Natália Norm,🧹,Normalizadora e Deduplicadora,subagent,./agents/natalia-norm.agent.md
+ana-analyst,Ana Analyst,🤖,Analista de Enriquecimento IA,subagent,./agents/ana-analyst.agent.md
+ines-insert,Inês Insert,💾,Ingestora de Banco de Dados,subagent,./agents/ines-insert.agent.md

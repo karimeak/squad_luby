@@ -1,0 +1,85 @@
+name: Hunter Squad Pipeline
+version: "1.0.0"
+mode: sequential
+total_steps: 11
+checkpoints: 4
+
+steps:
+  - id: step-01
+    file: steps/step-01-orchestrate.md
+    type: agent
+    agent: marcos-maestro
+    execution: inline
+    description: "Maestro lê hunter_sites e prepara manifest de execução"
+
+  - id: step-02
+    file: steps/step-02-pre-scraping-checkpoint.md
+    type: checkpoint
+    description: "Aprovação humana: sites ativos, tiers, estimativa de tempo"
+
+  - id: step-03
+    file: steps/step-03-scout-scraping.md
+    type: agent
+    agent: sandro-scout
+    execution: subagent
+    model_tier: powerful
+    description: "Playwright scraping em 45 sites com paginação por data"
+
+  - id: step-04
+    file: steps/step-04-normalize.md
+    type: agent
+    agent: natalia-norm
+    execution: subagent
+    model_tier: fast
+    description: "Normalização + SHA-256 dedup → batch JSON"
+
+  - id: step-05
+    file: steps/step-05-pre-ingest-checkpoint.md
+    type: checkpoint
+    description: "Aprovação humana: stats por site antes do ingest"
+
+  - id: step-06
+    file: steps/step-06-ingest-bronze.md
+    type: agent
+    agent: ines-insert
+    execution: subagent
+    model_tier: fast
+    description: "RPC 1: ingest_apify_jobs_bronze"
+
+  - id: step-07
+    file: steps/step-07-analyst-enrichment.md
+    type: agent
+    agent: ana-analyst
+    execution: subagent
+    model_tier: powerful
+    description: "LLM enrichment: extrai ai_* em chunks de 15"
+
+  - id: step-08
+    file: steps/step-08-post-analyst-checkpoint.md
+    type: checkpoint
+    description: "Aprovação humana: amostra de 3 vagas enriquecidas"
+
+  - id: step-09
+    file: steps/step-09-promote-pipeline.md
+    type: agent
+    agent: ines-insert
+    execution: subagent
+    model_tier: fast
+    description: "RPCs 2-4: promote → upsert_targets → refresh_target_jobs"
+
+  - id: step-10
+    file: steps/step-10-log-run.md
+    type: agent
+    agent: marcos-maestro
+    execution: inline
+    description: "Maestro atualiza last_run_at e loga erros por site"
+
+  - id: step-11
+    file: steps/step-11-final-report-checkpoint.md
+    type: checkpoint
+    description: "Relatório final: rows por tabela, erros, duração total"
+
+on_error:
+  scout_site_failure: continue  # site failures don't abort pipeline
+  analyst_record_failure: continue  # individual record failures don't abort
+  ingestor_rpc_failure: abort  # RPC failures abort and alert

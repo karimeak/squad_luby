@@ -1,0 +1,65 @@
+name: Hunter Squad
+code: hunter-squad
+description: >
+  Squad de scraping semanal de vagas de tecnologia em 45 sites.
+  Usa Playwright para extração, Claude API para enriquecimento com IA,
+  e alimenta o pipeline Supabase de 4 tabelas (bronze → silver → gold).
+icon: 🎯
+version: "1.0.0"
+created_at: "2026-04-28"
+mode: alta-performance
+language: python
+
+supabase:
+  project_id: pbvjsixlqnuzcnqahbxu
+  url: https://pbvjsixlqnuzcnqahbxu.supabase.co
+
+schedule:
+  cron: "0 9 * * 1"
+  description: "Toda segunda-feira às 9h"
+
+skills:
+  - web_search
+  - web_fetch
+  - playwright
+  - supabase
+
+data:
+  - pipeline/data/research-brief.md
+  - pipeline/data/domain-framework.md
+  - pipeline/data/quality-criteria.md
+  - pipeline/data/output-examples.md
+  - pipeline/data/anti-patterns.md
+
+agents:
+  - id: marcos-maestro
+    name: Marcos Maestro
+    icon: 🎯
+    file: agents/marcos-maestro.agent.md
+  - id: sandro-scout
+    name: Sandro Scout
+    icon: 🔍
+    file: agents/sandro-scout.agent.md
+  - id: natalia-norm
+    name: Natália Norm
+    icon: 🧹
+    file: agents/natalia-norm.agent.md
+  - id: ana-analyst
+    name: Ana Analyst
+    icon: 🤖
+    file: agents/ana-analyst.agent.md
+  - id: ines-insert
+    name: Inês Insert
+    icon: 💾
+    file: agents/ines-insert.agent.md
+
+pipeline:
+  file: pipeline/pipeline.yaml
+  steps: 11
+  checkpoints: 4
+
+investigation:
+  enriched: false
+
+memory:
+  file: _memory/memories.md
