@@ -27,7 +27,7 @@ Bruno escreve 1 post LinkedIn Text Medium (700-1500 chars) em ingles para o coll
 5. **Hashtags**: 3-5 na ultima linha. Mix broad + niche.
 
 ### Regras
-- Formato: Text Post Medium (700-1500 chars)
+- Formato: Text Post Medium (700-900 chars)
 - Idioma: EN-US (American English — referências US/global)
 - 1 variante apenas (sem A/B)
 - Cada dado/statistic deve ter fonte entre parenteses: "(McKinsey, 2025)"
@@ -40,7 +40,7 @@ Bruno escreve 1 post LinkedIn Text Medium (700-1500 chars) em ingles para o coll
 - [ ] Fonte entre parenteses em cada dado
 - [ ] Nenhum link no corpo
 - [ ] 1-2 frases por paragrafo
-- [ ] Total 700-1500 chars
+- [ ] Total 700-900 chars
 - [ ] Soa como o collaborator, nao como IA
 
 ### Output

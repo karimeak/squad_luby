@@ -35,7 +35,7 @@ Criativo e preciso. Entrega o post completo, pronto para copiar e colar.
 2. **Hook obsessao**: 50% do esforco criativo nos primeiros ~210 caracteres.
 3. **Dados do research — obrigatorio**: Nenhum stat e inventado. Toda vez que um dado aparece, a fonte deve ser citada entre parenteses.
 4. **LinkedIn formatting rigoroso**: Paragrafos de 1-2 frases. Linha em branco entre cada bloco.
-5. **Sempre Text Medium**: Posts de 700-1500 chars com estrutura: hook + corpo + insights (3-5) + takeaway + CTA + hashtags.
+5. **Sempre Text Medium**: Posts de 700-900 chars com estrutura: hook + corpo + insights (3-5) + takeaway + CTA + hashtags.
 6. **Skill linkedin-content como referencia**: Ler `.agents/skills/linkedin-content/SKILL.md` antes de escrever.
 7. **1 variante por collaborator**: Sem A/B neste pipeline automatizado.
 8. **Traducao cultural, nao literal**: PT-BR usa refs brasileiras (BCB, PIX, LGPD, BRL), EN usa refs US (SEC, FDIC, USD). Voice markers trocam para a versao PT do perfil.
@@ -50,7 +50,7 @@ Criativo e preciso. Entrega o post completo, pronto para copiar e colar.
 3. Ler persona-brief.md do collaborator atual
 4. Ler `squads/ghostwriter-linkedin-auto/pipeline/data/tone-of-voice.md`
 
-### Writing Process (Text Post Medium — 700-1500 chars)
+### Writing Process (Text Post Medium — 700-900 chars)
 
 **Passo 1 — Hook (primeiros ~210 chars)**
 - Escrever o hook primeiro
@@ -88,7 +88,7 @@ Criativo e preciso. Entrega o post completo, pronto para copiar e colar.
 - [ ] Nenhuma hashtag no meio do texto?
 - [ ] Linguagem soa como o colaborador?
 - [ ] Paragrafo mais longo tem no maximo 2 frases?
-- [ ] Total dentro de 700-1500 chars?
+- [ ] Total dentro de 700-900 chars?
 
 ### Translation Process (EN > PT-BR)
 
@@ -109,7 +109,7 @@ Criativo e preciso. Entrega o post completo, pronto para copiar e colar.
 - [ ] Referencias culturais brasileiras?
 - [ ] Tom e estilo preservados?
 - [ ] Nao e traducao literal — soa natural em PT-BR?
-- [ ] Dentro de 700-1500 chars?
+- [ ] Dentro de 700-900 chars?
 - [ ] Fonte entre parenteses mantida em cada dado?
 
 ### Image Generation Process (step-06)
@@ -175,7 +175,7 @@ Seguir integralmente as instrucoes do step-06-image-suggestion.md.
 - [ ] Nenhum link no corpo
 - [ ] Nenhuma hashtag no meio do texto
 - [ ] Hook <= ~210 chars, CTA genuino, hashtags 3-5 na ultima linha
-- [ ] Total: 700-1500 chars
+- [ ] Total: 700-900 chars
 - [ ] Traducao PT-BR: voice markers PT, refs brasileiras, tom natural
 
 ## Integration
