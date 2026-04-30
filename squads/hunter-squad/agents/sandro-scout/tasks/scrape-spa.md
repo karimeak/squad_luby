@@ -52,13 +52,47 @@ Generic listing sites serve pre-rendered HTML — Playwright can navigate pages 
 
    a. **Acquire semaphore** — `async with semaphore:` wraps the entire site scrape.
 
-   b. **Open stealth browser context**:
+   b. **Open browser context** — two modes depending on `site.config.get("requires_profile", False)`:
+
+      **Mode A — persistent profile** (for sites like wellfound that need a saved session):
+      ```python
+      from pathlib import Path
+
+      BASE_DIR = Path(__file__).resolve().parents[4]  # raiz do projeto Squad/
+      profile_dir = BASE_DIR / "_opensquad" / "_browser_profile" / site.config["profile_dir"]
+
+      if not profile_dir.exists():
+          raise RuntimeError(
+              f"[scrape-spa][{site.name}] Profile dir not found: {profile_dir}\n"
+              f"Run the login script first:\n"
+              f"  python squads/hunter-squad/scripts/{site.name}-login.py"
+          )
+
+      context = await playwright.chromium.launch_persistent_context(
+          user_data_dir=str(profile_dir),
+          headless=True,
+          args=["--disable-blink-features=AutomationControlled"],
+      )
+      page = await context.new_page()
+      # Note: stealth is NOT applied to persistent contexts — it conflicts with saved state
+      ```
+
+      **Mode B — fresh context** (default, for all other sites):
       ```python
       browser = await playwright.chromium.launch(headless=True)
       context = await browser.new_context(user_agent=random_ua())
       await stealth_async(context)  # playwright-stealth
       page = await context.new_page()
       ```
+
+      > **Login check for Mode A**: after `page.goto(base_url)`, verify the page is not a login/redirect wall:
+      > ```python
+      > if "/login" in page.url or "/signup" in page.url:
+      >     raise RuntimeError(
+      >         f"[scrape-spa][{site.name}] Session expired — profile redirected to login.\n"
+      >         f"Re-run: python squads/hunter-squad/scripts/{site.name}-login.py"
+      >     )
+      > ```
 
    c. **Set up network interception BEFORE navigation**:
       ```python
@@ -146,6 +180,9 @@ Generic listing sites serve pre-rendered HTML — Playwright can navigate pages 
    finally:
        await page.close()
        await context.close()
+       # Note: for Mode B (fresh context), also close the browser:
+       if not site.config.get("requires_profile", False):
+           await browser.close()
    ```
 
 6. **Return** `spa_results` dict after all coroutines complete.

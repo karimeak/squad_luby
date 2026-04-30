@@ -1,50 +1,21 @@
 {
   "squad": "hunter-squad",
-  "status": "running",
-  "step": { "current": 7, "total": 11, "label": "step-07-analyst-enrichment" },
+  "status": "completed",
+  "step": { "current": 11, "total": 11, "label": "step-11-final-report" },
   "agents": [
-    {
-      "id": "marcos-maestro",
-      "name": "Marcos Maestro",
-      "icon": "🎯",
-      "status": "done",
-      "desk": { "col": 1, "row": 1 }
-    },
-    {
-      "id": "sandro-scout",
-      "name": "Sandro Scout",
-      "icon": "🔍",
-      "status": "done",
-      "desk": { "col": 2, "row": 1 }
-    },
-    {
-      "id": "natalia-norm",
-      "name": "Natália Norm",
-      "icon": "🧹",
-      "status": "done",
-      "desk": { "col": 3, "row": 1 }
-    },
-    {
-      "id": "ana-analyst",
-      "name": "Ana Analyst",
-      "icon": "🤖",
-      "status": "working",
-      "desk": { "col": 1, "row": 2 }
-    },
-    {
-      "id": "ines-insert",
-      "name": "Inês Insert",
-      "icon": "💾",
-      "status": "done",
-      "desk": { "col": 2, "row": 2 }
-    }
+    { "id": "marcos-maestro", "name": "Marcos Maestro", "icon": "🎯", "status": "done", "desk": { "col": 1, "row": 1 } },
+    { "id": "sandro-scout",   "name": "Sandro Scout",   "icon": "🔍", "status": "done",    "desk": { "col": 2, "row": 1 } },
+    { "id": "natalia-norm",   "name": "Natália Norm",   "icon": "🧹", "status": "done",    "desk": { "col": 3, "row": 1 } },
+    { "id": "ana-analyst",    "name": "Ana Analyst",    "icon": "🤖", "status": "done",    "desk": { "col": 1, "row": 2 } },
+    { "id": "ines-insert",    "name": "Inês Insert",    "icon": "💾", "status": "done",    "desk": { "col": 2, "row": 2 } }
   ],
   "handoff": {
-    "from": "ines-insert",
-    "to": "ana-analyst",
-    "message": "Bronze concluído (52 registros, todos já existentes). Ana enriquecendo 383 registros sem ai_key_skills.",
-    "completedAt": "2026-04-29T10:22:30Z"
+    "from": "marcos-maestro",
+    "to": null,
+    "message": "Pipeline concluído. Dry-run OK — 45 sites reativados para produção.",
+    "completedAt": "2026-04-30T21:20:00Z"
   },
-  "startedAt": "2026-04-29T10:14:39Z",
-  "updatedAt": "2026-04-29T10:22:35Z"
+  "startedAt": "2026-04-30T15:28:22Z",
+  "completedAt": "2026-04-30T21:20:00Z",
+  "updatedAt": "2026-04-30T21:20:00Z"
 }
