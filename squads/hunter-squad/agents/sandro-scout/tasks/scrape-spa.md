@@ -21,7 +21,34 @@ Generic listing sites serve pre-rendered HTML — Playwright can navigate pages 
 
 1. **Filter queue**: Reduce `scrape_queue` to sites where `scraper_type == "spa_infinite_scroll"`.
 2. **Initialize concurrency**: Reuse `asyncio.Semaphore(5)` from the outer scraping context.
-3. **For each site in parallel** (`asyncio.gather(*[scrape_spa_site(s) for s in spa_sites])`):
+3. **Define retry wrapper** — same pattern as `scrape-generic`, applied at site level:
+   ```python
+   import random
+
+   RETRYABLE_ERRORS = (TimeoutError, PlaywrightError)
+
+   async def scrape_spa_with_retry(site, semaphore, cutoff_date, job_titles, max_retries=3, base_delay=2.0):
+       last_error = None
+       for attempt in range(max_retries):
+           try:
+               return await scrape_spa_site(site, semaphore, cutoff_date, job_titles)
+           except RETRYABLE_ERRORS as e:
+               last_error = e
+               if attempt == max_retries - 1:
+                   break
+               wait = base_delay * (2 ** attempt) * random.uniform(0.8, 1.2)
+               print(f"[scrape-spa][{site.name}] attempt {attempt + 1} failed ({type(e).__name__}), retrying in {wait:.1f}s...")
+               await asyncio.sleep(wait)
+           except Exception as e:
+               # Non-retryable: SelectorNotFound (page structure changed), ParseError
+               return build_error_result(site, e, attempts=attempt + 1)
+       return build_error_result(site, last_error, attempts=max_retries)
+   ```
+   - SPA sites are more prone to `TimeoutError` on initial load — retry especially useful here
+   - `SelectorNotFound` (initial job cards never appeared) → **non-retryable**: structural failure, not transient
+   - **Delays**: ~2s, ~4s before 3rd attempt → total max wait ~6s before declaring failure
+
+4. **For each site in parallel** (`asyncio.gather(*[scrape_spa_with_retry(s, ...) for s in spa_sites])`):
 
    a. **Acquire semaphore** — `async with semaphore:` wraps the entire site scrape.
 
@@ -110,7 +137,7 @@ Generic listing sites serve pre-rendered HTML — Playwright can navigate pages 
 
    j. **Build per-site result** with stats.
 
-4. **Close pages in `finally` blocks**:
+5. **Close pages in `finally` blocks**:
    ```python
    try:
        # scraping logic
@@ -121,7 +148,7 @@ Generic listing sites serve pre-rendered HTML — Playwright can navigate pages 
        await context.close()
    ```
 
-5. **Return** `spa_results` dict after all coroutines complete.
+6. **Return** `spa_results` dict after all coroutines complete.
 
 ## Output Format
 
@@ -218,6 +245,9 @@ spa_results:
 - [ ] No raw HTML in returned job fields — title, company, description, location must be plain text strings
 - [ ] Three-condition loop guard present: `no_new_items` check + `date_cutoff` check + `max_pages` hard cap
 - [ ] `asyncio.Semaphore(5)` applied — SPA sites share the same semaphore as generic sites
+- [ ] Retry applied: `TimeoutError` and `PlaywrightError` retried up to 3 times with exponential backoff
+- [ ] `SelectorNotFound` (initial cards never appeared) fails immediately — non-retryable structural error
+- [ ] Each retry logged: `[scrape-spa][site_name] attempt N failed (ErrorType), retrying in Xs...`
 
 ## Veto Conditions
 

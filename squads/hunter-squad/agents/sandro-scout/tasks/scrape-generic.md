@@ -17,7 +17,35 @@ output: |
 
 1. **Filter queue**: Reduce `scrape_queue` to sites where `scraper_type == "generic_listing"`.
 2. **Initialize concurrency**: Create `semaphore = asyncio.Semaphore(5)`. All site coroutines share this semaphore.
-3. **For each site in parallel** (`asyncio.gather(*[scrape_site(s) for s in generic_sites])`):
+3. **Define retry wrapper** — wrap every site scrape with exponential backoff before launching parallel tasks:
+   ```python
+   import random
+
+   RETRYABLE_ERRORS = (TimeoutError, PlaywrightError)  # NOT SelectorNotFound — structural, no point retrying
+
+   async def scrape_with_retry(site, semaphore, cutoff_date, job_titles, max_retries=3, base_delay=2.0):
+       last_error = None
+       for attempt in range(max_retries):
+           try:
+               return await scrape_site(site, semaphore, cutoff_date, job_titles)
+           except RETRYABLE_ERRORS as e:
+               last_error = e
+               if attempt == max_retries - 1:
+                   break  # exhausted — fall through to error result
+               wait = base_delay * (2 ** attempt) * random.uniform(0.8, 1.2)
+               print(f"[scrape-generic][{site.name}] attempt {attempt + 1} failed ({type(e).__name__}), retrying in {wait:.1f}s...")
+               await asyncio.sleep(wait)
+           except Exception as e:
+               # Non-retryable (SelectorNotFound, ParseError, etc.) — fail immediately
+               return build_error_result(site, e, attempts=attempt + 1)
+       return build_error_result(site, last_error, attempts=max_retries)
+   ```
+   - **Retryable**: `TimeoutError`, `PlaywrightError` (network-level, 429, 503) — transient, worth retrying
+   - **Non-retryable**: `SelectorNotFound`, `ParseError` — structural, retrying won't help
+   - **Delays**: attempt 0→1: ~2s, attempt 1→2: ~4s, attempt 2→fail: error logged
+   - **Log each retry**: `[scrape-generic][site_name] attempt N failed (ErrorType), retrying in Xs...`
+
+4. **For each site in parallel** (`asyncio.gather(*[scrape_with_retry(s, ...) for s in generic_sites])`):
 
    a. **Acquire semaphore** — `async with semaphore:` wraps the entire site scrape.
 
@@ -67,7 +95,7 @@ output: |
 
    i. **Build per-site result** with stats.
 
-4. **Close pages in `finally` blocks**:
+5. **Close pages in `finally` blocks**:
    ```python
    try:
        # scraping logic
@@ -78,7 +106,7 @@ output: |
        await context.close()
    ```
 
-5. **Return** `generic_results` dict after all coroutines complete.
+6. **Return** `generic_results` dict after all coroutines complete.
 
 ## Output Format
 
@@ -166,6 +194,10 @@ generic_results:
 - [ ] `throttle_ms` respected between page navigations — verified by `duration_ms` being > `pages_scraped * throttle_ms`
 - [ ] `xhr_intercepted` field always present (true/false) in every result
 - [ ] `stop_reason` always set to one of: `"date_cutoff"`, `"max_pages"`, `"no_more_results"`, or `null` on error
+- [ ] Retry applied: `TimeoutError` and `PlaywrightError` retried up to 3 times with exponential backoff
+- [ ] Non-retryable errors (`SelectorNotFound`, `ParseError`) fail immediately — no wasted retries
+- [ ] Each retry attempt logged: `[scrape-generic][site_name] attempt N failed (ErrorType), retrying in Xs...`
+- [ ] `attempts` field present in error results (shows how many attempts were made)
 
 ## Veto Conditions
 
