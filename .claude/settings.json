@@ -17,5 +17,23 @@
         "thenextweb.com"
       ]
     }
+  },
+  "permissions": {
+    "allow": [
+      "Bash(python *)",
+      "Bash(pip *)",
+      "Bash(playwright *)",
+      "Bash(python3 *)",
+      "Read(squads/hunter-squad/*)",
+      "Write(squads/hunter-squad/output/*)",
+      "Edit(squads/hunter-squad/output/*)",
+      "mcp__supabase__execute_sql",
+      "mcp__supabase__list_tables",
+      "mcp__supabase__list_extensions",
+      "mcp__supabase__get_project_url",
+      "mcp__supabase__get_publishable_keys",
+      "mcp__supabase__get_logs",
+      "WebFetch"
+    ]
   }
 }
