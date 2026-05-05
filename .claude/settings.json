@@ -24,6 +24,7 @@
       "Bash(pip *)",
       "Bash(playwright *)",
       "Bash(python3 *)",
+      "Bash(git *)",
       "Read(squads/hunter-squad/*)",
       "Write(squads/hunter-squad/output/*)",
       "Edit(squads/hunter-squad/output/*)",
@@ -34,6 +35,19 @@
       "mcp__supabase__get_publishable_keys",
       "mcp__supabase__get_logs",
       "WebFetch"
+    ]
+  },
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/auto-commit-memory.sh"
+          }
+        ]
+      }
     ]
   }
 }
