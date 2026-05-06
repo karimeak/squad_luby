@@ -4,6 +4,7 @@
   "step": { "current": 3, "total": 11, "label": "step-03-scout-scraping" },
   "agents": [
     { "id": "marcos-maestro", "name": "Marcos Maestro", "icon": "🎯", "status": "done", "desk": { "col": 1, "row": 1 } },
+<<<<<<< Updated upstream
     { "id": "sandro-scout",   "name": "Sandro Scout",   "icon": "🔍", "status": "working", "desk": { "col": 2, "row": 1 } },
     { "id": "natalia-norm",   "name": "Natália Norm",   "icon": "🧹", "status": "idle",    "desk": { "col": 3, "row": 1 } },
     { "id": "ana-analyst",    "name": "Ana Analyst",    "icon": "🤖", "status": "idle",    "desk": { "col": 1, "row": 2 } },
@@ -17,4 +18,20 @@
   },
   "startedAt": "2026-05-06T09:01:10Z",
   "updatedAt": "2026-05-06T09:02:00Z"
+=======
+    { "id": "sandro-scout",   "name": "Sandro Scout",   "icon": "🔍", "status": "done", "desk": { "col": 2, "row": 1 } },
+    { "id": "natalia-norm",   "name": "Natália Norm",   "icon": "🧹", "status": "done", "desk": { "col": 3, "row": 1 } },
+    { "id": "ana-analyst",    "name": "Ana Analyst",    "icon": "🤖", "status": "done", "desk": { "col": 1, "row": 2 } },
+    { "id": "ines-insert",    "name": "Inês Insert",    "icon": "💾", "status": "done", "desk": { "col": 2, "row": 2 } }
+  ],
+  "handoff": {
+    "from": "marcos-maestro",
+    "to": null,
+    "message": "Pipeline produção concluído: 25 vagas processadas (silver +24/upd 476). 33 sites precisam de correções documentadas no run-log.",
+    "completedAt": "2026-05-06T14:30:30Z"
+  },
+  "startedAt": "2026-05-06T09:01:10Z",
+  "completedAt": "2026-05-06T14:30:30Z",
+  "updatedAt": "2026-05-06T14:30:30Z"
+>>>>>>> Stashed changes
 }
