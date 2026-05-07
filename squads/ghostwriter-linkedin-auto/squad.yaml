@@ -5,12 +5,12 @@ squad:
     Versao automatizada do ghostwriter LinkedIn. Gera posts de texto Medium
     para todos os colaboradores sem interacao humana. Fluxo: fetch collaborators
     do Supabase > match flavor por topicos > pesquisa web > persona > escrita EN-US
-    > traducao PT-BR > review combinada (tech+engajamento) com auto-fix
-    > image prompt guide (Diana) > geracao via Google Gemini + URL preview Pollinations.ai
-    > LinkedIn profile optimizer
-    > salva em bloggers (Supabase) > envia email para cada collaborator
+    > traducao PT-BR > review combinada (tech+engajamento+humanizacao) com auto-fix
+    > image prompt guide (Diana) > geracao via Google Gemini + upload pro Supabase
+    Storage (bucket linkedin-ghostwriter-images) > LinkedIn profile optimizer
+    > salva em bloggers (Supabase, com image_url) > envia email com a imagem real
     via Edge Function > entrega final.
-  version: "1.3.0"
+  version: "1.4.0"
   created: "2026-04-07"
   performance_mode: alta-performance
   language: multilingual

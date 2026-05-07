@@ -10,7 +10,9 @@ model_tier: powerful
 # Step 09 — Envio de Email para o Collaborator
 
 ## Objetivo
-Lucas envia um email diretamente para o collaborator com o seu post LinkedIn gerado (EN + PT-BR), a imagem gerada e o overview de melhoria do perfil. O envio é exclusivo para o collaborator — sem notificação interna. A entrega é feita via Supabase Edge Function.
+Lucas envia um email diretamente para o collaborator com o seu post LinkedIn gerado (EN + PT-BR), a imagem real que ele postará no LinkedIn (URL pública do Supabase Storage) e o overview de melhoria do perfil. O envio é exclusivo para o collaborator — sem notificação interna. A entrega é feita via Supabase Edge Function.
+
+> A imagem do email é a MESMA que será publicada no LinkedIn. O colaborador decide se aprova/posta com base no que ve no email.
 
 ## Instruções para Lucas
 
@@ -21,7 +23,7 @@ Lucas envia um email diretamente para o collaborator com o seu post LinkedIn ger
 - Para cada collaborator:
   - `{name}/reviewed-post-en.md` — post EN final
   - `{name}/reviewed-post-pt.md` — post PT-BR final
-  - `{name}/image-suggestion.md` — linha `**Image URL:**` com a URL da imagem gerada
+  - `{name}/image-suggestion.md` — linha `**Image URL:**` com a URL pública do Supabase Storage (mesma imagem do LinkedIn)
   - `{name}/linkedin-overview.md` — overview de melhoria do perfil
   - `{name}/save-confirmation.md` — IDs Supabase
 
@@ -36,6 +38,7 @@ Carregar smtp-config.json e supabase-config.json. Extrair `edge_function_url`, `
 Extrair `image_url` do arquivo `image-suggestion.md`:
 - Localizar a linha que começa com `**Image URL:**`
 - Extrair a URL completa dessa linha
+- Se o valor for `null` ou vazio (upload falhou no step-06), enviar `image_url` como string vazia no payload — a edge function deve omitir a tag `<img>` no template do email
 
 #### 2. Preparar payload do email
 

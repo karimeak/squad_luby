@@ -10,12 +10,22 @@
     "bloggers": {
       "name": "bloggers",
       "description": "Posts LinkedIn gerados pelo squad, aguardando envio via n8n",
-      "fields": ["id", "collaborator_id", "content", "submitted_content", "created_at"]
+      "fields": ["id", "collaborator_id", "content", "image_url", "submitted_content", "created_at"]
     },
     "related_searchs": {
       "name": "related_searchs",
       "description": "Flavors/temas disponiveis para match com topics dos collaborators",
       "fields": ["query", "related_search"]
+    }
+  },
+  "storage": {
+    "linkedin-ghostwriter-images": {
+      "name": "linkedin-ghostwriter-images",
+      "public": true,
+      "description": "Imagens geradas pelo Gemini (step-06) para os posts LinkedIn dos collaborators. Upload no path {collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}.jpg (UUID direto da tabela collaborators, flavor slugificado via node -e deterministico).",
+      "file_size_limit_bytes": 10485760,
+      "allowed_mime_types": ["image/jpeg", "image/png", "image/webp"],
+      "public_url_pattern": "{supabase_url}/storage/v1/object/public/linkedin-ghostwriter-images/{path}"
     }
   }
 }
