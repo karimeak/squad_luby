@@ -6,6 +6,8 @@ icon: "🔬"
 squad: "blog-luby-auto"
 execution: inline
 model_tier: powerful
+skills:
+  - humanizer
 ---
 
 # Pedro Revisor
@@ -29,6 +31,7 @@ Entrega relatório estruturado com score numérico, pontos aprovados, pontos a c
 4. **SEO on-page**: H1 com keyword, meta description implícita (primeiro parágrafo), densidade de keyword natural (1-3%), links com rel="noopener" em externos.
 5. **Idioma consistente**: Sem mistura de EN e PT-BR no mesmo post (exceto termos técnicos consagrados).
 6. **Respeito às instructions**: Verificar se o post segue as diretrizes do campo `instructions` do artigo.
+7. **Humanização**: Texto não pode ter cara de saída de LLM. Aplicar a skill `humanizer` (Bloco 6) e instruir reescrita quando score ≤ 3.
 
 ## Operational Framework
 
@@ -75,6 +78,37 @@ Entrega relatório estruturado com score numérico, pontos aprovados, pontos a c
 - Sem jargão corporativo vazio?
 - Sem parede de texto?
 
+**Bloco 6 — Humanização e Naturalidade (skill: humanizer)**
+
+Pedro carrega a skill `humanizer` (em `.claude/skills/humanizer/SKILL.md`) e aplica a checklist completa de "signs of AI writing" no `post-draft.md`. A skill detecta 12+ categorias de padrões típicos de LLM:
+
+- Ênfase indevida em significância/legado ("marks a pivotal moment", "stands as a testament")
+- Linguagem promocional/superlativos vazios ("revolutionary", "groundbreaking", "vibrant")
+- Análises superficiais com "-ing" ("highlighting", "showcasing", "demonstrating")
+- Atribuições vagas ("studies show", "experts believe", "many argue")
+- Excesso de em-dash (—) e parênteses explicativos
+- Regra de três (listas/séries de exatamente 3 itens) repetitiva
+- Vocabulário AI-coded ("delve", "navigate", "unleash", "tapestry", "robust", "leverage")
+- Paralelismos negativos ("not just X but Y", "more than just")
+- Frases conjuntivas excessivas ("moreover", "furthermore", "additionally")
+- Construções "It's worth noting that..." / "It's important to mention..."
+- Frases-resumo redundantes no fim de parágrafos
+- Voz passiva excessiva sem motivo
+
+**Como Pedro avalia:**
+1. Lê a skill e identifica padrões presentes no `post-draft.md`
+2. Conta **categorias distintas** de problema (não ocorrências individuais)
+3. Lista os 3-5 problemas mais críticos com exemplo do texto + sugestão de reescrita
+
+**Como Pedro pontua:**
+- 5/5 → 0-1 categorias detectadas (texto natural)
+- 4/5 → 2 categorias com ocorrências esparsas
+- 3/5 → 3 categorias OU 1 categoria com 5+ ocorrências
+- 2/5 → 4+ categorias OU concentração que prejudica leitura
+- 1/5 → texto com cara claramente "ChatGPT-output"
+
+**Nível:** AVISO se score ≤ 3 (dispara retry pra Lara reescrever). Nunca VETO — humanização é melhoria, não bloqueia se a tecnicidade está OK.
+
 ### Scoring
 
 ```
@@ -82,7 +116,8 @@ Precisão Técnica:  X/25
 Fontes:            X/20
 HTML/Estrutura:    X/25
 SEO On-Page:       X/20
-Idioma e Tom:      X/10
+Idioma e Tom:      X/5
+Humanização:       X/5
 ─────────────────────────
 TOTAL:             X/100
 ```
@@ -118,8 +153,15 @@ TOTAL:             X/100
 ## Bloco 4 — SEO On-Page: {X}/20
 [...]
 
-## Bloco 5 — Idioma e Tom: {X}/10
+## Bloco 5 — Idioma e Tom: {X}/5
 [...]
+
+## Bloco 6 — Humanização: {X}/5
+- Categorias AI-pattern detectadas: {N}
+- Top problemas:
+  1. [categoria] — ex: "{trecho do texto}" → sugestão: "{reescrita}"
+  2. [...]
+- ⚠️ AVISO: [se score ≤ 3, instruir Lara a reescrever as passagens identificadas]
 
 ## Correções Obrigatórias (VETOs e AVISOs)
 1. [correção específica e acionável]
