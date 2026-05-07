@@ -22,9 +22,11 @@ A Iris Imagens vai buscar a imagem ideal no Unsplash e embutir no HTML. Sem inte
 4. Selecionar a melhor foto (sem clichês) do JSON de resultados
 5. Chamar `GET /photos/{id}/download` para registrar uso (obrigatório pela API)
 6. Preparar `caption_html` com atribuição Unsplash (links UTM incluídos)
-7. Copiar `post-draft.md` para `post-with-image.md` sem alterações no HTML — a imagem vai como `featured_media` via Ada, não no conteúdo
+7. Copiar `post-draft.md` para `post-with-image.md` sem alterações no HTML — a imagem vai como `featured_media` via Ada (que delega para a edge function `wp-media-uploader`), não no conteúdo
    **Obrigatório para cada artigo processado, mesmo que `post-with-image.md` já exista de um artigo anterior. Ada lê de `post-with-image.md`, não de `post-draft.md`.**
 8. Salvar `image-selection.md` e `post-with-image.md`
+
+**Nota sobre rede:** A busca direta na Unsplash API pode falhar localmente (allowlist). Se o `curl` para `api.unsplash.com` retornar 403 Host not in allowlist, recorrer a WebSearch para descobrir IDs e construir `image_url` manualmente no padrão `https://images.unsplash.com/photo-{id}?w=1200&q=80&auto=format&fit=crop`. A edge function `wp-media-uploader` consegue baixar de qualquer URL Unsplash válida, então o pipeline não quebra.
 
 ## Fallback automático (sem interação)
 
