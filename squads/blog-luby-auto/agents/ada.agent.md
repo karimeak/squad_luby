@@ -39,7 +39,7 @@ Relatório final limpo com status de cada ação (WP publish, Supabase update, e
 3. Ler `squads/blog-luby-auto/output/research-brief.md` — extrair URLs das fontes
 4. Ler `squads/blog-luby-auto/output/image-selection.md` — extrair `image_url`, `photographer_name`, `photographer_profile_url`
 5. Ler `squads/blog-luby-auto/pipeline/data/supabase-config.json` — `supabase_url`, `supabase_anon_key`
-6. Ler `squads/blog-luby-auto/pipeline/data/smtp-config.json` — `notification_emails`, `edge_function_url`, `zoho_user`, `zoho_pass`, `from_name`
+6. Ler `squads/blog-luby-auto/pipeline/data/smtp-config.json` — `notification_emails`, `edge_function_url`, `media_uploader_url`, `zoho_user`, `zoho_pass`, `from_name`
 7. Verificar se `squads/blog-luby-auto/output/post-draft.md` contém `REVIEW_WARNING`
 
 ### Fase 2 — Buscar credenciais WP do publisher no Supabase
@@ -68,40 +68,60 @@ A partir do tema do artigo (`title` + `instructions`), escolher a categoria mais
 Se nenhuma categoria for claramente aplicável: usar `[]` (WordPress usa "Uncategorized").
 Não chamar a WP API para buscar categorias — o arquivo já tem tudo mapeado.
 
-### Fase 4 — Upload da imagem para a WP Media Library
+### Fase 4 — Upload da imagem via Edge Function `wp-media-uploader`
 
 A imagem vai como `featured_media` — o tema a renderiza antes do título, que é a posição correta.
 
-**Passo 4a — Baixar imagem do Unsplash:**
-```bash
-curl -sL "{image_url da image-selection.md}" -o /tmp/post-featured.jpg
-```
+**Por que via Edge Function:** o ambiente local de execução pode bloquear (allowlist de rede) tanto `images.unsplash.com` quanto o domínio do WordPress, impedindo download e upload binário direto. A edge function `wp-media-uploader` roda em Deno na infra Supabase (rede livre) e faz download + upload binário + metadata em uma única chamada HTTP.
 
-**Passo 4b — Fazer upload para a WP Media Library:**
+**Chamada única — substitui Passos 4a/4b/4c:**
 ```bash
-curl -s -X POST "{WP_URL}/wp-json/wp/v2/media" \
-  -H "Authorization: Basic ${ENCODED_AUTH}" \
-  -H "Content-Type: image/jpeg" \
-  -H "Content-Disposition: attachment; filename=\"featured.jpg\"" \
-  --data-binary @/tmp/post-featured.jpg
-```
-
-Extrair o `id` da resposta (ex: `{"id": 42, ...}`).
-
-**Passo 4c — Definir alt text e caption com atribuição Unsplash (OBRIGATÓRIO — licença Unsplash + SEO):**
-```bash
-curl -s -X POST "{WP_URL}/wp-json/wp/v2/media/{media_id}" \
-  -H "Authorization: Basic ${ENCODED_AUTH}" \
+curl -s -X POST "${MEDIA_UPLOADER_URL}" \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer ${SUPABASE_ANON_KEY}" \
   -d '{
-    "alt_text": "{image_alt da image-selection.md}",
-    "caption": "{caption_html da image-selection.md}"
+    "wp_url": "{publisher.url}",
+    "wp_email": "{publisher.email}",
+    "wp_password": "{publisher.password}",
+    "image_url": "{image_url da image-selection.md}",
+    "image_alt": "{image_alt da image-selection.md}",
+    "image_caption_html": "{caption_html da image-selection.md}",
+    "filename": "featured.jpg"
   }'
 ```
 
-Este passo é obrigatório mesmo que o upload tenha sido bem-sucedido. A atribuição ao fotógrafo é exigida pela licença Unsplash; o alt_text impacta SEO e acessibilidade.
+**Resposta esperada (sucesso):**
+```json
+{
+  "ok": true,
+  "media_id": 42,
+  "media_source_url": "https://blog.luby.com.br/wp-content/uploads/2026/05/featured.jpg",
+  "metadata_updated": true,
+  "unsplash_tracking": "skipped"
+}
+```
 
-Se o upload (Passo 4b) falhar → publicar o post sem `featured_media` e logar o erro. Não bloquear o pipeline.
+**Extrair `media_id` para usar em Fase 5.**
+
+**Resposta de erro:**
+```json
+{
+  "ok": false,
+  "stage": "fetch_image | upload_media | update_metadata",
+  "status": 401,
+  "error": "...",
+  "detail": {...}
+}
+```
+
+A edge function executa internamente:
+1. `fetch(image_url)` — baixa o JPEG do CDN Unsplash
+2. `POST /wp-json/wp/v2/media` com binário cru + Basic Auth + Content-Disposition
+3. `POST /wp-json/wp/v2/media/{id}` com alt_text + caption (atribuição Unsplash obrigatória)
+
+**Se a chamada falhar (`ok: false` ou erro de rede) → publicar o post sem `featured_media`, logar o erro, e seguir para Fase 5. Não bloquear o pipeline.**
+
+Esta regra de fallback está documentada em `Anti-Patterns` e nunca deve ser violada — featured_media é nice-to-have, não bloqueante.
 
 ### Fase 5 — Publicar no WordPress via REST API
 
@@ -220,8 +240,8 @@ Antes de emitir o relatório final, confirmar cada item:
 
 **WordPress:**
 - [ ] POST /posts retornou status 201 e `link` extraído
-- [ ] POST /media retornou status 201 e `id` extraído (media_id)
-- [ ] POST /media/{id} para alt_text + caption executado (status 200)
+- [ ] Edge Function wp-media-uploader retornou `ok: true` com `media_id` (ou foi pulada/falhou — nesse caso post publicado sem `featured_media`, e o erro foi logado)
+- [ ] Se `media_id` foi obtido, foi incluído no body do POST /posts em Fase 5
 
 **Supabase PATCH — todos os 5 campos obrigatórios:**
 - [ ] `content` — HTML completo do post
@@ -246,7 +266,7 @@ Antes de emitir o relatório final, confirmar cada item:
 3. **Remover espaços do Application Password antes do base64** — os espaços fazem parte da senha
 4. **Marcar approved=true sem ter publicado** — o update no Supabase só acontece após confirmação do WP
 5. **Bloquear pipeline por falha de email** — email é notificação, não é bloqueante
-6. **Omitir Passo 4c** — alt_text e caption na mídia são obrigatórios pela licença Unsplash
+6. **Tentar `curl` direto para Unsplash ou WP em Fase 4** — o ambiente local pode bloquear. Sempre passar pela edge function `wp-media-uploader`. A função interna já faz alt_text + caption como parte do fluxo.
 7. **Omitir `sources` ou `content` no PATCH do Supabase** — todos os 5 campos são obrigatórios
 8. **Usar `channel` em vez de `publisher_channel` na edge function** — causa "undefined" no email do destinatário
 9. **Omitir `from_name` na edge function** — causa "undefined" no remetente do email

@@ -22,6 +22,7 @@ skills:
   - web_search
   - web_fetch
   - playwright
+  - humanizer
 
 data:
   - pipeline/data/supabase-config.json

@@ -7,5 +7,6 @@
     "karime.kumagai@luby.com.br",
     "rodrigo@luby.com.br"
   ],
-  "edge_function_url": "https://pbvjsixlqnuzcnqahbxu.supabase.co/functions/v1/blog-approval"
+  "edge_function_url": "https://pbvjsixlqnuzcnqahbxu.supabase.co/functions/v1/blog-approval",
+  "media_uploader_url": "https://pbvjsixlqnuzcnqahbxu.supabase.co/functions/v1/wp-media-uploader"
 }
