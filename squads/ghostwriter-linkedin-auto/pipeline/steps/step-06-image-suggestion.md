@@ -13,16 +13,20 @@ skills:
 
 ## Objetivo
 
-Diana gera um **Image Prompt Guide** estruturado a partir do post revisado e abre o Google Gemini via Playwright para gerar a imagem diretamente — sem aprovação humana (pipeline autônomo).
+Diana gera um **Image Prompt Guide** estruturado a partir do post revisado, abre o Google Gemini via Playwright para gerar a imagem, e faz upload da imagem para o Supabase Storage para que o colaborador possa visualizá-la no email — sem aprovação humana (pipeline autônomo).
 
-Duas saídas:
-1. **Imagem principal** (`linkedin-image.png`) — screenshot do Gemini, para publicar no LinkedIn
-2. **URL de preview** (`image_url`) — Pollinations.ai, para o campo de imagem no email do step-09
+Saídas:
+1. **Arquivo local** (`linkedin-image.jpg`) — screenshot do Gemini em alta resolução
+2. **URL pública** (`image_url`) — mesma imagem no Supabase Storage, usada no email do step-09 e salva no banco no step-08
+
+> A imagem do email é a MESMA que o colaborador deve postar no LinkedIn. Não há mais imagem decorativa separada.
 
 ## Inputs
 
 - `{run_output}/{name}/reviewed-post-en.md` — post final revisado EN
 - `{run_output}/{name}/research-brief.md` — tema, flavor, indústria do collaborator
+- `pipeline/data/supabase-config.json` — URL e anon_key para upload no Storage
+- `collaborator-queue.json` — nome do colaborador (para slug do path no bucket)
 
 ---
 
@@ -147,34 +151,75 @@ mcp__playwright__browser_close
 
 ---
 
-## PARTE 3 — URL de Preview para Email (Pollinations.ai)
+## PARTE 3 — Upload da imagem para o Supabase Storage
 
-Gerar uma URL de imagem AI para o campo `image_url` do step-09 (email).
+Subir o arquivo `linkedin-image.jpg` para o bucket público `linkedin-ghostwriter-images` e capturar a URL pública. Essa URL é a única referência usada nos próximos steps (banco e email).
 
-### Construir o prompt Pollinations
+### 1. Construir o path do arquivo
 
-Extrair do post e do research brief:
-- Tema central (ex: "AI in healthcare", "legacy software modernization")
-- Indústria do collaborator (ex: "fintech", "healthcare", "SaaS")
-- Um dado ou conceito chave (ex: "3-step framework", "67% adoption")
-
-**Template:**
+Padrão (deterministico, zero risco de colisao de nomes homonimos):
 ```
-{tema do post}, {indústria}, professional technology visual, modern flat design,
-dark navy blue background, electric blue accent, clean typography, data visualization,
-LinkedIn post style, 1200x627, minimalist, corporate tech aesthetic, no people, no text
+{collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}.jpg
 ```
 
-**Gerar a URL:**
+- `collaborator_uuid`: campo `id` do colaborador no `collaborator-queue.json` (vem direto da tabela `collaborators`, ja e UUID — sem slug, sem normalizacao)
+- `YYYY-MM-DD`: data do run (ex: `2026-05-07`)
+- `flavor-slug`: flavor normalizado via comando determinista (ver abaixo)
+
+**Slugify do flavor (uma linha node, NAO LLM):**
+
 ```bash
-node -e "
-const prompt = 'SEU_PROMPT_AQUI';
-const url = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=1200&height=627&nologo=true&model=flux';
-console.log(url);
-"
+FLAVOR_SLUG=$(node -e "console.log(process.argv[1].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''))" "<flavor>")
 ```
 
-Salvar a URL resultante como `image_url`.
+Exemplos do output (sempre o mesmo dado o mesmo input):
+- `"AI Credit"` → `ai-credit`
+- `"Modernização de Sistemas"` → `modernizacao-de-sistemas`
+- `"DevOps & Cloud"` → `devops-cloud`
+
+> **Por que nao usar nome do colaborador?** UUID elimina ambiguidade entre homonimos e nao depende de regras de slug. O path nunca e lido por humano (so vai em `<img src=>`), entao legibilidade nao importa.
+
+### 2. Upload via curl
+
+Ler `supabase_url` e `supabase_anon_key` do `pipeline/data/supabase-config.json`.
+
+```bash
+SUPABASE_URL="<supabase_url>"
+ANON_KEY="<supabase_anon_key>"
+BUCKET="linkedin-ghostwriter-images"
+COLLAB_UUID="<collaborator.id do queue>"
+RUN_DATE="<YYYY-MM-DD>"
+FLAVOR_SLUG=$(node -e "console.log(process.argv[1].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''))" "<flavor>")
+PATH_IN_BUCKET="${COLLAB_UUID}/${RUN_DATE}-${FLAVOR_SLUG}.jpg"
+LOCAL_FILE="<run_output>/<name>/linkedin-image.jpg"
+
+curl -X POST \
+  "${SUPABASE_URL}/storage/v1/object/${BUCKET}/${PATH_IN_BUCKET}" \
+  -H "apikey: ${ANON_KEY}" \
+  -H "Authorization: Bearer ${ANON_KEY}" \
+  -H "Content-Type: image/jpeg" \
+  -H "x-upsert: true" \
+  --data-binary "@${LOCAL_FILE}"
+```
+
+`x-upsert: true` permite re-runs sobrescreverem a mesma chave. O bucket está restrito a `image/jpeg|png|webp` e 10MB máximo.
+
+### 3. Construir a URL pública
+
+```
+{supabase_url}/storage/v1/object/public/linkedin-ghostwriter-images/{collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}.jpg
+```
+
+Exemplo:
+```
+https://pbvjsixlqnuzcnqahbxu.supabase.co/storage/v1/object/public/linkedin-ghostwriter-images/8f3a2b1c-4d5e-6f7g-8h9i-0j1k2l3m4n5o/2026-05-07-ai-credit.jpg
+```
+
+### 4. Verificar acessibilidade
+
+Fazer um `curl -I -o /dev/null -w "%{http_code}\n" {public_url}`. Esperado: `200`.
+
+Se o upload falhar (4xx/5xx), tentar 1x novamente. Se falhar de novo, registrar `image_upload_failed` e seguir o pipeline com `image_url: null` — step-08 e step-09 lidam com o caso null.
 
 ---
 
@@ -184,7 +229,8 @@ Salvar a URL resultante como `image_url`.
 
 | Arquivo | Uso |
 |---|---|
-| `{run_output}/{name}/linkedin-image.png` | Imagem principal para publicar no LinkedIn |
+| `{run_output}/{name}/linkedin-image.jpg` | Imagem em alta-res salva localmente (ref de auditoria) |
+| `linkedin-ghostwriter-images/{collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}.jpg` no Supabase Storage | Imagem pública para o email e para publicar no LinkedIn |
 
 **Resumo `{run_output}/{name}/image-suggestion.md`:**
 
@@ -193,8 +239,9 @@ Salvar a URL resultante como `image_url`.
 
 **Post flavor:** {flavor}
 **Visual approach:** {abordagem escolhida}
-**Image file:** output/{run_id}/{name}/linkedin-image.png
-**Image URL (email):** {URL do Pollinations.ai}
+**Image file:** output/{run_id}/{name}/linkedin-image.jpg
+**Image URL:** {URL pública do Supabase Storage}
+**Storage path:** linkedin-ghostwriter-images/{collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}.jpg
 
 ---
 
@@ -207,16 +254,10 @@ Salvar a URL resultante como `image_url`.
 ## Visual Rationale
 
 {justificativa concisa das escolhas visuais — tema → decisão → resultado}
-
----
-
-## Email Preview Prompt
-
-{prompt usado no Pollinations.ai}
 ```
 
-> O campo `**Image URL (email):**` é lido pelo step-09 para o email.
-> O campo `**Image file:**` é o entregável principal — imagem gerada pelo Gemini para LinkedIn.
+> O campo `**Image URL:**` é a fonte única — lido pelo step-08 (salva em `bloggers.image_url`) e pelo step-09 (incorpora no email).
+> Se o upload falhou, deixar `**Image URL:** null` e step-08/09 lidam com o caso.
 
 ## Next
 

@@ -16,6 +16,7 @@ Lucas salva os posts revisados (EN e PT-BR) na tabela `bloggers` do Supabase par
 ### Input
 - `{name}/reviewed-post-en.md` — post EN final revisado
 - `{name}/reviewed-post-pt.md` — post PT-BR final revisado
+- `{name}/image-suggestion.md` — campo `**Image URL:**` com URL pública do Supabase Storage (ou `null` se upload falhou)
 - Dados do collaborator (collaborator-queue.json) — especialmente id (uuid)
 - Ler supabase-config.json para URL e key
 
@@ -23,7 +24,9 @@ Lucas salva os posts revisados (EN e PT-BR) na tabela `bloggers` do Supabase par
 
 Para cada collaborator processado:
 
-1. **Ler o conteudo dos posts revisados** (EN e PT-BR)
+1. **Ler o conteudo dos posts revisados** (EN e PT-BR) e o `image_url` do `image-suggestion.md`
+
+   Localizar a linha que comeca com `**Image URL:**` e extrair a URL. Se o valor for `null` ou ausente, enviar o campo como JSON `null` no insert (a coluna e nullable).
 
 2. **Inserir post EN na tabela bloggers**:
    ```bash
@@ -35,11 +38,12 @@ Para cada collaborator processado:
      -d '{
        "collaborator_id": "{uuid}",
        "content": "{post EN completo - escaped}",
+       "image_url": "{image_url ou null}",
        "submitted_content": false
      }'
    ```
 
-3. **Inserir post PT-BR na tabela bloggers**:
+3. **Inserir post PT-BR na tabela bloggers** (mesma `image_url` — uma imagem por run, ambas as linguas compartilham):
    ```bash
    curl -X POST "{supabase_url}/rest/v1/bloggers" \
      -H "apikey: {anon_key}" \
@@ -49,6 +53,7 @@ Para cada collaborator processado:
      -d '{
        "collaborator_id": "{uuid}",
        "content": "{post PT-BR completo - escaped}",
+       "image_url": "{image_url ou null}",
        "submitted_content": false
      }'
    ```
@@ -61,6 +66,7 @@ Para cada collaborator processado:
 
    - Post EN: blogger_id = {id_en} | chars: {count}
    - Post PT-BR: blogger_id = {id_pt} | chars: {count}
+   - image_url: {URL ou null}
    - submitted_content: false (aguardando n8n)
    - Timestamp: {ISO datetime}
    ```
