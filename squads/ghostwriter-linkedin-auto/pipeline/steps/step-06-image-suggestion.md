@@ -93,8 +93,10 @@ Aguardar o textbox "Insira um comando para o Gemini" aparecer no snapshot.
 Usar `mcp__playwright__browser_snapshot` para encontrar o ref do textbox.
 Digitar com `mcp__playwright__browser_type` (submit: true):
 ```
-Generate an image: {image_prompt_guide}
+Generate an image using Nano Banana Pro: {image_prompt_guide}
 ```
+
+> A conta logada no profile (`_opensquad/_browser_profile/`) tem acesso Pro/Workspace. Mencionar "Nano Banana Pro" no prompt sinaliza para o Gemini usar o modelo de imagem premium (`gemini-3-pro-image`) em vez do Nano Banana standard. Sem garantia 100% (Gemini decide na hora), mas costuma respeitar o pedido quando a conta tem acesso. Se a qualidade não estiver melhor que antes, evoluir para selecionar o modelo via UI explicitamente.
 
 ### 3. Aguardar a geração
 
