@@ -12,8 +12,13 @@
 
 - **Imagens LinkedIn: geradas EXCLUSIVAMENTE via Google Gemini via Playwright MCP — Pollinations.ai está PROIBIDO** (decisão definitiva 2026-05-11)
 - Diana NUNCA constrói URL Pollinations sob nenhuma hipótese
+<<<<<<< Updated upstream
 - Cadência obrigatória para evitar rate limit Gemini: 60s entre requests; em batches >10, pausa de 2min a cada 10 imagens; backoff exponencial em caso de erro/recusa
 - Workflow Gemini: `browser_navigate gemini.google.com/app` → `browser_snapshot` → `browser_type` (prompt completo, submit:true) → `browser_wait_for` 25-30s → `browser_evaluate` para extrair URL da img (filtrar `naturalWidth > 100` para descartar avatars) → trocar `w200-h200` por `w1200-h1200` → `browser_navigate` para a URL high-res → `browser_take_screenshot` type:jpeg
+=======
+- Cadência obrigatória para evitar rate limit Gemini: 60s entre requests; em batches >10, pausa de 2min a cada 10 imagens; backoff exponencial 60→120→240s (máx 3 tentativas) em caso de erro/recusa
+- Workflow Gemini: `browser_navigate gemini.google.com/app` → `browser_snapshot` → `browser_type` (prompt completo, submit:true) → `browser_wait_for` 25-30s → `browser_evaluate` extrai URL da img (filtrar `naturalWidth > 100` para descartar avatars) → trocar `w200-h200` por `w1200-h1200` → `browser_navigate` para a URL high-res → `browser_take_screenshot` type:jpeg
+>>>>>>> Stashed changes
 - Formato output: 1200×627px salvo em `output/{run_id}/v1/{Name}/linkedin-image.jpg`
 - Email/post recebe a imagem via upload para storage próprio (Supabase storage) ou anexo, nunca via hotlink externo
 
