@@ -1,21 +1,16 @@
 {
   "squad": "ghostwriter-linkedin-auto",
-  "status": "completed",
-  "step": { "current": 11, "total": 11, "label": "step-10-delivery" },
+  "status": "running",
+  "step": { "current": 1, "total": 11, "label": "step-00-load-collaborators" },
   "agents": [
-    { "id": "marco", "name": "Marco Pesquisa", "icon": "🔍", "status": "done", "desk": { "col": 1, "row": 1 } },
-    { "id": "sofia", "name": "Sofia Persona", "icon": "🎭", "status": "done", "desk": { "col": 2, "row": 1 } },
-    { "id": "bruno", "name": "Bruno Ghostwriter", "icon": "✍️", "status": "done", "desk": { "col": 3, "row": 1 } },
-    { "id": "helena", "name": "Helena Revisora", "icon": "🔬", "status": "done", "desk": { "col": 1, "row": 2 } },
-    { "id": "lucas", "name": "Lucas Integrador", "icon": "🔗", "status": "working", "desk": { "col": 2, "row": 2 } },
-    { "id": "diana", "name": "Diana Arte", "icon": "🎨", "status": "done", "desk": { "col": 3, "row": 2 } }
+    { "id": "marco",  "name": "Marco Pesquisa",   "icon": "🔍", "status": "idle",    "desk": { "col": 1, "row": 1 } },
+    { "id": "sofia",  "name": "Sofia Persona",    "icon": "🎭", "status": "idle",    "desk": { "col": 2, "row": 1 } },
+    { "id": "bruno",  "name": "Bruno Ghostwriter","icon": "✍️", "status": "idle",    "desk": { "col": 3, "row": 1 } },
+    { "id": "helena", "name": "Helena Revisora",  "icon": "🔬", "status": "idle",    "desk": { "col": 1, "row": 2 } },
+    { "id": "lucas",  "name": "Lucas Integrador", "icon": "🔗", "status": "working", "desk": { "col": 2, "row": 2 } },
+    { "id": "diana",  "name": "Diana Arte",       "icon": "🎨", "status": "idle",    "desk": { "col": 3, "row": 2 } }
   ],
-  "handoff": {
-    "from": "lucas",
-    "to": "bruno",
-    "message": "18 posts salvos no Supabase, 9 emails enviados, pipeline completo.",
-    "completedAt": "2026-04-27T09:10:00.000Z"
-  },
-  "startedAt": "2026-04-27T07:00:00.000Z",
-  "updatedAt": "2026-04-27T09:10:00.000Z"
+  "handoff": null,
+  "startedAt": "2026-05-11T09:20:35Z",
+  "updatedAt": "2026-05-11T09:20:35Z"
 }
