@@ -4,6 +4,7 @@
   "step": { "current": 1, "total": 11, "label": "step-00-load-collaborators" },
   "agents": [
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     { "id": "marco",  "name": "Marco Pesquisa",   "icon": "🔍", "status": "idle",    "desk": { "col": 1, "row": 1 } },
     { "id": "sofia",  "name": "Sofia Persona",    "icon": "🎭", "status": "idle",    "desk": { "col": 2, "row": 1 } },
     { "id": "bruno",  "name": "Bruno Ghostwriter","icon": "✍️", "status": "idle",    "desk": { "col": 3, "row": 1 } },
@@ -31,5 +32,17 @@
   "startedAt": "2026-05-11T09:20:35.000Z",
   "updatedAt": "2026-05-11T13:50:00.000Z",
   "completedAt": "2026-05-11T13:50:00.000Z"
+>>>>>>> Stashed changes
+=======
+    { "id": "marco", "name": "Marco Pesquisa", "icon": "🔍", "status": "idle", "desk": { "col": 1, "row": 1 } },
+    { "id": "sofia", "name": "Sofia Persona", "icon": "🎭", "status": "idle", "desk": { "col": 2, "row": 1 } },
+    { "id": "bruno", "name": "Bruno Ghostwriter", "icon": "✍️", "status": "idle", "desk": { "col": 3, "row": 1 } },
+    { "id": "helena", "name": "Helena Revisora", "icon": "🔬", "status": "idle", "desk": { "col": 1, "row": 2 } },
+    { "id": "lucas", "name": "Lucas Integrador", "icon": "🔗", "status": "working", "desk": { "col": 2, "row": 2 } },
+    { "id": "diana", "name": "Diana Arte", "icon": "🎨", "status": "idle", "desk": { "col": 3, "row": 2 } }
+  ],
+  "handoff": null,
+  "startedAt": "2026-05-11T11:00:32-03:00",
+  "updatedAt": "2026-05-11T11:00:32-03:00"
 >>>>>>> Stashed changes
 }
