@@ -19,7 +19,7 @@ Lucas analisa o perfil publico LinkedIn de cada collaborator e gera sugestoes de
 - Ler supabase-config.json para URL e key
 
 ### Regra de isolamento
-**Não ler nem referenciar** nenhum arquivo de post gerado neste run (post-en.md, post-pt.md, reviewed-post-*.md, persona-brief.md, research-brief.md). A análise deve ser baseada exclusivamente nos dados públicos coletados do perfil LinkedIn do collaborator.
+**Não ler nem referenciar** nenhum arquivo de post gerado neste run (post-en.md, post-pt.md, reviewed-post-*.md, humanized-post-*.md, persona-brief.md, research-brief.md). A análise deve ser baseada exclusivamente nos dados públicos coletados do perfil LinkedIn do collaborator.
 
 ### Processo
 

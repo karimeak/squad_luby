@@ -27,7 +27,7 @@ Saídas:
 
 ## Inputs
 
-- `{run_output}/{name}/reviewed-post-en.md` — post final revisado EN
+- `{run_output}/{name}/humanized-post-en.md` — post final EN pos-Pedro (humanizado)
 - `{run_output}/{name}/research-brief.md` — tema, flavor, indústria do collaborator
 - `pipeline/data/supabase-config.json` — URL e anon_key para upload no Storage
 - `collaborator-queue.json` — nome do colaborador (para slug do path no bucket)

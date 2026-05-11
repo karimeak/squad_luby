@@ -15,7 +15,7 @@ Bruno consolida todos os posts gerados, salva os arquivos finais no diretorio ou
 ## Instrucoes para Bruno
 
 ### Input
-- Todos os posts revisados: `{name}/reviewed-post-en.md` e `{name}/reviewed-post-pt.md` para cada collaborator
+- Todos os posts finais: `{name}/humanized-post-en.md` e `{name}/humanized-post-pt.md` para cada collaborator
 - `{name}/review-report.md` para scores
 - `{name}/save-confirmation.md` para IDs Supabase
 - `{name}/email-confirmation.md` para status de envio de email

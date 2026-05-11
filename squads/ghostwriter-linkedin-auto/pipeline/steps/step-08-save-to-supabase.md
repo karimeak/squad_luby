@@ -14,8 +14,8 @@ Lucas salva os posts revisados (EN e PT-BR) na tabela `bloggers` do Supabase par
 ## Instrucoes para Lucas
 
 ### Input
-- `{name}/reviewed-post-en.md` — post EN final revisado
-- `{name}/reviewed-post-pt.md` — post PT-BR final revisado
+- `{name}/humanized-post-en.md` — post EN final (pos-Pedro humanization)
+- `{name}/humanized-post-pt.md` — post PT-BR final (pos-Pedro humanization)
 - `{name}/image-suggestion.md` — campo `**Image URL:**` com URL pública do Supabase Storage (ou `null` se upload falhou)
 - Dados do collaborator (collaborator-queue.json) — especialmente id (uuid)
 - Ler supabase-config.json para URL e key

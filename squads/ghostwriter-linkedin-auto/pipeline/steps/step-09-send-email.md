@@ -21,8 +21,8 @@ Lucas envia um email diretamente para o collaborator com o seu post LinkedIn ger
 - `pipeline/data/supabase-config.json` — URL e anon key do Supabase
 - `collaborator-queue.json` — lista de collaborators (email, nome, flavor)
 - Para cada collaborator:
-  - `{name}/reviewed-post-en.md` — post EN final
-  - `{name}/reviewed-post-pt.md` — post PT-BR final
+  - `{name}/humanized-post-en.md` — post EN final (pos-Pedro humanization)
+  - `{name}/humanized-post-pt.md` — post PT-BR final (pos-Pedro humanization)
   - `{name}/image-suggestion.md` — linha `**Image URL:**` com a URL pública do Supabase Storage (mesma imagem do LinkedIn)
   - `{name}/linkedin-overview.md` — overview de melhoria do perfil
   - `{name}/save-confirmation.md` — IDs Supabase
@@ -51,8 +51,8 @@ Extrair `image_url` do arquivo `image-suggestion.md`:
   "collaborator_email": "{collaborator.email}",
   "collaborator_name": "{collaborator.name}",
   "flavor": "{collaborator.flavor}",
-  "post_en": "{conteúdo de reviewed-post-en.md — escapado}",
-  "post_pt": "{conteúdo de reviewed-post-pt.md — escapado}",
+  "post_en": "{conteúdo de humanized-post-en.md — escapado}",
+  "post_pt": "{conteúdo de humanized-post-pt.md — escapado}",
   "image_url": "{URL extraída de image-suggestion.md}",
   "linkedin_overview": "{conteúdo de linkedin-overview.md — escapado}",
   "blogger_id_en": "{id EN de save-confirmation.md}",

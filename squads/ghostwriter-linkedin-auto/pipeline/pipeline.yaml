@@ -79,6 +79,20 @@ steps:
     tasks:
       - combined-review.md
     max_retries: 2
+    next: step-05b-humanize
+
+  - id: step-05b-humanize
+    name: Humanizacao (Pedro)
+    type: agent
+    agent: pedro
+    file: steps/step-05b-humanize.md
+    execution: inline
+    model_tier: powerful
+    skills:
+      - humanizer
+    tasks:
+      - humanize.md
+    max_retries: 2
     next: step-06-image-suggestion
 
   - id: step-06-image-suggestion

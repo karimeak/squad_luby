@@ -5,12 +5,12 @@ squad:
     Versao automatizada do ghostwriter LinkedIn. Gera posts de texto Medium
     para todos os colaboradores sem interacao humana. Fluxo: fetch collaborators
     do Supabase > match flavor por topicos > pesquisa web > persona > escrita EN-US
-    > traducao PT-BR > review combinada (tech+engajamento+humanizacao) com auto-fix
-    > image prompt guide (Diana) > geracao via Google Gemini + upload pro Supabase
-    Storage (bucket linkedin-ghostwriter-images) > LinkedIn profile optimizer
-    > salva em bloggers (Supabase, com image_url) > envia email com a imagem real
-    via Edge Function > entrega final.
-  version: "1.4.0"
+    > traducao PT-BR > review tech+engajamento (Helena) > humanizacao separada
+    (Pedro, com auto-fix) > image prompt guide (Diana) > geracao via Google Gemini
+    + upload pro Supabase Storage (bucket linkedin-ghostwriter-images) > LinkedIn
+    profile optimizer > salva em bloggers (Supabase, com image_url) > envia email
+    com a imagem real via Edge Function > entrega final.
+  version: "1.5.0"
   created: "2026-04-07"
   performance_mode: alta-performance
   language: multilingual
@@ -64,6 +64,7 @@ pipeline:
     - step-03-write
     - step-04-translate
     - step-05-review
+    - step-05b-humanize
     - step-06-image-suggestion
     - step-07-linkedin-optimizer
     - step-08-save-to-supabase
