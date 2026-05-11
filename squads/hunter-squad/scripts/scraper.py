@@ -672,12 +672,35 @@ async def scrape_wellfound(site, job_titles):
     async with SEMAPHORE:
         try:
             async with async_playwright() as pw:
+                # 2026-05-11 fix: wellfound uses DataDome anti-bot which fingerprinted
+                # the default headless Chromium ("Access is temporarily restricted"
+                # CAPTCHA page). Three changes vs original:
+                #   (1) explicit Chrome UA — Playwright default includes "HeadlessChrome"
+                #   (2) locale + extra http headers — look like a US visitor
+                #   (3) stealth applied AFTER context creation (was missing here while
+                #       other scrapers apply it; ensures navigator.webdriver etc are masked)
                 context = await pw.chromium.launch_persistent_context(
                     user_data_dir=str(WELLFOUND_PROFILE_DIR),
                     headless=True,
                     viewport={"width": 1280, "height": 900},
-                    args=["--disable-blink-features=AutomationControlled"],
+                    user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    locale="en-US",
+                    timezone_id="America/New_York",
+                    extra_http_headers={
+                        "Accept-Language": "en-US,en;q=0.9",
+                        "Sec-Ch-Ua": '"Chromium";v="120", "Not(A:Brand";v="24", "Google Chrome";v="120"',
+                        "Sec-Ch-Ua-Mobile": "?0",
+                        "Sec-Ch-Ua-Platform": '"Windows"',
+                    },
+                    args=[
+                        "--disable-blink-features=AutomationControlled",
+                        "--disable-features=AutomationControlled",
+                    ],
                 )
+                try:
+                    await stealth_instance.apply_stealth_async(context)
+                except Exception as _e:
+                    print(f"[wellfound] stealth apply warning: {_e}")
                 try:
                     page = context.pages[0] if context.pages else await context.new_page()
                     await page.goto(site["base_url"], wait_until="domcontentloaded", timeout=GENERIC_NAV_TIMEOUT_MS)
@@ -686,6 +709,12 @@ async def scrape_wellfound(site, job_titles):
                         page_sample = (await page.content())[:4000]
                     except Exception:
                         page_sample = ""
+
+                    # DataDome detection — fail fast with clear error instead of
+                    # waiting 10s for a selector that will never appear
+                    if "captcha-delivery.com" in page_sample or "Access is temporarily restricted" in page_sample:
+                        error_msg = "anti_bot: DataDome CAPTCHA — headless fingerprint detected (stealth insufficient)"
+                        return build_error_result(site, None, duration_ms=int((time.time() - start) * 1000), error_str=error_msg)
 
                     # Wait briefly for SPA to render
                     try:
@@ -1014,13 +1043,35 @@ SITE_SPECIFIC_SELECTORS = {
 }
 
 
+def resolve_site_spec(site):
+    """Adaptive selector resolution (Fase 5.1, 2026-05-11).
+
+    Precedence (highest wins, per-key):
+      1. site["config"]["selectors"]  — DB-driven override per site (hot-reloadable, no code deploy)
+      2. SITE_SPECIFIC_SELECTORS[name] — hardcoded recipes maintained in this file
+      3. {}                            — empty dict, caller handles fallback
+
+    Merge strategy: DB config keys overlay the hardcoded recipe. Lets you fix one
+    field (e.g. just the title selector) in the DB without redefining the whole
+    recipe. Returns the merged dict; never None — callers check for specific keys
+    (e.g. "card" for extraction; "recommend_disable" for skip).
+    """
+    hardcoded = SITE_SPECIFIC_SELECTORS.get(site["name"], {}) or {}
+    db_override = (site.get("config") or {}).get("selectors") or {}
+    merged = {**hardcoded, **db_override}
+    if merged:
+        merged["_source"] = "db_override" if db_override else "hardcoded"
+    return merged
+
+
 async def extract_with_site_specific(page, site):
     """Run 2026-05-06 fix: try the site-specific recipe first, before the generic loop.
+    Fase 5.1 (2026-05-11): now reads from DB config.selectors with hardcoded fallback.
 
     Returns (jobs, used_selector_or_none). Returns ([], None) if no recipe exists or
     the recipe matched no cards (caller falls back to generic).
     """
-    spec = SITE_SPECIFIC_SELECTORS.get(site["name"])
+    spec = resolve_site_spec(site)
     if not spec or "card" not in spec:
         return [], None
 
@@ -1035,13 +1086,40 @@ async def extract_with_site_specific(page, site):
         return [], None
 
     jobs = []
+    title_regex = spec.get("title_regex")
+    title_regex_compiled = re.compile(title_regex) if title_regex else None
+    title_from_url_slug = spec.get("title_from_url_slug", False)
+    url_slug_pattern = spec.get("url_slug_pattern", r'/jobs/([^/?#]+)')
+    url_slug_pattern_compiled = re.compile(url_slug_pattern) if title_from_url_slug else None
+
     for card in cards[:200]:
         try:
-            # Title
+            # Title — four strategies, in precedence order:
+            # (1) title_regex on full card text — for sites where title is buried in
+            #     concatenated text (e.g. dice: "Co | | Apply Now | TITLE | | Loc").
+            #     Set this in spec via "title_regex". Capture group 1 is the title.
+            # (2) title selector — explicit CSS selector
+            # (3) title_from_url_slug — extract from URL path slug, e.g. hiretechladies
+            #     where the <a> is an empty wrapper but href contains the title slug.
+            #     Set "title_from_url_slug": true and optionally "url_slug_pattern"
+            #     (default: r'/jobs/([^/?#]+)'). Slug is title-cased with - → space.
+            # (4) fallback to card inner_text first line
             title = ""
-            tsel = spec.get("title")
-            if tsel:
-                title = (await safe_text(card, tsel)) or ""
+            if title_regex_compiled:
+                try:
+                    full_text = (await card.inner_text()) or ""
+                    m = title_regex_compiled.search(full_text)
+                    if m:
+                        title = m.group(1).strip()
+                except Exception:
+                    pass
+            if not title:
+                tsel = spec.get("title")
+                if tsel:
+                    title = (await safe_text(card, tsel)) or ""
+            if not title and url_slug_pattern_compiled:
+                # Defer to URL extraction after url is known (handled below)
+                pass
             if not title:
                 # Fall back to card's own text first line
                 try:
@@ -1116,6 +1194,17 @@ async def extract_with_site_specific(page, site):
                 # synthesize a stable but fake URL so downstream filtering doesn't drop the row
                 url = f"{base}#tile-{len(jobs)}"
 
+            # Title strategy (3): extract from URL slug. Runs after URL is known.
+            # Use for sites like hiretechladies where the <a> wrapper has no inner text
+            # but the href contains the title encoded as a slug.
+            if not title and url_slug_pattern_compiled and url:
+                m_slug = url_slug_pattern_compiled.search(url)
+                if m_slug:
+                    slug = m_slug.group(1)
+                    # Convert kebab-case slug to title case; preserve common job-modifier words
+                    raw_title = slug.replace("-", " ").replace("_", " ").strip()
+                    title = " ".join(w.capitalize() if not w.isupper() else w for w in raw_title.split())
+
             location = ""
             lsel = spec.get("location")
             if lsel:
@@ -1145,7 +1234,7 @@ async def extract_with_site_specific(page, site):
         except Exception:
             continue
 
-    return jobs, f"site_specific:{spec['card']}"
+    return jobs, f"site_specific[{spec.get('_source', 'hardcoded')}]:{spec['card']}"
 
 
 async def extract_generic_best_effort(page, site):
@@ -1249,7 +1338,8 @@ async def scrape_generic_unknown_site(site, job_titles):
     # Run 2026-05-06 fix: short-circuit sites flagged as dead/disabled during
     # selector investigation. Skips network round-trip and reports a stable error
     # that the collector can route to skipped_auth.
-    spec = SITE_SPECIFIC_SELECTORS.get(site["name"]) or {}
+    # Fase 5.1 (2026-05-11): resolve_site_spec merges DB config.selectors with hardcoded.
+    spec = resolve_site_spec(site) or {}
     if spec.get("recommend_disable"):
         return {
             "site_name": site["name"],
@@ -1317,28 +1407,45 @@ async def scrape_generic_unknown_site(site, job_titles):
                         "duration_ms": int((time.time() - start) * 1000),
                     }
 
-                # Check anti-bot signals
+                # Check anti-bot signals — Fase 5.1 (2026-05-11): more precise checks
+                # to avoid false positives. The previous loose "cloudflare" / "captcha"
+                # keyword scan flagged real listings pages (e.g. workingnomads) that
+                # merely had CDN references or class names containing those tokens.
+                # We now require explicit challenge-page markers OR an interactive
+                # widget being present in the DOM, not just keyword appearance.
                 lower_sample = page_sample.lower()
-                if any(kw in lower_sample for kw in ["cloudflare", "challenge-platform", "cf-chl-"]):
+                cf_challenge_markers = [
+                    "just a moment...", "checking your browser before",
+                    "<title>just a moment", "cf-mitigated", "cf_chl_opt",
+                    "ray id:", "please complete the security check"
+                ]
+                if any(kw in lower_sample for kw in cf_challenge_markers):
                     return {
                         "site_name": site["name"],
                         "jobs": [],
-                        "error": "anti_bot: Cloudflare challenge detected",
+                        "error": "anti_bot: Cloudflare challenge page",
                         "pages_scraped": pages_scraped,
                         "stop_reason": "anti_bot",
                         "xhr_intercepted": False,
                         "duration_ms": int((time.time() - start) * 1000),
                     }
-                if any(kw in lower_sample for kw in ["captcha", "g-recaptcha", "hcaptcha", "press and hold to confirm"]):
-                    return {
-                        "site_name": site["name"],
-                        "jobs": [],
-                        "error": "anti_bot: CAPTCHA detected",
-                        "pages_scraped": pages_scraped,
-                        "stop_reason": "anti_bot",
-                        "xhr_intercepted": False,
-                        "duration_ms": int((time.time() - start) * 1000),
-                    }
+                # Check for visible CAPTCHA widgets (not just keyword in CDN URLs)
+                try:
+                    has_recaptcha = await page.query_selector("div.g-recaptcha, iframe[src*='recaptcha/api2']")
+                    has_hcaptcha  = await page.query_selector("div.h-captcha, iframe[src*='hcaptcha.com']")
+                    press_hold    = "press and hold to confirm" in lower_sample
+                    if has_recaptcha or has_hcaptcha or press_hold:
+                        return {
+                            "site_name": site["name"],
+                            "jobs": [],
+                            "error": "anti_bot: CAPTCHA widget present",
+                            "pages_scraped": pages_scraped,
+                            "stop_reason": "anti_bot",
+                            "xhr_intercepted": False,
+                            "duration_ms": int((time.time() - start) * 1000),
+                        }
+                except Exception:
+                    pass
 
                 # Wait briefly for content
                 await page.wait_for_timeout(min(site.get("throttle_ms", 2000), 3000))
@@ -1495,7 +1602,13 @@ def task4_collect_results(all_results, skipped_auth, job_titles):
     sites_succeeded = 0
     sites_failed = 0
 
-    required_fields = {"title", "company", "url", "source", "_source_site"}
+    # 2026-05-11 fix: company removed from required fields. Wellfound listing page
+    # doesn't expose company name (jobs are presented as "title-only" cards), so
+    # all 79 wellfound jobs were silently dropped at collect-results. Downstream
+    # LLM enrichment can derive company from the job detail page, URL, or
+    # description — losing the row entirely is much worse. Sites that DO surface
+    # company explicitly (dice, infosec_jobs, etc.) get company_fallback in spec.
+    required_fields = {"title", "url", "source", "_source_site"}
 
     for result in all_results:
         site_name = result.get("site_name", "unknown")
