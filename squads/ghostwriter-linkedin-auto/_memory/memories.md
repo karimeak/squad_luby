@@ -10,12 +10,12 @@
 
 ## Design Visual
 
-- Imagens LinkedIn: geradas via Gemini (1ª imagem) + Pollinations.ai fallback (demais) usando Playwright MCP
-- Gemini: rate limit free tier após 1 imagem — após Marine, todos os demais vão direto para Pollinations
-- Pollinations.ai workflow: `browser_evaluate → window.location.href = 'about:blank'` PRIMEIRO para limpar referrer, depois `window.location.href = '{pollinations_url}'` — sem esse passo, erro de auth "Authenticated users should use enter.pollinations.ai"
-- Pollinations URL: `https://image.pollinations.ai/prompt/{encoded_prompt}?width=1200&height=627&nologo=true&model=flux`
-- Screenshot: após navegação Pollinations, usar `browser_take_screenshot` com type:jpeg para capturar a imagem renderizada
+- **Imagens LinkedIn: geradas EXCLUSIVAMENTE via Google Gemini via Playwright MCP — Pollinations.ai está PROIBIDO** (decisão definitiva 2026-05-11)
+- Diana NUNCA constrói URL Pollinations sob nenhuma hipótese
+- Cadência obrigatória para evitar rate limit Gemini: 60s entre requests; em batches >10, pausa de 2min a cada 10 imagens; backoff exponencial em caso de erro/recusa
+- Workflow Gemini: `browser_navigate gemini.google.com/app` → `browser_snapshot` → `browser_type` (prompt completo, submit:true) → `browser_wait_for` 25-30s → `browser_evaluate` para extrair URL da img (filtrar `naturalWidth > 100` para descartar avatars) → trocar `w200-h200` por `w1200-h1200` → `browser_navigate` para a URL high-res → `browser_take_screenshot` type:jpeg
 - Formato output: 1200×627px salvo em `output/{run_id}/v1/{Name}/linkedin-image.jpg`
+- Email/post recebe a imagem via upload para storage próprio (Supabase storage) ou anexo, nunca via hotlink externo
 
 ## Estrutura de Conteúdo
 
