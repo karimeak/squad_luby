@@ -15,6 +15,10 @@ skills:
 
 Diana gera um **Image Prompt Guide** estruturado a partir do post revisado, abre o Google Gemini via Playwright para gerar a imagem, e faz upload da imagem para o Supabase Storage para que o colaborador possa visualizá-la no email — sem aprovação humana (pipeline autônomo).
 
+> **Pollinations.ai está PROIBIDO** (decisão definitiva 2026-05-11). Não construir URL, não fazer fallback, não citar. Toda imagem é gerada exclusivamente via Gemini.
+>
+> **Cadência obrigatória para batches:** 60s entre requests; pausa de 2min a cada 10 imagens em batches > 10; backoff exponencial (60→120→240s, máx 3 tentativas) em caso de erro/recusa do Gemini. Após 3 falhas, registrar `linkedin-image-failed.txt` na pasta do collaborator e seguir (não bloquear o pipeline).
+
 Saídas:
 1. **Arquivo local** (`linkedin-image.jpg`) — screenshot do Gemini em alta resolução
 2. **URL pública** (`image_url`) — mesma imagem no Supabase Storage, usada no email do step-09 e salva no banco no step-08
