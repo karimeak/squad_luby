@@ -3,6 +3,7 @@
   "status": "running",
   "step": { "current": 1, "total": 11, "label": "step-00-load-collaborators" },
   "agents": [
+<<<<<<< Updated upstream
     { "id": "marco",  "name": "Marco Pesquisa",   "icon": "🔍", "status": "idle",    "desk": { "col": 1, "row": 1 } },
     { "id": "sofia",  "name": "Sofia Persona",    "icon": "🎭", "status": "idle",    "desk": { "col": 2, "row": 1 } },
     { "id": "bruno",  "name": "Bruno Ghostwriter","icon": "✍️", "status": "idle",    "desk": { "col": 3, "row": 1 } },
@@ -13,4 +14,22 @@
   "handoff": null,
   "startedAt": "2026-05-11T09:20:35Z",
   "updatedAt": "2026-05-11T09:20:35Z"
+=======
+    { "id": "marco", "name": "Marco Pesquisa", "icon": "🔍", "status": "done", "desk": { "col": 1, "row": 1 } },
+    { "id": "sofia", "name": "Sofia Persona", "icon": "🎭", "status": "done", "desk": { "col": 2, "row": 1 } },
+    { "id": "bruno", "name": "Bruno Ghostwriter", "icon": "✍️", "status": "done", "desk": { "col": 3, "row": 1 } },
+    { "id": "helena", "name": "Helena Revisora", "icon": "🔬", "status": "done", "desk": { "col": 1, "row": 2 } },
+    { "id": "lucas", "name": "Lucas Integrador", "icon": "🔗", "status": "done", "desk": { "col": 2, "row": 2 } },
+    { "id": "diana", "name": "Diana Arte", "icon": "🎨", "status": "done", "desk": { "col": 3, "row": 2 } }
+  ],
+  "handoff": {
+    "from": "lucas",
+    "to": "bruno",
+    "message": "21 emails enviados, 42 posts no Supabase, 20 imagens no Storage. Jancarlo sem imagem (cota Gemini diária).",
+    "completedAt": "2026-05-11T13:50:00.000Z"
+  },
+  "startedAt": "2026-05-11T09:20:35.000Z",
+  "updatedAt": "2026-05-11T13:50:00.000Z",
+  "completedAt": "2026-05-11T13:50:00.000Z"
+>>>>>>> Stashed changes
 }

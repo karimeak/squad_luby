@@ -13,6 +13,7 @@
 - **Imagens LinkedIn: geradas EXCLUSIVAMENTE via Google Gemini via Playwright MCP — Pollinations.ai está PROIBIDO** (decisão definitiva 2026-05-11)
 - Diana NUNCA constrói URL Pollinations sob nenhuma hipótese
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 - Cadência obrigatória para evitar rate limit Gemini: 60s entre requests; em batches >10, pausa de 2min a cada 10 imagens; backoff exponencial em caso de erro/recusa
 - Workflow Gemini: `browser_navigate gemini.google.com/app` → `browser_snapshot` → `browser_type` (prompt completo, submit:true) → `browser_wait_for` 25-30s → `browser_evaluate` para extrair URL da img (filtrar `naturalWidth > 100` para descartar avatars) → trocar `w200-h200` por `w1200-h1200` → `browser_navigate` para a URL high-res → `browser_take_screenshot` type:jpeg
 =======
@@ -21,6 +22,17 @@
 >>>>>>> Stashed changes
 - Formato output: 1200×627px salvo em `output/{run_id}/v1/{Name}/linkedin-image.jpg`
 - Email/post recebe a imagem via upload para storage próprio (Supabase storage) ou anexo, nunca via hotlink externo
+=======
+- **Cota Gemini free tier:** ~17-20 imagens/dia. Run de 2026-05-11 com 21 colaboradores bateu cota no 21º (Jancarlo). Em batches >15, considerar splitar entre dias ou pedir upgrade do plano Gemini
+- **Workflow correto Gemini (validado run 2026-05-11):**
+  1. `browser_click` no link "Nova conversa" do sidebar
+  2. `browser_type` no textbox "Insira um comando para o Gemini" com prompt completo, submit:true
+  3. `browser_wait_for` 50s para geração
+  4. `browser_click` no botão `[data-test-id="download-generated-image-button"]` — Playwright auto-salva PNG full-res em `.playwright-mcp/Gemini-Generated-Image-*.png`
+  5. Bash `cp` para `output/{run_id}/v1/{Name}/linkedin-image.png`
+- **NÃO usar canvas+toDataURL** para extrair: após ~3 gerações, Gemini cacheia em `lh3.googleusercontent.com` cross-origin que polui o canvas e quebra `toDataURL()` com SecurityError
+- Formato output: PNG 1376×768 (via download button) ou JPEG 1024×572 (via canvas para as 3 primeiras antes do CORS quebrar)
+>>>>>>> Stashed changes
 
 ## Estrutura de Conteúdo
 
