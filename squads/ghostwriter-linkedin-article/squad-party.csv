@@ -3,5 +3,6 @@ path,displayName,icon,role,execution
 ./agents/sofia.agent.md,Sofia Persona,🎭,Carregadora de persona e POV do colaborador,inline
 ./agents/bruno.agent.md,Bruno Ghostwriter,✍️,Ghostwriter de artigos LinkedIn + tradutor EN>PT-BR,inline
 ./agents/helena.agent.md,Helena Revisora,🔬,Revisora combinada tech + estrutura de artigo com auto-fix,inline
+./agents/pedro.agent.md,Pedro Humanizador,🧬,Especialista em remoção de tells de IA em artigos longos (skill humanizer),inline
 ./agents/diana.agent.md,Diana Arte,🎨,Geradora de image prompt guide para capa de artigo,inline
 ./agents/lucas.agent.md,Lucas Integrador,🔗,Integrador Supabase + envio de email para collaborators,inline

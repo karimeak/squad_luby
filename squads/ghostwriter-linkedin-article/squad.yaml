@@ -5,9 +5,11 @@ squad:
     Gera artigos LinkedIn longos (1.500-2.000 words) para colaboradores da Luby.
     Fluxo: fetch collaborators do Supabase > match flavor > pesquisa web profunda > persona
     > escrita artigo EN-US (headline, intro, 3-5 seções, conclusão, CTA) > tradução PT-BR
-    > review combinada (tech+estrutura) com auto-fix > image prompt guide (Diana, texto)
-    > salva em bloggers (Supabase) > envia email para cada collaborator
-    via Edge Function > entrega final. Publicação manual pelo collaborator.
+    > review combinada (tech+estrutura) com auto-fix > humanização (Pedro, remoção de
+    tells de IA via skill humanizer) > geração da capa 1200x627 (Diana via Gemini/Playwright
+    + upload Supabase Storage) > salva em bloggers (Supabase, com image_url) > envia email
+    com capa real para cada collaborator via Edge Function > entrega final.
+    Publicação manual pelo collaborator.
   version: "1.0.0"
   created: "2026-04-29"
   performance_mode: alta-performance
@@ -37,6 +39,8 @@ supabase:
 skills:
   - web_search
   - web_fetch
+  - humanizer
+  - playwright
 
 data:
   - pipeline/data/supabase-config.json
@@ -57,6 +61,7 @@ pipeline:
     - step-03-write
     - step-04-translate
     - step-05-review
+    - step-05b-humanize
     - step-06-image-prompt
     - step-07-save-to-supabase
     - step-08-send-email

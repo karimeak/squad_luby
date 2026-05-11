@@ -80,15 +80,33 @@ steps:
     tasks:
       - combined-review.md
     max_retries: 2
+    next: step-05b-humanize
+
+  - id: step-05b-humanize
+    name: Humanização (Pedro — remoção de tells de IA)
+    type: agent
+    agent: pedro
+    file: steps/step-05b-humanize.md
+    execution: inline
+    model_tier: powerful
+    max_retries: 2
+    skills:
+      - humanizer
+    tasks:
+      - humanize.md
     next: step-06-image-prompt
 
   - id: step-06-image-prompt
-    name: Image Prompt Guide para Capa
+    name: Geração da Capa do Artigo (Gemini via Playwright + Upload Supabase)
     type: agent
     agent: diana
     file: steps/step-06-image-prompt.md
     execution: inline
     model_tier: powerful
+    skills:
+      - playwright
+    tools:
+      - playwright
     tasks:
       - image-prompt.md
     next: step-07-save-to-supabase

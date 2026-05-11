@@ -10,12 +10,22 @@
     "bloggers": {
       "name": "bloggers",
       "description": "Artigos LinkedIn gerados pelo squad, aguardando publicação manual pelo collaborator",
-      "fields": ["id", "collaborator_id", "content", "submitted_content", "created_at"]
+      "fields": ["id", "collaborator_id", "content", "image_url", "submitted_content", "created_at"]
     },
     "related_searchs": {
       "name": "related_searchs",
       "description": "Flavors/temas disponíveis para match com topics dos collaborators",
       "fields": ["query", "related_search"]
+    }
+  },
+  "storage": {
+    "linkedin-ghostwriter-article-images": {
+      "name": "linkedin-ghostwriter-article-images",
+      "public": true,
+      "description": "Capas de artigos LinkedIn (1200x627, 16:9) geradas pela Diana via Gemini (step-06). Upload no path {collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}.jpg (UUID direto da tabela collaborators, flavor slugificado via node -e deterministico).",
+      "file_size_limit_bytes": 10485760,
+      "allowed_mime_types": ["image/jpeg", "image/png", "image/webp"],
+      "public_url_pattern": "{supabase_url}/storage/v1/object/public/linkedin-ghostwriter-article-images/{path}"
     }
   }
 }

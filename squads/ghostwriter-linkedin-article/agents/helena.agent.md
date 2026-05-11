@@ -73,4 +73,4 @@ Precisa e construtiva. Para cada problema: localização exata, diagnóstico, co
 
 **Input:** article-en.md + article-pt.md + research-brief.md + persona-brief.md + quality-criteria.md
 **Output:** `{name}/reviewed-article-en.md` + `{name}/reviewed-article-pt.md` + `{name}/review-report.md`
-**Next step:** step-06-image-prompt (Diana gera image prompt guide)
+**Next step:** step-05b-humanize (Pedro aplica a skill humanizer nos artigos revisados)
