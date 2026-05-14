@@ -4,28 +4,43 @@
   "tables": {
     "collaborators": {
       "name": "collaborators",
-      "description": "Perfis dos colaboradores da Luby com dados de persona",
-      "fields": ["id", "name", "role", "audience_en", "audience_pt", "objective_en", "objective_pt", "topics", "tone_en", "tone_pt", "voice_markers_en", "voice_markers_pt", "avoid", "linkedin_url", "linkedin_improvement", "email"]
+      "description": "Perfis dos colaboradores da Luby com dados de persona. Coluna `language` e text[] (array): valores ['pt-br'], ['en-us'] ou ['pt-br','en-us'] (bilingue).",
+      "fields": ["id", "name", "role", "audience_en", "audience_pt", "objective_en", "objective_pt", "topics", "tone_en", "tone_pt", "voice_markers_en", "voice_markers_pt", "avoid", "linkedin_url", "linkedin_improvement", "email", "language"]
     },
     "bloggers": {
       "name": "bloggers",
-      "description": "Posts LinkedIn gerados pelo squad, aguardando envio via n8n",
-      "fields": ["id", "collaborator_id", "content", "image_url", "submitted_content", "created_at"]
+      "description": "Posts LinkedIn gerados pelo squad, aguardando envio via edge function. 1 row por (collaborator, lingua-alvo). Coluna `video_url` populada apenas se o collaborator foi selecionado pela rotacao no step-05c E o video foi uploaded com sucesso.",
+      "fields": ["id", "collaborator_id", "content", "image_url", "video_url", "submitted_content", "created_at"]
     },
     "related_searchs": {
       "name": "related_searchs",
       "description": "Flavors/temas disponiveis para match com topics dos collaborators",
       "fields": ["query", "related_search"]
+    },
+    "video_rotation_linkedin": {
+      "name": "video_rotation_linkedin",
+      "description": "Historico de rotacao de videos LinkedIn. 1 row por video tentado (status pending durante step-05c, uploaded apos step-05d sucesso, failed apos retry). Bilingues alternam lingua via consulta a esta tabela. status='failed' e 'pending' NAO contam como 'ja recebeu video' para a rotacao.",
+      "fields": ["id", "collaborator_id", "blogger_id", "language", "video_url", "status", "run_id", "generated_at"],
+      "status_enum": ["pending", "generated", "uploaded", "failed"],
+      "language_enum": ["pt-br", "en-us"]
     }
   },
   "storage": {
     "linkedin-ghostwriter-images": {
       "name": "linkedin-ghostwriter-images",
       "public": true,
-      "description": "Imagens geradas pelo Gemini (step-06) para os posts LinkedIn dos collaborators. Upload no path {collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}.jpg (UUID direto da tabela collaborators, flavor slugificado via node -e deterministico).",
+      "description": "Imagens geradas pelo Gemini (step-06) para os posts LinkedIn dos collaborators. 1 imagem por (collaborator, lingua-alvo). Upload no path {collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}-{language}.jpg (UUID direto da tabela collaborators, flavor slugificado via node -e deterministico).",
       "file_size_limit_bytes": 10485760,
       "allowed_mime_types": ["image/jpeg", "image/png", "image/webp"],
       "public_url_pattern": "{supabase_url}/storage/v1/object/public/linkedin-ghostwriter-images/{path}"
+    },
+    "linkedin-ghostwriter-videos": {
+      "name": "linkedin-ghostwriter-videos",
+      "public": true,
+      "description": "Videos MP4 30s 1920x1080 modo personal gerados pelo luby-video-machine via Cleidim (step-05d). Upload no path {collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}-{language}.mp4. Apenas collaborators selecionados pelo step-05c entram aqui.",
+      "file_size_limit_bytes": 104857600,
+      "allowed_mime_types": ["video/mp4", "video/quicktime", "video/webm"],
+      "public_url_pattern": "{supabase_url}/storage/v1/object/public/linkedin-ghostwriter-videos/{path}"
     }
   }
 }

@@ -1,0 +1,44 @@
+{
+  "videos_per_run": 2,
+  "mode": "personal",
+  "duration_seconds": 30,
+  "resolution": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "remotion": {
+    "project_path": "squads/ghostwriter-linkedin-auto/luby-video-machine",
+    "compositions": {
+      "pt-br": "DemoVideo-PT-Personal",
+      "en-us": "DemoVideo-EN-Personal"
+    },
+    "render_timeout_seconds": 480,
+    "min_mp4_size_bytes": 102400,
+    "node_version_required": "18+"
+  },
+  "auto_approve_gates": {
+    "gate1_archetype": true,
+    "gate2_smoke_still": true,
+    "warning_logged_in": "04-implementation-notes.md gate_decisions field"
+  },
+  "rotation": {
+    "table": "video_rotation_linkedin",
+    "selection_strategy": "uploaded_count_asc, last_uploaded_at_nulls_first_asc, run_date_seed_random",
+    "bilingual_strategy": "alternate_languages_based_on_last_uploaded",
+    "bilingual_default_when_no_history": "first_element_of_language_array",
+    "failed_status_does_not_count_as_uploaded": true
+  },
+  "storage": {
+    "bucket": "linkedin-ghostwriter-videos",
+    "path_pattern": "{collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}-{language}.mp4",
+    "max_file_size_bytes": 104857600,
+    "allowed_mime_types": ["video/mp4", "video/quicktime", "video/webm"],
+    "x_upsert": true
+  },
+  "fail_safe": {
+    "block_pipeline_on_video_failure": false,
+    "max_retries_per_step": 1,
+    "always_save_video_confirmation_md": true
+  }
+}

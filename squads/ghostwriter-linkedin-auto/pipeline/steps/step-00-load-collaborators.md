@@ -38,8 +38,21 @@ Para cada collaborator:
 - Se existir `post-history.json`, evitar flavors usados recentemente pelo mesmo collaborator
 - Se nenhum match encontrado: usar o primeiro related_search disponivel
 
-### 5. Produzir output
-Salvar `collaborator-queue.json` no diretorio de output do run com a lista completa de collaborators + flavor selecionado.
+### 5. Normalizar coluna `language` (text[])
+
+A coluna `language` em `collaborators` e **text[]** (array). Valores possiveis:
+- `["pt-br"]` — collaborator monolingue PT
+- `["en-us"]` — collaborator monolingue EN
+- `["pt-br","en-us"]` ou `["en-us","pt-br"]` — collaborator bilingue (recebe ambas as linguas)
+
+Para cada collaborator:
+- Carregar o array `language` direto da tabela
+- Validar que e array nao-vazio (se vazio ou null, default `["pt-br"]` e logar warning)
+- Garantir que so contem valores `pt-br` ou `en-us` (descartar invalidos)
+- Salvar como campo `languages` (plural, array) no `collaborator-queue.json`
+
+### 6. Produzir output
+Salvar `collaborator-queue.json` no diretorio de output do run com a lista completa de collaborators + flavor selecionado + linguas-alvo.
 
 Formato:
 ```json
@@ -60,10 +73,19 @@ Formato:
     "avoid": ["..."],
     "linkedin_url": "...",
     "email": "...",
-    "flavor": "selected related_search text"
+    "flavor": "selected related_search text",
+    "languages": ["pt-br"]
   }
 ]
 ```
+
+> O campo `languages` (plural, array) controla todos os steps subsequentes:
+> - step-03 sempre escreve EN como base
+> - step-04 (translate PT-BR) so executa se `"pt-br"` em languages
+> - step-05/05b revisam e humanizam apenas as linguas-alvo
+> - step-06 gera 1 imagem por lingua-alvo
+> - step-08 salva 1 row em bloggers por lingua-alvo
+> - step-09 inclui posts/imagens das linguas-alvo no email
 
 ## Output
 - `collaborator-queue.json` — lista de todos os collaborators com flavor atribuido

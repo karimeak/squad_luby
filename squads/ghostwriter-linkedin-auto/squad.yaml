@@ -3,14 +3,21 @@ squad:
   name: Ghostwriter LinkedIn Auto — Luby
   description: >
     Versao automatizada do ghostwriter LinkedIn. Gera posts de texto Medium
-    para todos os colaboradores sem interacao humana. Fluxo: fetch collaborators
-    do Supabase > match flavor por topicos > pesquisa web > persona > escrita EN-US
-    > traducao PT-BR > review tech+engajamento (Helena) > humanizacao separada
-    (Pedro, com auto-fix) > image prompt guide (Diana) > geracao via Google Gemini
-    + upload pro Supabase Storage (bucket linkedin-ghostwriter-images) > LinkedIn
-    profile optimizer > salva em bloggers (Supabase, com image_url) > envia email
-    com a imagem real via Edge Function > entrega final.
-  version: "1.5.0"
+    para os colaboradores sem interacao humana, respeitando a coluna
+    `language` (pt-br, en-us ou ambas) de cada collaborator. Fluxo: fetch
+    collaborators do Supabase > match flavor por topicos > pesquisa web >
+    persona > escrita EN-US (Bruno) > traducao PT-BR (Bruno, condicional)
+    > review tech+engajamento (Helena) > humanizacao separada (Pedro, com
+    auto-fix) > selecao de 2 collaborators para video (Lucas, rotacao
+    random sem repeticao via tabela video_rotation_linkedin) > geracao de
+    video Remotion modo personal (Cleidim, 1 MP4 por collaborator
+    selecionado, lingua escolhida pela rotacao bilingue) > image prompt
+    guide por lingua (Diana) > geracao via Gemini + upload pro Supabase
+    Storage (bucket linkedin-ghostwriter-images) > LinkedIn profile
+    optimizer > salva em bloggers (Supabase, com image_url e video_url
+    quando aplicavel) > envia email com posts/imagens/video real via Edge
+    Function > entrega final.
+  version: "1.6.0"
   created: "2026-04-07"
   performance_mode: alta-performance
   language: multilingual
@@ -18,13 +25,19 @@ squad:
 inputs:
   - name: collaborators
     type: array
-    description: "Lista de colaboradores carregados do Supabase (tabela collaborators)"
+    description: "Lista de colaboradores carregados do Supabase (tabela collaborators, com coluna language text[])"
     required: true
     source: supabase
 
   - name: flavors
     type: array
     description: "Flavors selecionados automaticamente por match de topics com related_searchs"
+    required: true
+    source: supabase
+
+  - name: video_rotation
+    type: array
+    description: "Historico de rotacao de videos (tabela video_rotation_linkedin) — usado para escolher os 2 collaborators da rodada"
     required: true
     source: supabase
 
@@ -35,6 +48,10 @@ supabase:
     - collaborators
     - bloggers
     - related_searchs
+    - video_rotation_linkedin
+  storage:
+    - linkedin-ghostwriter-images
+    - linkedin-ghostwriter-videos
 
 skills:
   - web_search
@@ -44,6 +61,7 @@ skills:
   - humanizer
   - image-design
   - playwright
+  - remotion-best-practices
 
 data:
   - pipeline/data/supabase-config.json
@@ -51,9 +69,11 @@ data:
   - pipeline/data/tone-of-voice.md
   - pipeline/data/quality-criteria.md
   - pipeline/data/sources.json
+  - pipeline/data/video-config.json
 
 formats:
   - linkedin-post
+  - linkedin-video
 
 pipeline:
   entry: pipeline/pipeline.yaml
@@ -65,6 +85,8 @@ pipeline:
     - step-04-translate
     - step-05-review
     - step-05b-humanize
+    - step-05c-video-selection
+    - step-05d-video-generation
     - step-06-image-suggestion
     - step-07-linkedin-optimizer
     - step-08-save-to-supabase

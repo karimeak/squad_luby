@@ -11,6 +11,8 @@ execution: inline
 ## Objetivo
 Bruno escreve 1 post LinkedIn Text Medium (700-1500 chars) em ingles para o collaborator atual, usando o research-brief e persona-brief como base.
 
+> **Sempre escrever em EN, mesmo que o collaborator nao consuma EN.** Bruno e treinado pra produzir original em EN com qualidade mais consistente; o EN funciona como base para a traducao no step-04. Se o collaborator NAO tem `"en-us"` em `languages`, o `post-en.md` e tratado como **rascunho interno** — nao vai para `bloggers`, nao vai para o email.
+
 ## Instrucoes para Bruno
 
 ### Input

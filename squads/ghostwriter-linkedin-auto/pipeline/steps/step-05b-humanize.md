@@ -14,19 +14,22 @@ skills:
 
 ## Objetivo
 
-Pedro recebe os posts EN e PT-BR ja revisados pela Helena (tech + engagement) e remove tells de escrita IA, aplicando a skill `humanizer`. Em modo automatico, Pedro auto-corrige trechos problematicos em vez de rejeitar (ate 2 tentativas).
+Pedro recebe os posts ja revisados pela Helena **apenas nas linguas-alvo** do collaborator (campo `languages` em `collaborator-queue.json`) e remove tells de escrita IA, aplicando a skill `humanizer`. Em modo automatico, Pedro auto-corrige trechos problematicos em vez de rejeitar (ate 2 tentativas).
 
 > **Helena ja cuidou de fact-checking e engagement.** Pedro NAO refaz isso. Foco unico: humanizacao.
+>
+> **Language-aware:** Se `"en-us"` em languages → processa `reviewed-post-en.md` e gera `humanized-post-en.md`. Se `"pt-br"` em languages → processa `reviewed-post-pt.md` e gera `humanized-post-pt.md`. Se so 1 lingua, so essa.
 
 ## Inputs
 
 - `.claude/skills/humanizer/SKILL.md` — checklist completa (carregar antes da analise)
 - `{run_output}/{name}/_collab.json` — voice_markers para preservar
-- `{run_output}/{name}/reviewed-post-en.md` — versao pos-Helena (tech + engagement clean)
-- `{run_output}/{name}/reviewed-post-pt.md` — versao pos-Helena (tech + engagement clean)
+- `collaborator-queue.json` — para extrair `languages`
+- `{run_output}/{name}/reviewed-post-en.md` — **se `"en-us"` em languages**
+- `{run_output}/{name}/reviewed-post-pt.md` — **se `"pt-br"` em languages**
 - `{run_output}/{name}/review.md` — historico de fixes da Helena (nao desfazer)
 
-## Processo (para CADA idioma — EN e PT-BR)
+## Processo (para CADA idioma-alvo do collaborator)
 
 ### 1. Deteccao por categoria
 
@@ -81,10 +84,10 @@ Threshold de aprovacao: **7.0/10**.
 
 ## Output
 
-### Arquivos novos
+### Arquivos novos (apenas para linguas-alvo)
 
-- `{run_output}/{name}/humanized-post-en.md` — versao final EN pos-humanizacao
-- `{run_output}/{name}/humanized-post-pt.md` — versao final PT-BR pos-humanizacao
+- `{run_output}/{name}/humanized-post-en.md` — **se `"en-us"` em languages** — versao final EN pos-humanizacao
+- `{run_output}/{name}/humanized-post-pt.md` — **se `"pt-br"` em languages** — versao final PT-BR pos-humanizacao
 
 ### Apendice em `review.md`
 
@@ -119,4 +122,4 @@ Pedro NAO veta o pipeline. Mesmo em score < 5.0 apos 2 retries, accept com WARNI
 
 ## Next
 
-step-06-image-suggestion (Diana le os `humanized-post-*.md` como input do prompt visual em vez de `post-*.md`)
+step-05c-video-selection (Lucas seleciona 2 collaborators para receber video — roda 1x por run apos humanizacao terminar para todos os collaborators)

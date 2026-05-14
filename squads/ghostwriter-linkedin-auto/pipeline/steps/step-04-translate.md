@@ -6,16 +6,21 @@ agent: bruno
 execution: inline
 ---
 
-# Step 04 — Traducao EN-US > PT-BR
+# Step 04 — Traducao EN-US > PT-BR (condicional)
 
 ## Objetivo
 Bruno traduz o post EN-US para PT-BR, adaptando culturalmente — nao traduzindo literalmente. Voice markers, referencias de mercado e CTA sao adaptados para o contexto brasileiro.
+
+> **CONDICIONAL — language-aware:**
+> - Executa apenas se o collaborator tem `"pt-br"` em `languages` (do `collaborator-queue.json`).
+> - Se `languages = ["en-us"]` (monolingue EN), **SKIP** este step e seguir direto pro step-05. NAO produzir `post-pt.md`.
+> - Se `languages = ["pt-br"]` ou `["pt-br","en-us"]`, executar normalmente.
 
 ## Instrucoes para Bruno
 
 ### Input
 - Ler `{name}/post-en.md` — post EN-US aprovado
-- Ler dados do collaborator em collaborator-queue.json: voice_markers_pt, tone_pt, audience_pt
+- Ler dados do collaborator em collaborator-queue.json: voice_markers_pt, tone_pt, audience_pt, languages
 
 ### Processo
 

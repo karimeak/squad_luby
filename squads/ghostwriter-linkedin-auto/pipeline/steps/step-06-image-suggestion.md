@@ -9,11 +9,18 @@ skills:
   - playwright
 ---
 
-# Step 06 — Geração de Imagem para o Post (Diana + Gemini)
+# Step 06 — Geração de Imagem para o Post (Diana + Gemini) — language-aware
 
 ## Objetivo
 
-Diana gera um **Image Prompt Guide** estruturado a partir do post revisado, abre o Google Gemini via Playwright para gerar a imagem, e faz upload da imagem para o Supabase Storage para que o colaborador possa visualizá-la no email — sem aprovação humana (pipeline autônomo).
+Diana gera **1 Image Prompt Guide por lingua-alvo** do collaborator (campo `languages` em `collaborator-queue.json`), abre o Google Gemini via Playwright para gerar cada imagem, e faz upload das imagens para o Supabase Storage — sem aprovação humana (pipeline autônomo).
+
+> **Language-aware:** O numero de imagens por collaborator e igual ao tamanho do array `languages`:
+> - `languages = ["pt-br"]` → 1 imagem (texto/refs em PT-BR se aparecerem na arte)
+> - `languages = ["en-us"]` → 1 imagem (texto/refs em EN-US)
+> - `languages = ["pt-br","en-us"]` → 2 imagens (1 por lingua)
+>
+> Cada imagem usa o `humanized-post-{lang}.md` correspondente como source do prompt visual. Path no bucket inclui o sufixo `-{lang}` para diferenciar.
 
 > **Pollinations.ai está PROIBIDO** (decisão definitiva 2026-05-11). Não construir URL, não fazer fallback, não citar. Toda imagem é gerada exclusivamente via Gemini.
 >
@@ -27,10 +34,11 @@ Saídas:
 
 ## Inputs
 
-- `{run_output}/{name}/humanized-post-en.md` — post final EN pos-Pedro (humanizado)
+- `collaborator-queue.json` — `languages` (array), `flavor`, `id` do collaborator (para path no bucket)
+- `{run_output}/{name}/humanized-post-en.md` — **se `"en-us"` em languages** — post final EN pos-Pedro
+- `{run_output}/{name}/humanized-post-pt.md` — **se `"pt-br"` em languages** — post final PT-BR pos-Pedro
 - `{run_output}/{name}/research-brief.md` — tema, flavor, indústria do collaborator
 - `pipeline/data/supabase-config.json` — URL e anon_key para upload no Storage
-- `collaborator-queue.json` — nome do colaborador (para slug do path no bucket)
 
 ---
 
@@ -163,10 +171,12 @@ Subir o arquivo `linkedin-image.jpg` para o bucket público `linkedin-ghostwrite
 
 ### 1. Construir o path do arquivo
 
-Padrão (deterministico, zero risco de colisao de nomes homonimos):
+Padrão (deterministico, zero risco de colisao de nomes homonimos), **com sufixo de lingua**:
 ```
-{collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}.jpg
+{collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}-{language}.jpg
 ```
+
+Onde `{language}` e `pt-br` ou `en-us` (igual ao path do video).
 
 - `collaborator_uuid`: campo `id` do colaborador no `collaborator-queue.json` (vem direto da tabela `collaborators`, ja e UUID — sem slug, sem normalizacao)
 - `YYYY-MM-DD`: data do run (ex: `2026-05-07`)
@@ -196,8 +206,9 @@ BUCKET="linkedin-ghostwriter-images"
 COLLAB_UUID="<collaborator.id do queue>"
 RUN_DATE="<YYYY-MM-DD>"
 FLAVOR_SLUG=$(node -e "console.log(process.argv[1].toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''))" "<flavor>")
-PATH_IN_BUCKET="${COLLAB_UUID}/${RUN_DATE}-${FLAVOR_SLUG}.jpg"
-LOCAL_FILE="<run_output>/<name>/linkedin-image.jpg"
+LANG_CODE="<pt-br|en-us>"
+PATH_IN_BUCKET="${COLLAB_UUID}/${RUN_DATE}-${FLAVOR_SLUG}-${LANG_CODE}.jpg"
+LOCAL_FILE="<run_output>/<name>/linkedin-image-${LANG_CODE}.jpg"
 
 curl -X POST \
   "${SUPABASE_URL}/storage/v1/object/${BUCKET}/${PATH_IN_BUCKET}" \
@@ -213,12 +224,12 @@ curl -X POST \
 ### 3. Construir a URL pública
 
 ```
-{supabase_url}/storage/v1/object/public/linkedin-ghostwriter-images/{collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}.jpg
+{supabase_url}/storage/v1/object/public/linkedin-ghostwriter-images/{collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}-{language}.jpg
 ```
 
 Exemplo:
 ```
-https://pbvjsixlqnuzcnqahbxu.supabase.co/storage/v1/object/public/linkedin-ghostwriter-images/8f3a2b1c-4d5e-6f7g-8h9i-0j1k2l3m4n5o/2026-05-07-ai-credit.jpg
+https://pbvjsixlqnuzcnqahbxu.supabase.co/storage/v1/object/public/linkedin-ghostwriter-images/8f3a2b1c-4d5e-6f7g-8h9i-0j1k2l3m4n5o/2026-05-07-ai-credit-pt-br.jpg
 ```
 
 ### 4. Verificar acessibilidade
@@ -231,23 +242,24 @@ Se o upload falhar (4xx/5xx), tentar 1x novamente. Se falhar de novo, registrar 
 
 ## Output
 
-**Arquivos gerados:**
+**Arquivos gerados (1 por lingua-alvo):**
 
 | Arquivo | Uso |
 |---|---|
-| `{run_output}/{name}/linkedin-image.jpg` | Imagem em alta-res salva localmente (ref de auditoria) |
-| `linkedin-ghostwriter-images/{collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}.jpg` no Supabase Storage | Imagem pública para o email e para publicar no LinkedIn |
+| `{run_output}/{name}/linkedin-image-{lang}.jpg` | Imagem em alta-res salva localmente (ref de auditoria), 1 por lingua-alvo |
+| `linkedin-ghostwriter-images/{collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}-{lang}.jpg` no Supabase Storage | Imagem pública por lingua, para o email e para publicar no LinkedIn |
 
-**Resumo `{run_output}/{name}/image-suggestion.md`:**
+**Resumo `{run_output}/{name}/image-suggestion-{lang}.md` (1 arquivo por lingua-alvo):**
 
 ```markdown
-# Image Suggestion — {name}
+# Image Suggestion — {name} ({lang})
 
+**Language:** {pt-br|en-us}
 **Post flavor:** {flavor}
 **Visual approach:** {abordagem escolhida}
-**Image file:** output/{run_id}/{name}/linkedin-image.jpg
+**Image file:** output/{run_id}/{name}/linkedin-image-{lang}.jpg
 **Image URL:** {URL pública do Supabase Storage}
-**Storage path:** linkedin-ghostwriter-images/{collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}.jpg
+**Storage path:** linkedin-ghostwriter-images/{collaborator_uuid}/{YYYY-MM-DD}-{flavor-slug}-{lang}.jpg
 
 ---
 
@@ -262,8 +274,10 @@ Se o upload falhar (4xx/5xx), tentar 1x novamente. Se falhar de novo, registrar 
 {justificativa concisa das escolhas visuais — tema → decisão → resultado}
 ```
 
-> O campo `**Image URL:**` é a fonte única — lido pelo step-08 (salva em `bloggers.image_url`) e pelo step-09 (incorpora no email).
-> Se o upload falhou, deixar `**Image URL:** null` e step-08/09 lidam com o caso.
+> O campo `**Image URL:**` em cada `image-suggestion-{lang}.md` é a fonte única — lido pelo step-08 (salva em `bloggers.image_url` da row dessa lingua) e pelo step-09 (incorpora no email).
+> Se o upload falhou para uma lingua, deixar `**Image URL:** null` nesse arquivo e step-08/09 lidam com o caso.
+>
+> **Cadência reset por imagem (nao por collaborator):** se um collaborator bilingue gera 2 imagens, ambas contam para o ritmo de 60s entre requests + pausa de 2min a cada 10.
 
 ## Next
 

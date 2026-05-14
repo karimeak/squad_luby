@@ -7,12 +7,17 @@ execution: inline
 max_retries: 2
 ---
 
-# Step 05 — Revisao Combinada (Tech + Engajamento)
+# Step 05 — Revisao Combinada (Tech + Engajamento) — language-aware
 
 ## Objetivo
-Helena revisa ambos os posts (EN e PT-BR) em um unico passo, combinando fact-checking tecnico e avaliacao de engajamento LinkedIn. Em modo automatico, Helena auto-corrige problemas em vez de rejeitar (ate 2 tentativas).
+Helena revisa os posts **apenas nas linguas-alvo do collaborator** (campo `languages` em `collaborator-queue.json`). Em modo automatico, Helena auto-corrige problemas em vez de rejeitar (ate 2 tentativas).
 
 > **Humanizacao (remocao de tells de IA) e responsabilidade do Pedro no step-05b.** Helena NAO mexe em em-dash, vocabulario inflado, paralelismos ou outras categorias humanizer. Foco unico: tech + engagement.
+>
+> **Language-aware:**
+> - Se `"en-us"` em languages → revisa `post-en.md` e gera `reviewed-post-en.md`
+> - Se `"pt-br"` em languages → revisa `post-pt.md` e gera `reviewed-post-pt.md`
+> - Se apenas uma lingua, **so revisa essa**. O `post-en.md` rascunho interno (quando `languages=["pt-br"]`) NAO precisa ser revisado.
 
 ## Instrucoes para Helena
 
@@ -22,8 +27,9 @@ Helena revisa ambos os posts (EN e PT-BR) em um unico passo, combinando fact-che
 - Ler `squads/ghostwriter-linkedin-auto/pipeline/data/tone-of-voice.md`
 - Ler `{name}/research-brief.md`
 - Ler `{name}/persona-brief.md`
-- Ler `{name}/post-en.md`
-- Ler `{name}/post-pt.md`
+- Ler `{name}/post-en.md` (se `"en-us"` em languages — caso contrario, ignorar)
+- Ler `{name}/post-pt.md` (se `"pt-br"` em languages — caso contrario, nao existe)
+- Ler `collaborator-queue.json` para extrair `languages`
 
 ### Processo (para cada idioma)
 
@@ -65,10 +71,10 @@ Helena revisa ambos os posts (EN e PT-BR) em um unico passo, combinando fact-che
 
 > **NAO incluir** em-dash, vocabulario inflado, paralelismos, atribuicoes vagas etc. Esses tells sao tratados pelo Pedro no step-05b.
 
-### Output
-- `{name}/reviewed-post-en.md` — post EN final (corrigido se necessario)
-- `{name}/reviewed-post-pt.md` — post PT-BR final (corrigido se necessario)
-- `{name}/review-report.md` — scoring tables (tech + engagement) + auto-fixes aplicados
+### Output (apenas para linguas-alvo)
+- `{name}/reviewed-post-en.md` — **se `"en-us"` em languages** — post EN final
+- `{name}/reviewed-post-pt.md` — **se `"pt-br"` em languages** — post PT-BR final
+- `{name}/review-report.md` — scoring tables (tech + engagement) + auto-fixes aplicados (cobre apenas as linguas-alvo)
 
 ## Next
 step-05b-humanize (Pedro humaniza os reviewed-post-*.md antes da Diana gerar a imagem)
