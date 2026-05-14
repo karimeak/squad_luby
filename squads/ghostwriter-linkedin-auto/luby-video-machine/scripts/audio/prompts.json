@@ -1,0 +1,39 @@
+{
+  "_doc": "Curated prompt library for the Luby Video Machine audio assets. Each entry produces ONE asset. Re-running the generate script is idempotent: same prompt + same seed = byte-identical output, so existing files are skipped unless --force is passed. Add new entries here to grow the library.",
+  "_audio_policy": "BGM-only default. SFX generation was tried with AudioLDM2 but the output quality was inconsistent (whoosh/tick/chime came out as noisy or muddy). Cleidson decided to keep BGM only as the standard. If SFX is reintroduced later, sourcing from a curated library (Mixkit, Pixabay) is recommended over generation.",
+
+  "bgm": [
+    {
+      "id": "corporate-tech-uplifting-1",
+      "prompt": "upbeat corporate technology background music, modern saas demo, clean synth pads, soft pulsing arpeggio, 110 bpm, optimistic, no lyrics, premium b2b atmosphere",
+      "duration_s": 32,
+      "seed": 1001
+    },
+    {
+      "id": "corporate-tech-cinematic-1",
+      "prompt": "cinematic corporate ambient, slow building tension, deep synth bass, atmospheric pads, subtle electronic percussion, 95 bpm, premium silicon valley product launch feel, no lyrics",
+      "duration_s": 32,
+      "seed": 1002
+    },
+    {
+      "id": "corporate-tech-confident-1",
+      "prompt": "confident upbeat tech ambient, smooth electronic groove, warm synth lead, clean four-on-the-floor light kick, modern fintech video soundtrack, 115 bpm, no lyrics",
+      "duration_s": 32,
+      "seed": 1003
+    },
+    {
+      "id": "corporate-tech-minimal-1",
+      "prompt": "minimal corporate ambient electronic, sparse plucked synth, soft sub bass, ambient pads, restrained percussion, modern infrastructure product video, 100 bpm, no lyrics",
+      "duration_s": 32,
+      "seed": 1004
+    },
+    {
+      "id": "corporate-tech-energetic-1",
+      "prompt": "energetic upbeat tech corporate, driving electronic rhythm, bright synth lead, building modern saas explainer, 120 bpm, optimistic confident, no lyrics",
+      "duration_s": 32,
+      "seed": 1005
+    }
+  ],
+
+  "sfx": []
+}

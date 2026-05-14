@@ -1,0 +1,82 @@
+{
+  "generatedAt": "2026-05-08T14:25:58.892Z",
+  "bgm": [
+    {
+      "id": "corporate-tech-uplifting-1",
+      "file": "bgm/corporate-tech-uplifting-1.wav",
+      "duration_s": 32,
+      "prompt": "upbeat corporate technology background music, modern saas demo, clean synth pads, soft pulsing arpeggio, 110 bpm, optimistic, no lyrics, premium b2b atmosphere"
+    },
+    {
+      "id": "corporate-tech-cinematic-1",
+      "file": "bgm/corporate-tech-cinematic-1.wav",
+      "duration_s": 32,
+      "prompt": "cinematic corporate ambient, slow building tension, deep synth bass, atmospheric pads, subtle electronic percussion, 95 bpm, premium silicon valley product launch feel, no lyrics"
+    },
+    {
+      "id": "corporate-tech-confident-1",
+      "file": "bgm/corporate-tech-confident-1.wav",
+      "duration_s": 32,
+      "prompt": "confident upbeat tech ambient, smooth electronic groove, warm synth lead, clean four-on-the-floor light kick, modern fintech video soundtrack, 115 bpm, no lyrics"
+    },
+    {
+      "id": "corporate-tech-minimal-1",
+      "file": "bgm/corporate-tech-minimal-1.wav",
+      "duration_s": 32,
+      "prompt": "minimal corporate ambient electronic, sparse plucked synth, soft sub bass, ambient pads, restrained percussion, modern infrastructure product video, 100 bpm, no lyrics"
+    },
+    {
+      "id": "corporate-tech-energetic-1",
+      "file": "bgm/corporate-tech-energetic-1.wav",
+      "duration_s": 32,
+      "prompt": "energetic upbeat tech corporate, driving electronic rhythm, bright synth lead, building modern saas explainer, 120 bpm, optimistic confident, no lyrics"
+    }
+  ],
+  "sfx": [],
+  "narration": {
+    "pt": {
+      "intro": {
+        "file": "narration/pt/intro.wav",
+        "text": "Desenvolvimento com inteligência artificial. Com segurança."
+      },
+      "hook": {
+        "file": "narration/pt/hook.wav",
+        "text": "Como acelerar com IA sem abrir mão da segurança?"
+      },
+      "bullets": {
+        "file": "narration/pt/bullets.wav",
+        "text": "Três pilares. Code review automático em todo PR. Validação de vulnerabilidades antes do deploy. Compliance e audit trails desde o dia um."
+      },
+      "stat": {
+        "file": "narration/pt/stat.wav",
+        "text": "O resultado: sessenta por cento menos vulnerabilidades em produção."
+      },
+      "cta": {
+        "file": "narration/pt/cta.wav",
+        "text": "Construa com IA. Construa com segurança. Luby."
+      }
+    },
+    "en": {
+      "intro": {
+        "file": "narration/en/intro.wav",
+        "text": "AI-powered development. Built with security in mind."
+      },
+      "hook": {
+        "file": "narration/en/hook.wav",
+        "text": "How do you ship AI-fast without compromising security?"
+      },
+      "bullets": {
+        "file": "narration/en/bullets.wav",
+        "text": "Three pillars. Automated code review on every PR. Vulnerability gates before deploy. Compliance and audit trails from day one."
+      },
+      "stat": {
+        "file": "narration/en/stat.wav",
+        "text": "The result: sixty percent fewer vulnerabilities in production."
+      },
+      "cta": {
+        "file": "narration/en/cta.wav",
+        "text": "Build with AI. Build secure. Luby."
+      }
+    }
+  }
+}

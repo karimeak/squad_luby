@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(& \"e:\\\\Design\\\\Grupo Luby\\\\Video Machine\\\\luby-video-machine\\\\scripts\\\\audio\\\\.venv\\\\Scripts\\\\pip.exe\" install --no-input -r \"e:\\\\Design\\\\Grupo Luby\\\\Video Machine\\\\luby-video-machine\\\\scripts\\\\audio\\\\requirements.txt\")"
+    ]
+  }
+}

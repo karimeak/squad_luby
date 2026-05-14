@@ -1,0 +1,46 @@
+node_modules/
+out/
+.DS_Store
+*.log
+.env
+.env.local
+dist/
+build/
+
+# Audio pipeline — Python venvs and caches
+scripts/audio/.venv/
+scripts/audio/.venv-tts/
+scripts/audio/__pycache__/
+**/.venv/
+**/__pycache__/
+*.pyc
+
+# BGM + narration .wav files ARE versioned (~14MB total). Regenerating
+# them needs a GPU + ~6GB of TTS models, so a fresh clone must ship with
+# the audio already present or `npm run render:*` breaks on a missing
+# staticFile(). Only SFX stays ignored — it's disabled by default and
+# the bundled cues didn't meet the quality bar (see VideoAudio docstring).
+public/audio/sfx/*.wav
+
+# Agents pipeline — MP4 renders of each run stay local (markdown artifacts
+# are versioned, MP4s are not — they're heavy and reproducible from the
+# storyboard via `npm run render:*`).
+agents/runs/*/out/
+*.mp4
+*.webm
+*.mov
+
+# Heavy TTS voice models (~120MB Piper). Squad downloads on first setup
+# via scripts/audio/setup.ps1, not versioned.
+scripts/audio/piper-voices/
+*.onnx
+*.onnx.json
+
+# Remotion render cache
+.remotion/
+
+# Editor / OS junk
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini

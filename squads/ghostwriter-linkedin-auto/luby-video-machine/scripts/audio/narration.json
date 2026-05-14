@@ -1,0 +1,39 @@
+{
+  "_doc": "Narration scripts per scene per language. The TTS generator (melotts.py) reads this and produces one .wav per scene+lang in public/audio/narration/{lang}/{sceneKey}.wav. Each entry has a fixed seed for reproducibility — same text + same seed = byte-identical output, so re-running the generate script skips already-generated files unless --force.",
+
+  "_speakers": {
+    "PT": {
+      "speaker_id": 0,
+      "speed": 1.0,
+      "_note": "MeloTTS PT model has only 1 speaker (id 0). Speed 1.0 is natural; 1.1 = slightly faster, 0.9 = more deliberate."
+    },
+    "EN": {
+      "speaker_id": 0,
+      "speed": 1.0,
+      "_note": "MeloTTS EN-US v2 has multiple accents: 0=EN-Default, 1=EN-US, 2=EN-BR, 3=EN-AU, 4=EN-INDIA. We use 0 for the brand neutral feel."
+    }
+  },
+
+  "scenes": {
+    "intro": {
+      "PT": { "text": "Desenvolvimento com inteligência artificial. Com segurança.", "seed": 3001 },
+      "EN": { "text": "AI-powered development. Built with security in mind.", "seed": 3001 }
+    },
+    "hook": {
+      "PT": { "text": "Como acelerar com IA sem abrir mão da segurança?", "seed": 3002 },
+      "EN": { "text": "How do you ship AI-fast without compromising security?", "seed": 3002 }
+    },
+    "bullets": {
+      "PT": { "text": "Três pilares. Code review automático em todo PR. Validação de vulnerabilidades antes do deploy. Compliance e audit trails desde o dia um.", "seed": 3003 },
+      "EN": { "text": "Three pillars. Automated code review on every PR. Vulnerability gates before deploy. Compliance and audit trails from day one.", "seed": 3003 }
+    },
+    "stat": {
+      "PT": { "text": "O resultado: sessenta por cento menos vulnerabilidades em produção.", "seed": 3004 },
+      "EN": { "text": "The result: sixty percent fewer vulnerabilities in production.", "seed": 3004 }
+    },
+    "cta": {
+      "PT": { "text": "Construa com IA. Construa com segurança. Luby.", "seed": 3005 },
+      "EN": { "text": "Build with AI. Build secure. Luby.", "seed": 3005 }
+    }
+  }
+}

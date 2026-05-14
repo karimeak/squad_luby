@@ -1,0 +1,34 @@
+{
+  "name": "luby-video-machine",
+  "version": "0.2.0",
+  "description": "LinkedIn video machine for Luby — Remotion-based, parameterized by language and brand mode.",
+  "scripts": {
+    "start": "remotion studio",
+    "render": "remotion render DemoVideo out/demo.mp4",
+    "render:pt": "remotion render DemoVideo-PT out/demo-pt.mp4",
+    "render:en": "remotion render DemoVideo-EN out/demo-en.mp4",
+    "render:personal-pt": "remotion render DemoVideo-PT-Personal out/demo-personal-pt.mp4",
+    "upgrade": "remotion upgrade",
+    "audio:setup": "powershell -ExecutionPolicy Bypass -File scripts/audio/setup.ps1",
+    "audio:generate": "node scripts/audio/generate.mjs",
+    "audio:regenerate": "node scripts/audio/generate.mjs --force",
+    "audio:narrate": "node scripts/audio/generate.mjs --narration-only",
+    "audio:narrate:force": "node scripts/audio/generate.mjs --narration-only --force"
+  },
+  "dependencies": {
+    "@remotion/bundler": "latest",
+    "@remotion/cli": "latest",
+    "@remotion/google-fonts": "latest",
+    "@remotion/renderer": "latest",
+    "lucide-react": "latest",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "remotion": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "19.0.0",
+    "@types/react-dom": "19.0.0",
+    "@types/node": "20.11.30",
+    "typescript": "5.4.3"
+  }
+}

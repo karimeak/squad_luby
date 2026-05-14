@@ -1,0 +1,49 @@
+# Pinned Python dependencies for the Luby Video Machine audio pipeline.
+#
+# Two generators run in this venv:
+#   - MusicGen (via Hugging Face transformers) → BGM tracks
+#   - AudioLDM 2 (via diffusers) → SFX
+#
+# Why transformers and NOT audiocraft? Audiocraft (Meta's official
+# MusicGen wrapper) has a hard dependency on PyAV (`av`), which on
+# Windows requires Visual C++ Build Tools to compile from source —
+# adding ~2GB of toolchain on every contributor machine. The Hugging
+# Face transformers library has its own MusicGen integration via
+# `MusicgenForConditionalGeneration` that produces identical audio,
+# uses the same model weights, and is pure-Python on top of torch.
+#
+# Tested combination (May 2026):
+#   - Python 3.11.x
+#   - CUDA 12.1 (matches the torch wheel)
+#   - NVIDIA driver >= 525
+#
+# Versions are pinned because torch + transformers compatibility is
+# brittle. Updating either tends to break the other.
+
+# Core ML stack — torch must come from PyTorch's wheel index for CUDA build.
+# NOTE: setup.ps1 installs torch BEFORE this requirements file so the right
+# CUDA wheel is picked up. Keep the version here in sync with that script.
+torch==2.3.1
+torchaudio==2.3.1
+
+# Hugging Face stack — transformers handles MusicGen, diffusers handles AudioLDM2
+transformers==4.42.4
+diffusers==0.30.0
+accelerate==0.32.1
+
+# Narration / TTS — MeloTTS (MIT license, multilingual, includes PT-BR).
+# We pin to a known-good commit because PyPI builds aren't published; the
+# package is installed straight from the GitHub release tag below in
+# setup.ps1. (This file is read by pip after torch is installed.)
+# MeloTTS itself doesn't appear here — see setup.ps1 line that runs
+# `pip install git+https://github.com/myshell-ai/MeloTTS.git`.
+# Listing it here would force pip to resolve it during -r install, which
+# fails because git refs need a separate install command.
+
+# Audio I/O — soundfile for writing wav, scipy as fallback
+soundfile==0.12.1
+scipy==1.11.4
+
+# Misc helpers
+numpy==1.26.4
+sentencepiece==0.2.0
