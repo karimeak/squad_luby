@@ -25,3 +25,10 @@ dashboard/test-results/
 
 # Temp files
 gemini-state.png
+
+# Sherlock investigation artifacts (probe/smoke scratch output) — keep .gitkeep
+squads/*/_investigations/*
+!squads/*/_investigations/.gitkeep
+
+# Python bytecode cache
+__pycache__/
