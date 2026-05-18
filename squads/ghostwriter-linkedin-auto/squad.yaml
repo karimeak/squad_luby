@@ -17,8 +17,17 @@ squad:
     optimizer > salva em bloggers (Supabase, com image_url e video_url
     quando aplicavel) > envia email com posts/imagens/video real via Edge
     Function > entrega final.
-  version: "1.6.0"
+  version: "1.6.1"
   created: "2026-04-07"
+  changelog:
+    "1.6.1":
+      date: "2026-05-18"
+      changes:
+        - "Image step: Pollinations.ai banido em definitivo — único caminho é Gemini via Playwright. Memória do squad limpa de referências antigas. Playwright reforçado como disponível em runs agendados."
+        - "Video step: removido fallback para DemoVideo-PT-Personal / DemoVideo-EN-Personal (carregavam lubyDemoSpec — pitch Luby AI+segurança hardcoded). Render agora SÓ aceita Composition custom criada pelo Motion Designer neste run, registrada em Root.tsx."
+        - "Video audio defaults: BGM on (corporate-tech-uplifting-1), narração off — narração assets em manifest.json são pitch Luby genérico que sobrepõe conteúdo do collaborator. Default ditado por pipeline/data/video-config.json campo audio_defaults."
+        - "Pre-render gates obrigatórios em step-05d: spec_exists, motion_notes_exists, root_registered, audio_defaults, not_forbidden_id. Falha em qualquer gate → status='failed' (NUNCA upload de MP4 alheio)."
+        - "Anti-padrão explícito em Cleidim: tempo percebido não justifica pular sub-agentes. Failed > uploaded com conteúdo errado."
   performance_mode: alta-performance
   language: multilingual
 

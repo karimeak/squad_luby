@@ -9,13 +9,56 @@
   },
   "remotion": {
     "project_path": "squads/ghostwriter-linkedin-auto/luby-video-machine",
-    "compositions": {
-      "pt-br": "DemoVideo-PT-Personal",
-      "en-us": "DemoVideo-EN-Personal"
-    },
     "render_timeout_seconds": 480,
     "min_mp4_size_bytes": 102400,
-    "node_version_required": "18+"
+    "node_version_required": "18+",
+    "composition_strategy": "custom_per_collaborator",
+    "composition_rules": {
+      "required_id_pattern": "{name-slug}-{flavor-slug-or-topic}-{lang}",
+      "required_registered_in": "src/Root.tsx",
+      "required_spec_path": "src/schema/examples/{composition_id}.ts",
+      "forbidden_ids": [
+        "DemoVideo",
+        "DemoVideo-PT",
+        "DemoVideo-EN",
+        "DemoVideo-PT-Personal",
+        "DemoVideo-EN-Personal"
+      ],
+      "forbidden_reason": "DemoVideo* compositions load lubyDemoSpec (luby-demo.ts) which is the canonical Luby AI-security pitch. Using them produces an MP4 with the right speaker overlay but generic Luby content (visuals + audio) — never matches the collaborator's post. Always render a Composition created by Motion Designer in this run, registered in Root.tsx, with the spec under src/schema/examples/."
+    }
+  },
+  "audio_defaults": {
+    "bgm_enabled": true,
+    "bgm_id": "corporate-tech-uplifting-1",
+    "bgm_volume": 0.12,
+    "bgm_volume_ducked": 0.05,
+    "narration_enabled": false,
+    "narration_volume": 0,
+    "rationale": "LinkedIn videos autoplay muted; on-screen text carries the message. BGM provides texture when the viewer unmutes. Narration is disabled because the only narration assets shipped in public/audio/manifest.json are the hardcoded Luby AI-security pitch, which would override the collaborator's post content. To re-enable narration per collaborator, the audio pipeline (npm run audio:narrate) must generate fresh TTS from the humanized-post text — not implemented yet."
+  },
+  "pre_render_gates": {
+    "spec_must_exist": {
+      "path": "luby-video-machine/src/schema/examples/{composition_id}.ts",
+      "on_fail": "mark_failed_skip_collaborator"
+    },
+    "composition_must_be_registered": {
+      "file": "luby-video-machine/src/Root.tsx",
+      "must_contain_id": "{composition_id}",
+      "on_fail": "mark_failed_skip_collaborator"
+    },
+    "spec_audio_must_match_defaults": {
+      "narration_enabled": false,
+      "bgm_id_set": true,
+      "on_fail": "patch_spec_to_match_defaults_then_continue"
+    },
+    "implementation_notes_must_exist": {
+      "path": "luby-video-machine/agents/runs/{run_slug}/04-implementation-notes.md",
+      "on_fail": "mark_failed_skip_collaborator"
+    },
+    "composition_id_must_not_match_forbidden": {
+      "forbidden": ["DemoVideo", "DemoVideo-PT", "DemoVideo-EN", "DemoVideo-PT-Personal", "DemoVideo-EN-Personal"],
+      "on_fail": "abort_run_critical_error"
+    }
   },
   "auto_approve_gates": {
     "gate1_archetype": true,

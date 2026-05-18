@@ -13,9 +13,13 @@ skills:
 
 ## Objetivo
 
-Cleidim itera sobre os collaborators em `video-queue.json` (selecionados pelo step-05c), monta um briefing por collaborator a partir do `humanized-post-{lang}.md`, aciona internamente os 5 sub-agentes do `luby-video-machine` (Estrategista > Roteirista > Diretor > Motion Designer > Revisor), renderiza um MP4 30s 1920x1080 modo `personal` na lingua escolhida, e faz upload para o bucket `linkedin-ghostwriter-videos`.
+Cleidim itera sobre os collaborators em `video-queue.json` (selecionados pelo step-05c), monta um briefing por collaborator a partir do `humanized-post-{lang}.md`, aciona internamente os 5 sub-agentes do `luby-video-machine` (Estrategista > Roteirista > Diretor > Motion Designer > Revisor), e renderiza um MP4 30s 1920x1080 modo `personal` na lingua escolhida usando uma Composition **custom criada pelo Motion Designer neste run** (NUNCA `DemoVideo*` pre-existente). Faz upload para o bucket `linkedin-ghostwriter-videos`.
 
 > **Falha em 1 collaborator NAO bloqueia o pipeline.** Marca `video_rotation_linkedin.status='failed'` e segue para o proximo. Os demais collaborators (nao selecionados) seguem o fluxo padrao sem video.
+>
+> **NAO existe atalho.** Se o Motion Designer pipeline (etapas 1-5 abaixo) nao produziu artefatos completos (briefing + 5 outputs + spec novo + Composition registrada), marcar `status='failed'` e pular esse collaborator. **NUNCA cair em `DemoVideo`, `DemoVideo-PT`, `DemoVideo-EN`, `DemoVideo-PT-Personal` ou `DemoVideo-EN-Personal`** — essas Compositions carregam `lubyDemoSpec` (luby-demo.ts) que e o pitch Luby AI-seguranca hardcoded, vai produzir MP4 com speaker badge correto mas conteudo (visuais + narracao + BGM) alheio ao post do collaborator.
+>
+> **Audio defaults sao obrigatorios:** ler `pipeline/data/video-config.json` campo `audio_defaults` antes do render. Spec gerado pelo Motion Designer DEVE ter `audio.narrationEnabled: false` e `audio.bgmId` setado (default: `corporate-tech-uplifting-1`). Narracao SEMPRE off — os assets em `public/audio/manifest.json` sao o pitch Luby hardcoded, nao o post do collaborator.
 
 ## Inputs
 
@@ -76,8 +80,21 @@ Sequencialmente (cada um le a persona e produz seu artefato em `${LVM_RUN_DIR}/`
 | 1 | `luby-video-machine/agents/personas/01-estrategista.md` | `01-estrategia.md` |
 | 2 | `luby-video-machine/agents/personas/02-roteirista.md` | `02-roteiro.md` |
 | 3 | `luby-video-machine/agents/personas/03-diretor-criativo.md` | `03-storyboard.md` |
-| 4 | `luby-video-machine/agents/personas/04-motion-designer.md` | `04-implementation-notes.md` + spec em `luby-video-machine/src/schema/examples/${NAME_SLUG}-${LANG_CODE}.ts` |
+| 4 | `luby-video-machine/agents/personas/04-motion-designer.md` | `04-implementation-notes.md` + spec em `luby-video-machine/src/schema/examples/${COMPOSITION}.ts` + nova `<Composition id="${COMPOSITION}">` em `luby-video-machine/src/Root.tsx` |
 | 5 | `luby-video-machine/agents/personas/05-revisor.md` | `05-review.md` (spec-only review) |
+
+> Convencao do `${COMPOSITION}`: `{name-slug}-{flavor-slug-or-topic-key}-{lang-short}`. Exemplos das runs 2026-05-13: `karime-kumagai-revops-en`, `rodrigo-gardin-substrate-en`. O Motion Designer DEVE criar o arquivo spec novo E adicionar uma `<Composition>` nova em `Root.tsx` com esse `id` — sem essas duas edicoes, Cleidim nao consegue renderizar e marca `failed`.
+>
+> **Audio defaults obrigatorios** no spec gerado pelo Motion Designer (lidos de `pipeline/data/video-config.json` campo `audio_defaults`):
+> ```ts
+> audio: {
+>   bgmId: 'corporate-tech-uplifting-1',
+>   bgmVolume: 0.12,
+>   bgmVolumeDucked: 0.05,
+>   narrationEnabled: false,
+>   narrationVolume: 0,
+> }
+> ```
 
 **Gates auto-aprovados (Cleidim NAO pergunta ao usuario):**
 
@@ -95,23 +112,49 @@ Sequencialmente (cada um le a persona e produz seu artefato em `${LVM_RUN_DIR}/`
     gate2_warning: "Render full sem revisao de stills. Risco de descobrir problema visual so no MP4."
   ```
 
-#### Etapa 4 — Render via Remotion
+#### Etapa 4 — Pre-render gates + Render via Remotion
+
+**Pre-render gates** — TODOS sao bloqueantes. Qualquer falha → marcar `failed` (Etapa 7) sem renderizar.
 
 ```bash
-OUT_FILE="${LVM_RUN_DIR}/out/video-personal.mp4"
-mkdir -p "$(dirname "${OUT_FILE}")"
-
 cd squads/ghostwriter-linkedin-auto/luby-video-machine
 
-# Composition: tenta usar a registrada por lingua (DemoVideo-PT-Personal ou DemoVideo-EN-Personal)
-# Props injetadas: lang, mode, speaker, e specSlug se a composition aceitar
-COMPOSITION="DemoVideo-${LANG_SHORT^^}-Personal"  # PT ou EN
+# Composition id = nome do spec gerado pelo Motion Designer (passo 4 dos sub-agentes)
+# Convencao: {name-slug}-{flavor-slug-or-topic-key}-{lang-short}
+# Exemplo: karime-kumagai-revops-en, rodrigo-gardin-substrate-en
+COMPOSITION="${NAME_SLUG}-${FLAVOR_SLUG_OR_TOPIC}-${LANG_SHORT}"
+SPEC_PATH="src/schema/examples/${COMPOSITION}.ts"
+
+# Gate 1: spec gerado pelo Motion Designer existe?
+[ -f "${SPEC_PATH}" ] || { echo "GATE FAIL: spec missing — motion designer pulou step 4"; goto FAILED; }
+
+# Gate 2: implementation notes (artefato do Motion Designer) existe?
+[ -f "${LVM_RUN_DIR}/04-implementation-notes.md" ] || { echo "GATE FAIL: motion designer skipped"; goto FAILED; }
+
+# Gate 3: Composition foi registrada em Root.tsx?
+grep -q "id=\"${COMPOSITION}\"" src/Root.tsx || { echo "GATE FAIL: composition not registered in Root.tsx"; goto FAILED; }
+
+# Gate 4: spec usa audio defaults do squad?
+grep -q "narrationEnabled: false" "${SPEC_PATH}" || { echo "GATE FAIL: narration must be disabled"; goto FAILED; }
+grep -q "bgmId:" "${SPEC_PATH}" || { echo "GATE FAIL: bgmId must be set"; goto FAILED; }
+
+# Gate 5: composition id nao e uma das proibidas
+case "${COMPOSITION}" in
+  DemoVideo|DemoVideo-PT|DemoVideo-EN|DemoVideo-PT-Personal|DemoVideo-EN-Personal)
+    echo "CRITICAL: forbidden composition id ${COMPOSITION} — abort"
+    exit 1
+    ;;
+esac
+
+OUT_FILE="${LVM_RUN_DIR}/out/video-personal.mp4"
+mkdir -p "$(dirname "${OUT_FILE}")"
 
 PROPS_JSON=$(cat <<EOF
 {"lang":"${LANG_SHORT}","mode":"personal","speaker":{"name":"${COLLAB_NAME}","role":"${COLLAB_ROLE}"}}
 EOF
 )
 
+# Render a Composition CUSTOM criada pelo Motion Designer DESTE run
 timeout 480 npx remotion render "${COMPOSITION}" "${OUT_FILE}" \
   --props="${PROPS_JSON}"
 
@@ -122,6 +165,10 @@ cd -
 Se `RENDER_EXIT != 0` ou timeout (480s = 8 min): pular pra **Etapa 7 (failed)**.
 
 Se MP4 < 100KB: tratar como falha (render produziu arquivo corrompido).
+
+> **PROIBIDO em qualquer hipotese:** `npx remotion render DemoVideo`, `DemoVideo-PT`, `DemoVideo-EN`, `DemoVideo-PT-Personal`, `DemoVideo-EN-Personal`. Essas Compositions carregam `lubyDemoSpec` (pitch Luby AI+seguranca hardcoded). Renderizar isso vai produzir um MP4 com nome/role do speaker certo mas visuais + narracao + BGM completamente alheios ao post do collaborator. Aconteceu em 2026-05-18 com Alon e Bianca — 2 MP4s alheios subiram pro bucket com `status='uploaded'`.
+>
+> **Sem atalho de tempo.** Se "rodar 5 sub-agentes inline parece caro", isso e o custo do step. Pular sub-agentes nao e fail-safe — e producao de conteudo errado.
 
 #### Etapa 5 — Upload pro Supabase Storage
 
@@ -188,10 +235,13 @@ Salvar em `{run_output}/{COLLAB_NAME}/video-confirmation.md`:
 - Storage path: linkedin-ghostwriter-videos/{collab_uuid}/{date}-{flavor-slug}-{lang}.mp4
 - Render duration: {seconds}s
 - File size: {bytes}
-- Composition used: {DemoVideo-PT-Personal|DemoVideo-EN-Personal}
+- Composition used: {id da composition custom criada pelo Motion Designer neste run — ex: karime-kumagai-revops-en. NUNCA pode ser DemoVideo*}
+- Spec path: luby-video-machine/src/schema/examples/{composition_id}.ts
+- Audio: bgm={bgm_id} narrationEnabled=false
 - video_rotation_linkedin row_id: {row_id}
 - Gates: gate1=auto-approved-implement, gate2=auto-approved-skip-stills
-- Failure reason: {se status=failed, descrever: render_timeout | render_error | upload_4xx | corrupt_mp4}
+- Pre-render gates: spec_exists=ok, motion_notes_exists=ok, root_registered=ok, audio_defaults=ok, not_forbidden_id=ok
+- Failure reason: {se status=failed, descrever: motion_designer_skipped | spec_missing | composition_not_registered | audio_defaults_violated | forbidden_composition_id | render_timeout | render_error | upload_4xx | corrupt_mp4}
 - Timestamp: {ISO}
 ```
 
@@ -208,11 +258,15 @@ Salvar em `{run_output}/{COLLAB_NAME}/video-confirmation.md`:
 
 - [ ] Briefing montado em `${LVM_RUN_DIR}/00-briefing.md`
 - [ ] 5 sub-agentes acionados em ordem (artefatos 01-05 em `${LVM_RUN_DIR}/`)
+- [ ] Spec novo gerado em `luby-video-machine/src/schema/examples/${COMPOSITION}.ts` com `audio.narrationEnabled: false` e `audio.bgmId` setado
+- [ ] Composition nova registrada em `luby-video-machine/src/Root.tsx` com `id="${COMPOSITION}"`
 - [ ] Gates 1 e 2 com decisao registrada
+- [ ] Pre-render gates (5) passados: spec_exists, motion_notes_exists, root_registered, audio_defaults, not_forbidden_id
+- [ ] Composition usada no `npx remotion render` NAO comeca com `DemoVideo`
 - [ ] MP4 gerado em `${LVM_RUN_DIR}/out/video-personal.mp4` (>100KB)
 - [ ] Upload Supabase HTTP 200/201 (ou status='failed' apos 1 retry)
 - [ ] Row em `video_rotation_linkedin` com status final (uploaded ou failed)
-- [ ] `video-confirmation.md` produzido
+- [ ] `video-confirmation.md` produzido com campo `Composition used` correto
 
 ## Output
 - N pastas em `luby-video-machine/agents/runs/{date}-{slug}-{lang}/` (1 por collaborator selecionado)

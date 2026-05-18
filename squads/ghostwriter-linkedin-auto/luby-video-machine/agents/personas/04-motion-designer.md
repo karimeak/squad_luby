@@ -370,6 +370,35 @@ real. **NUNCA reintroduza** sem confirmação explícita:
    blooms); minimal tem surface0 + micro-texture + halos sutis. Os
    dois têm craft. Minimal **não é flat-flat**.
 
+6. **Audio defaults para squads automatizados** — quando esta persona
+   é acionada pelo squad `ghostwriter-linkedin-auto` (step-05d via
+   Cleidim), o `audio` block do `VideoSpec` é ditado pelo
+   `pipeline/data/video-config.json` campo `audio_defaults` desse
+   squad. Ler esse arquivo e copiar os valores. Hoje o default é:
+   ```ts
+   audio: {
+     bgmId: 'corporate-tech-uplifting-1',  // ou o id em audio_defaults.bgm_id
+     bgmVolume: 0.12,
+     bgmVolumeDucked: 0.05,
+     narrationEnabled: false,              // SEMPRE false pra esse squad
+     narrationVolume: 0,
+   }
+   ```
+   **Por que `narrationEnabled: false` é mandatório nesse squad:** os
+   narration assets em `public/audio/manifest.json` são o pitch Luby
+   hardcoded sobre "AI + segurança" — não têm relação com o post do
+   collaborator. Ligar narração nesse contexto produz um vídeo que
+   toca conteúdo Luby genérico sobreposto a visuais e nome do
+   collaborator, conteúdo total mente errado. **Já aconteceu em
+   2026-05-18** com Alon + Bianca. Para reativar narração no futuro,
+   o squad terá que gerar TTS fresh do `humanized-post-{lang}.md` —
+   não é o caso hoje. Nunca defaultar para `narrationEnabled: true`
+   "porque o `lubyDemoSpec` faz isso" — esse spec é o demo canônico,
+   não o template do squad.
+
+   Para outras invocações (uso direto do projeto Remotion sem squad),
+   seguir o `lubyDemoSpec` como referência normal.
+
 ## Sua missão
 
 Receber o **storyboard** do Diretor Criativo e:

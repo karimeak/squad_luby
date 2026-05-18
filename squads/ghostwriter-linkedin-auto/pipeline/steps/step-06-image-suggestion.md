@@ -22,9 +22,11 @@ Diana gera **1 Image Prompt Guide por lingua-alvo** do collaborator (campo `lang
 >
 > Cada imagem usa o `humanized-post-{lang}.md` correspondente como source do prompt visual. Path no bucket inclui o sufixo `-{lang}` para diferenciar.
 
-> **Pollinations.ai está PROIBIDO** (decisão definitiva 2026-05-11). Não construir URL, não fazer fallback, não citar. Toda imagem é gerada exclusivamente via Gemini.
+> **Pollinations.ai está PROIBIDO** (decisão definitiva 2026-05-11). Não construir URL, não fazer fallback, não citar. Toda imagem é gerada exclusivamente via Gemini. Se memórias ou exemplos antigos mencionarem Pollinations, ignorar.
 >
-> **Cadência obrigatória para batches:** 60s entre requests; pausa de 2min a cada 10 imagens em batches > 10; backoff exponencial (60→120→240s, máx 3 tentativas) em caso de erro/recusa do Gemini. Após 3 falhas, registrar `linkedin-image-failed.txt` na pasta do collaborator e seguir (não bloquear o pipeline).
+> **Playwright MCP está sempre disponível**, inclusive em runs agendados/automatizados (schedulers, /loop, /schedule). O perfil persistente fica em `_opensquad/_browser_profile/` e é compartilhado entre runs interativos e automáticos — nunca assumir que "browser não está disponível" para pular para outra ferramenta. Se Playwright realmente falhar (servidor MCP offline, perfil corrompido), abortar o step com erro claro em vez de cair em alternativa.
+>
+> **Cadência obrigatória para batches:** 60s entre requests; pausa de 2min a cada 10 imagens em batches > 10; backoff exponencial (60→120→240s, máx 3 tentativas) em caso de erro/recusa do Gemini. Após 3 falhas, registrar `linkedin-image-failed.txt` na pasta do collaborator, deixar `Image URL: null` no `image-suggestion-{lang}.md` e seguir (não bloquear o pipeline, mas NÃO usar Pollinations nem qualquer outro fallback).
 
 Saídas:
 1. **Arquivo local** (`linkedin-image.jpg`) — screenshot do Gemini em alta resolução
